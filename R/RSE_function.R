@@ -5,8 +5,11 @@
 #' @param gr GRanges: Single CTSS file.
 #'
 #' @return GRanges with column "tpm" added.
+#'
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @import GenomicRanges
+#' @export
 calcTPM <- function(gr){
 	# Calculate total sum in millions
 	s <- sum(score(gr)) / 1e6
@@ -29,6 +32,8 @@ calcTPM <- function(gr){
 #' @return GRanges representation of CTSS file
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @import GenomicRanges
+#' @export
 readCTSS <- function(fname){
 	# IDEAS:
 	# Default to rtracklayer::import if file is zipped
@@ -55,6 +60,8 @@ readCTSS <- function(fname){
 #' @return integer vector of same length as tcs: Number of tags in each genomic range.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @import S4Vectors IRanges GenomicRanges
+#' @export
 overlapCTSS <- function(tcs, ctss){
 	# TODO:
 	# Might not be exported...
@@ -68,7 +75,7 @@ overlapCTSS <- function(tcs, ctss){
 	df <- data.frame(tcIndex=queryHits(fo),
 									 ctssIndex=subjectHits(fo))
 	df$ctssScores <- score(ctss)[df$ctssIndex]
-	df <- aggregate(ctssScores ~ tcIndex, data=df, FUN=sum)
+	df <- stats::aggregate(ctssScores ~ tcIndex, data=df, FUN=sum)
 
 	# Allocate zero count vector
 	tagCounts <- rep(0, length(tcs))
@@ -88,6 +95,7 @@ overlapCTSS <- function(tcs, ctss){
 #' @return Integer matrix of dimensions: Number of TCs x Number of samples.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @export
 quantifyFeatures <- function(tcs, ctss){
 	# Option for None GRangesList...
 
@@ -113,6 +121,8 @@ quantifyFeatures <- function(tcs, ctss){
 #' @return GRanges of TCs, with TC peak position and summed TPM expression.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @import S4Vectors IRanges GenomicRanges
+#' @export
 findTagClusters <- function(ctssFiles, tpmCutoff=1, mergeDist=25){
 	# Better name to describe clustering
 
@@ -230,6 +240,7 @@ findTagClusters <- function(ctssFiles, tpmCutoff=1, mergeDist=25){
 #' @return RangedSummarizedExperiment
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @export
 assembleRSE <- function(ctss, tcs, em, design){
 	### TO DO
 	# Option for keepnig ctss in final object
@@ -238,12 +249,12 @@ assembleRSE <- function(ctss, tcs, em, design){
 	# Option for author stamp
 
 	# Preserve CTSS files
-	sample_data <- DataFrame(ctss=ctss, design)
+	sample_data <- S4Vectors::DataFrame(ctss=ctss, design)
 	rownames(sample_data) <- rownames(design)
 	colnames(em) <- rownames(design)
 
 	# Assemble
-	RSE <- SummarizedExperiment(assays=list(counts=em),
+	RSE <- SummarizedExperiment::SummarizedExperiment(assays=list(counts=em),
 															rowRanges=tcs,
 															colData=sample_data)
 
@@ -266,6 +277,7 @@ assembleRSE <- function(ctss, tcs, em, design){
 #' @return RangedSummarizedExperiment.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @export
 summarizeCAGE <- function(ctss, design, fun=findTagClusters, ...){
 	# Complete series
 	TCs <- findTagClusters(ctssFiles=ctss, ...)

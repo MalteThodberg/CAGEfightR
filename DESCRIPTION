@@ -1,13 +1,20 @@
 Package: CAGEfighteR
 Type: Package
-Title: Functions for analyzing Cap Analysis of Gene Expression (CAGE) data using Bioconductor functions.
+Title: Functions for analyzing Cap Analysis of Gene Expression (CAGE) data using
+    Bioconductor functions
 Version: 0.1.0
 Author: Malte Thodberg
 Maintainer: <malte.thodberg@bio.ku.dk>
-Description: Includes function for: Finding Tag Cluster (TCs), quantifying expression as an Expression Matrix (EM), annotating TCs using transcript models, finding Bidirectonal TCs (BCs).
+Description: Includes function for: Finding Tag Cluster (TCs), quantifying
+    expression as an Expression Matrix (EM), annotating TCs using transcript models,
+    finding Bidirectonal TCs (BCs).
 Imports:
+    S4Vectors,
+    IRanges,
     GenomicRanges,
-    SummarizedExperiment
+    SummarizedExperiment,
+    data.table
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 5.0.1

@@ -32,7 +32,6 @@ calcTPM <- function(gr){
 #' @return GRanges representation of CTSS file
 #' @examples
 #' # ADD_EXAMPLES_HERE
-#' @import GenomicRanges
 #' @export
 readCTSS <- function(fname){
 	# IDEAS:
@@ -114,7 +113,7 @@ quantifyFeatures <- function(tcs, ctss){
 #'
 #' Generates simple Tag Clusters (TCs) from CTSS-GRanges: Calculates TPM-coverage across all samples and finds cluster above a certain cutoff, merging cluster within a specified distance.
 #'
-#' @param ctssFiles GRangesList: CTSS-GRanges.
+#' @param ctss GRangesList: CTSS-GRanges.
 #' @param tpmCutoff numeric: BP-positions with this or less TPM will not be used for tag clustering.
 #' @param mergeDist integer: TCs within this distance of eachother are merged.
 #'
@@ -123,19 +122,19 @@ quantifyFeatures <- function(tcs, ctss){
 #' # ADD_EXAMPLES_HERE
 #' @import S4Vectors IRanges GenomicRanges
 #' @export
-findTagClusters <- function(ctssFiles, tpmCutoff=1, mergeDist=25){
+findTagClusters <- function(ctss, tpmCutoff=1, mergeDist=25){
 	# Better name to describe clustering
 
 	### Pre-checks
-	stopifnot(class(ctssFiles)=="GRangesList")
+	stopifnot(class(ctss)=="GRangesList")
 	# Check if scores are all integers
 	# Check if ctss files has seqinfo objects
 
 	### Prepare ranges
-	message("Preparing CTSS files...")
+	message("Preparing CTSS-GRanges")
 
 	# Add TPM column
-	ctss_tpm <- endoapply(ctssFiles, calcTPM)
+	ctss_tpm <- endoapply(ctss, calcTPM)
 
 	# Split by strand
 	ctss_plus <- endoapply(ctss_tpm, function(x) subset(x, strand=="+"))
@@ -205,25 +204,6 @@ findTagClusters <- function(ctssFiles, tpmCutoff=1, mergeDist=25){
 
 	# Return
 	TCs_both
-
-	# ### Quantify expression
-	# message("Quantifying expression...")
-	#
-	# EM <- do.call(cbind,lapply(ctssFiles, countTCs, tcs=TCs_both))
-	#
-	# ### Assembling RSE
-	# message("Assembling RangedSummarizedExperiment...")
-	#
-	# sample_data <- DataFrame(ctss=ctssFiles,
-	# 											mappedTags=sapply(ctssFiles, function(x) sum(score(x))))
-	#
-	#
-	# RSE <- SummarizedExperiment(assays=list(counts=EM),
-	# 														rowRanges=TCs_both,
-	# 														colData=sample_data)
-	#
-	# # Return
-	# RSE
 }
 
 #' Collect data into SummarizedExperiment
@@ -280,14 +260,16 @@ assembleRSE <- function(ctss, tcs, em, design){
 #' @export
 summarizeCAGE <- function(ctss, design, fun=findTagClusters, ...){
 	# Complete series
-	TCs <- findTagClusters(ctssFiles=ctss, ...)
+	TCs <- findTagClusters(ctss=ctss, ...)
 	EM <- quantifyFeatures(tcs=TCs, ctss=ctss)
 	SE <- assembleRSE(ctss=ctss, tcs=TCs, em=EM, design=design)
 
 	# Return
 	SE
 }
-#
+
+
+# # Code heap
 # library(IRanges)
 # library(GenomicRanges)
 # library(GenomicFeatures)

@@ -4,10 +4,10 @@
 \alias{findTagClusters}
 \title{Simple Tag-Clustering}
 \usage{
-findTagClusters(ctssFiles, tpmCutoff = 1, mergeDist = 25)
+findTagClusters(ctss, tpmCutoff = 1, mergeDist = 25)
 }
 \arguments{
-\item{ctssFiles}{GRangesList: CTSS-GRanges.}
+\item{ctss}{GRangesList: CTSS-GRanges.}
 
 \item{tpmCutoff}{numeric: BP-positions with this or less TPM will not be used for tag clustering.}
 

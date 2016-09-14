@@ -7,7 +7,7 @@ Author: Malte Thodberg
 Maintainer: <malte.thodberg@bio.ku.dk>
 Description: Includes functions for: Finding Tag Cluster (TCs), quantifying
     expression as an Expression Matrix (EM), annotating TCs using transcript models,
-    finding Bidirectonal TCs (BCs).
+    finding Bidirectonal Clusters (BCs).
 Imports:
     S4Vectors,
     IRanges,

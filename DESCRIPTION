@@ -1,4 +1,4 @@
-Package: CAGEfighteR
+Package: CAGEfightR
 Type: Package
 Title: Analysis of Cap Analysis of Gene Expression (CAGE) data using
     Bioconductor

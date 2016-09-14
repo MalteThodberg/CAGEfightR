@@ -23,7 +23,30 @@ calcTPM <- function(gr){
 	gr
 }
 
-#' Import CTSS file
+#' Rescales CTSS score from counts to TPM
+#'
+#' Rescales the scores of a CTSS-GRanges to Tag-per-million (TPM)
+#'
+#' @param gr GRanges: Single CTSS file.
+#'
+#' @return GRanges with scores in TPM
+#'
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @import GenomicRanges
+#' @export
+scoreAsTPM <- function(gr){
+	# TO-DO
+	# Check that file has a score column
+
+	# Rescale to TPM
+	score(gr) <- score(gr) / (sum(score(gr)) / 1e6 )
+
+	# Retur
+	gr
+}
+
+#' Import a single CTSS file
 #'
 #' Uses the `fread`-function from the data.table package to quickly import a CTSS file from disk into a GRanges object.
 #'
@@ -32,21 +55,60 @@ calcTPM <- function(gr){
 #' @return GRanges representation of CTSS file
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @import S4Vectors IRanges GenomicRanges SummarizedEx
 #' @export
-readCTSS <- function(fname){
+readSingleCTSS <- function(fname){
 	# IDEAS:
 	# Default to rtracklayer::import if file is zipped
 	# Perfrom post checks of col classes
 
 	# Quickly read data using fread
-	df <- data.table::fread(input=fname,
-													data.table=FALSE,
-													col.names=c("seqname", "start", "end", "name", "score", "strand"))
+	message(paste0("Reading file: ", fname, " ..."))
+
+	d <- data.table::fread(input=fname,
+												 data.table=FALSE,
+												 sep="\t",
+												 col.names=c("seqname", "start", "end", "score", "strand"),
+												 select=c(1,2,3,5,6),
+												 verbose=FALSE, showProgress=FALSE,
+												 na.strings=NULL)
 
 	# Make into GR and return
-	GenomicRanges::makeGRangesFromDataFrame(df=df,
-																					keep.extra.columns=TRUE,
-																					starts.in.df.are.0based=TRUE)
+	d <- makeGRangesFromDataFrame(df=d,
+																keep.extra.columns=TRUE,
+																starts.in.df.are.0based=TRUE)
+
+	# Compress counts
+	GenomicRanges::score(d) <- Rle(score(d))
+
+	# Return
+	d
+}
+
+#' Read multiple CTSS files
+#'
+#' Uses the `fread`-function from the data.table package to quickly import multiple CTSS files from disk into a GRangesList object.
+#'
+#' @param fnames character: Vector of file names.
+#'
+#' @return GRangesList
+#' @examples
+#' # ADD_EXAMPLES_HERE
+readMultipleCTSS <- function(fnames){
+	# TO-DO
+	# Check all files are real and readable
+
+	# Read into R
+	message("Reading: ", length(fnames), " files...")
+	d <- lapply(fnames, readSingleCTSS)
+
+	# Compress into GRangesList
+	message("Compressing into GRangesList...")
+	d <- GRangesList(d)
+	names(d) <- basename(fnames)
+
+	# Return
+	d
 }
 
 #' Count overlaps for a CTSS file
@@ -73,7 +135,7 @@ overlapCTSS <- function(tcs, ctss){
 	# Dataframe to be merged
 	df <- data.frame(tcIndex=queryHits(fo),
 									 ctssIndex=subjectHits(fo))
-	df$ctssScores <- score(ctss)[df$ctssIndex]
+	df$ctssScores <- as.vector(score(ctss)[df$ctssIndex])
 	df <- stats::aggregate(ctssScores ~ tcIndex, data=df, FUN=sum)
 
 	# Allocate zero count vector
@@ -102,7 +164,8 @@ quantifyFeatures <- function(tcs, ctss){
 	stopifnot(class(ctss) == "GRangesList")
 
 	# Build EM
-	EM <- do.call(cbind,lapply(ctss, overlapCTSS, tcs=tcs))
+	message("Quantifying expression in ", length(ctss), " CTSS-GRanges...")
+	EM <- do.call(cbind, lapply(ctss, overlapCTSS, tcs=tcs))
 
 	# Return
 	EM
@@ -122,7 +185,7 @@ quantifyFeatures <- function(tcs, ctss){
 #' # ADD_EXAMPLES_HERE
 #' @import S4Vectors IRanges GenomicRanges
 #' @export
-findTagClusters <- function(ctss, tpmCutoff=1, mergeDist=25){
+findTagClusters <- function(ctss, tpmCutoff=0, mergeDist=25){
 	# Better name to describe clustering
 
 	### Pre-checks
@@ -131,21 +194,21 @@ findTagClusters <- function(ctss, tpmCutoff=1, mergeDist=25){
 	# Check if ctss files has seqinfo objects
 
 	### Prepare ranges
-	message("Preparing CTSS-GRanges")
+	message("Preparing CTSS-GRanges...")
 
-	# Add TPM column
-	ctss_tpm <- endoapply(ctss, calcTPM)
+	# Rescale to TPM
+	ctss <- endoapply(ctss, scoreAsTPM)
 
 	# Split by strand
-	ctss_plus <- endoapply(ctss_tpm, function(x) subset(x, strand=="+"))
-	ctss_minus <- endoapply(ctss_tpm, function(x) subset(x, strand=="-"))
+	ctss_plus <- endoapply(ctss, function(x) subset(x, strand=="+"))
+	ctss_minus <- endoapply(ctss, function(x) subset(x, strand=="-"))
 
 	### Coverage and peaks
 	message("Calculating coverage and finding peaks...")
 
 	# Calculate Strand-wise coverage
-	coverage_plus <- coverage(ctss_plus, weight="tpm")
-	coverage_minus <- coverage(ctss_minus, weight="tpm")
+	coverage_plus <- coverage(ctss_plus, weight="score")
+	coverage_minus <- coverage(ctss_minus, weight="score")
 
 	# Peak calling: Find peaks
 	peaks_plus <- slice(coverage_plus, lower=tpmCutoff, upper=Inf, includeLower=FALSE, rangesOnly=TRUE)
@@ -228,6 +291,9 @@ assembleRSE <- function(ctss, tcs, em, design){
 	# Option for time stamping object
 	# Option for author stamp
 
+	tmp <- dim(em)
+	message("Assembling CAGE experiment of ", tmp[1], " TCs in ", tmp[2], " samples...")
+
 	# Preserve CTSS files
 	sample_data <- S4Vectors::DataFrame(ctss=ctss, design)
 	rownames(sample_data) <- rownames(design)
@@ -268,26 +334,38 @@ summarizeCAGE <- function(ctss, design, fun=findTagClusters, ...){
 	SE
 }
 
-
 # # Code heap
-# library(IRanges)
-# library(GenomicRanges)
-# library(GenomicFeatures)
-# library(SummarizedExperiment)
+library(IRanges)
+library(GenomicRanges)
+library(GenomicFeatures)
+library(SummarizedExperiment)
+
+# Test reading CTSS from disk
+# ctss_files <- list.files(path="~/Desktop/to_be_zipped/", full.names = TRUE)
 #
-# # Pombe files
-# load("ctssFiles.rda")
+# singleFile <- readSingleCTSS(fname=ctss_files[[1]])
+# multiFiles <- readMultipleCTSS(fnames=ctss_files)
 #
-# # Dummy design
-# design <- tibble::tibble(tmp=names(ctss_grs))
-# design <- as.data.frame(tidyr::separate(design, col=tmp,
-# 													into=c("Genome", "Assembly", "Lane", "Medium", "Treatment", "Replicate"), sep="_"))
-# rownames(design) <- apply(design, 1, function(x) paste(x[4:6], collapse=""))
+# head(scoreAsTPM(singleFile))
 #
-#
-# #TCs <- findTagClusters(ctssFiles=ctss_grs, tpmCutoff=0)
-# #EM <- quantifyFeatures(tcs=TCs, ctss=ctss_grs)
-# #SE <- assembleRSE(ctss=ctss_grs, tcs=TCs, em=EM, design=design)
-# SE <- summarizeCAGE(ctss=ctss_grs, design=design)
-#
-# # Make into RSE
+# TCs <- findTagClusters(ctss=multiFiles)
+# head(overlapCTSS(tcs=TCs, ctss=singleFile))
+# EM <- quantifyFeatures(tcs=TCs, ctss=multiFiles)
+
+
+# Pombe files
+load("ctssFiles.rda")
+
+# Dummy design
+design <- tibble::tibble(tmp=names(ctss_grs))
+design <- as.data.frame(tidyr::separate(design, col=tmp,
+													into=c("Genome", "Assembly", "Lane", "Medium", "Treatment", "Replicate"), sep="_"))
+rownames(design) <- apply(design, 1, function(x) paste(x[4:6], collapse=""))
+
+
+#TCs <- findTagClusters(ctssFiles=ctss_grs, tpmCutoff=0)
+#EM <- quantifyFeatures(tcs=TCs, ctss=ctss_grs)
+#SE <- assembleRSE(ctss=ctss_grs, tcs=TCs, em=EM, design=design)
+SE <- summarizeCAGE(ctss=ctss_grs, design=design)
+
+# Make into RSE

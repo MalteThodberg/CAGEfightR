@@ -55,7 +55,7 @@ scoreAsTPM <- function(gr){
 #' @return GRanges representation of CTSS file
 #' @examples
 #' # ADD_EXAMPLES_HERE
-#' @import S4Vectors IRanges GenomicRanges SummarizedEx
+#' @import S4Vectors IRanges GenomicRanges
 #' @export
 readSingleCTSS <- function(fname){
 	# IDEAS:
@@ -79,7 +79,7 @@ readSingleCTSS <- function(fname){
 																starts.in.df.are.0based=TRUE)
 
 	# Compress counts
-	GenomicRanges::score(d) <- Rle(score(d))
+	score(d) <- Rle(score(d))
 
 	# Return
 	d
@@ -94,6 +94,8 @@ readSingleCTSS <- function(fname){
 #' @return GRangesList
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @import GenomicRanges
+#' @export
 readMultipleCTSS <- function(fnames){
 	# TO-DO
 	# Check all files are real and readable
@@ -334,38 +336,38 @@ summarizeCAGE <- function(ctss, design, fun=findTagClusters, ...){
 	SE
 }
 
-# # Code heap
-library(IRanges)
-library(GenomicRanges)
-library(GenomicFeatures)
-library(SummarizedExperiment)
-
-# Test reading CTSS from disk
-# ctss_files <- list.files(path="~/Desktop/to_be_zipped/", full.names = TRUE)
+# # # Code heap
+# library(IRanges)
+# library(GenomicRanges)
+# library(GenomicFeatures)
+# library(SummarizedExperiment)
 #
-# singleFile <- readSingleCTSS(fname=ctss_files[[1]])
-# multiFiles <- readMultipleCTSS(fnames=ctss_files)
+# # Test reading CTSS from disk
+# # ctss_files <- list.files(path="~/Desktop/to_be_zipped/", full.names = TRUE)
+# #
+# # singleFile <- readSingleCTSS(fname=ctss_files[[1]])
+# # multiFiles <- readMultipleCTSS(fnames=ctss_files)
+# #
+# # head(scoreAsTPM(singleFile))
+# #
+# # TCs <- findTagClusters(ctss=multiFiles)
+# # head(overlapCTSS(tcs=TCs, ctss=singleFile))
+# # EM <- quantifyFeatures(tcs=TCs, ctss=multiFiles)
 #
-# head(scoreAsTPM(singleFile))
 #
-# TCs <- findTagClusters(ctss=multiFiles)
-# head(overlapCTSS(tcs=TCs, ctss=singleFile))
-# EM <- quantifyFeatures(tcs=TCs, ctss=multiFiles)
-
-
-# Pombe files
-load("ctssFiles.rda")
-
-# Dummy design
-design <- tibble::tibble(tmp=names(ctss_grs))
-design <- as.data.frame(tidyr::separate(design, col=tmp,
-													into=c("Genome", "Assembly", "Lane", "Medium", "Treatment", "Replicate"), sep="_"))
-rownames(design) <- apply(design, 1, function(x) paste(x[4:6], collapse=""))
-
-
-#TCs <- findTagClusters(ctssFiles=ctss_grs, tpmCutoff=0)
-#EM <- quantifyFeatures(tcs=TCs, ctss=ctss_grs)
-#SE <- assembleRSE(ctss=ctss_grs, tcs=TCs, em=EM, design=design)
-SE <- summarizeCAGE(ctss=ctss_grs, design=design)
-
-# Make into RSE
+# # Pombe files
+# load("ctssFiles.rda")
+#
+# # Dummy design
+# design <- tibble::tibble(tmp=names(ctss_grs))
+# design <- as.data.frame(tidyr::separate(design, col=tmp,
+# 													into=c("Genome", "Assembly", "Lane", "Medium", "Treatment", "Replicate"), sep="_"))
+# rownames(design) <- apply(design, 1, function(x) paste(x[4:6], collapse=""))
+#
+#
+# #TCs <- findTagClusters(ctssFiles=ctss_grs, tpmCutoff=0)
+# #EM <- quantifyFeatures(tcs=TCs, ctss=ctss_grs)
+# #SE <- assembleRSE(ctss=ctss_grs, tcs=TCs, em=EM, design=design)
+# SE <- summarizeCAGE(ctss=ctss_grs, design=design)
+#
+# # Make into RSE

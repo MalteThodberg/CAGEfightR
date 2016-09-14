@@ -4,7 +4,7 @@
 \alias{findTagClusters}
 \title{Simple Tag-Clustering}
 \usage{
-findTagClusters(ctss, tpmCutoff = 1, mergeDist = 25)
+findTagClusters(ctss, tpmCutoff = 0, mergeDist = 25)
 }
 \arguments{
 \item{ctss}{GRangesList: CTSS-GRanges.}

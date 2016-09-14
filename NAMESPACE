@@ -5,18 +5,7 @@ export(calcTPM)
 export(findTagClusters)
 export(overlapCTSS)
 export(quantifyFeatures)
-<<<<<<< HEAD
 export(readMultipleCTSS)
-=======
-<<<<<<< HEAD
-export(readMultipleCTSS)
-=======
-<<<<<<< HEAD
-export(readMultipleCTSS)
-=======
->>>>>>> ece502e2718d8afd995454ff7e72148ecf9a12e2
->>>>>>> d2d2d0db2db287dbf0b0314614acf52e151e95b2
->>>>>>> 9f7ef6e8633587f43012d6f86c0b7d6cad81e140
 export(readSingleCTSS)
 export(scoreAsTPM)
 export(summarizeCAGE)

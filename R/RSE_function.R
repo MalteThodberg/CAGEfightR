@@ -173,12 +173,12 @@ quantifyFeatures <- function(tcs, ctss){
 	EM
 }
 
-
 #' Simple Tag-Clustering
 #'
 #' Generates simple Tag Clusters (TCs) from CTSS-GRanges: Calculates TPM-coverage across all samples and finds cluster above a certain cutoff, merging cluster within a specified distance.
 #'
 #' @param ctss GRangesList: CTSS-GRanges.
+#' @param ctssCutoff integer: BP-positions with this or less CTSS-tags will not be included in coverage calculations.
 #' @param tpmCutoff numeric: BP-positions with this or less TPM will not be used for tag clustering.
 #' @param mergeDist integer: TCs within this distance of eachother are merged.
 #'
@@ -187,7 +187,7 @@ quantifyFeatures <- function(tcs, ctss){
 #' # ADD_EXAMPLES_HERE
 #' @import S4Vectors IRanges GenomicRanges
 #' @export
-findTagClusters <- function(ctss, tpmCutoff=0, mergeDist=25){
+simpleTCs <- function(ctss, ctssCutoff=1, tpmCutoff=0.1, mergeDist=20){
 	# Better name to describe clustering
 
 	### Pre-checks
@@ -197,6 +197,9 @@ findTagClusters <- function(ctss, tpmCutoff=0, mergeDist=25){
 
 	### Prepare ranges
 	message("Preparing CTSS-GRanges...")
+
+	# Remove CTSS-bps
+	ctss <- endoapply(ctss, subset, score > ctssCutoff)
 
 	# Rescale to TPM
 	ctss <- endoapply(ctss, scoreAsTPM)
@@ -254,9 +257,9 @@ findTagClusters <- function(ctss, tpmCutoff=0, mergeDist=25){
 	message("Merging Tag Cluster info...")
 
 	# Assemble by strand
-	TCs_plus <- GRanges(reduced_plus, strand="+", peak=ranges_plus, score=sum_plus)#,
+	TCs_plus <- GRanges(reduced_plus, strand="+", thick=ranges_plus, score=sum_plus)#,
 											#iqr=iqr_plus, skewness=skewness_plus, kurtosis=kurtosis_plus)
-	TCs_minus <- GRanges(reduced_minus, strand="-", peak=ranges_minus, score=sum_minus)#,
+	TCs_minus <- GRanges(reduced_minus, strand="-", thick=ranges_minus, score=sum_minus)#,
 											 #iqr=iqr_minus, skewness=skewness_minus, kurtosis=kurtosis_minus)
 
 	# Merge into final objects
@@ -326,9 +329,9 @@ assembleRSE <- function(ctss, tcs, em, design){
 #' @examples
 #' # ADD_EXAMPLES_HERE
 #' @export
-summarizeCAGE <- function(ctss, design, fun=findTagClusters, ...){
+summarizeCAGE <- function(ctss, design, fun=simpleTCs, ...){
 	# Complete series
-	TCs <- findTagClusters(ctss=ctss, ...)
+	TCs <- simpleTCs(ctss=ctss, ...)
 	EM <- quantifyFeatures(tcs=TCs, ctss=ctss)
 	SE <- assembleRSE(ctss=ctss, tcs=TCs, em=EM, design=design)
 
@@ -341,18 +344,30 @@ summarizeCAGE <- function(ctss, design, fun=findTagClusters, ...){
 # library(GenomicRanges)
 # library(GenomicFeatures)
 # library(SummarizedExperiment)
+# library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 #
 # # Test reading CTSS from disk
-# # ctss_files <- list.files(path="~/Desktop/to_be_zipped/", full.names = TRUE)
-# #
-# # singleFile <- readSingleCTSS(fname=ctss_files[[1]])
-# # multiFiles <- readMultipleCTSS(fnames=ctss_files)
-# #
-# # head(scoreAsTPM(singleFile))
-# #
-# # TCs <- findTagClusters(ctss=multiFiles)
-# # head(overlapCTSS(tcs=TCs, ctss=singleFile))
-# # EM <- quantifyFeatures(tcs=TCs, ctss=multiFiles)
+# ctss_files <- list.files(path="~/Desktop/to_be_zipped/", full.names = TRUE)
+#
+# #singleFile <- readSingleCTSS(fname=ctss_files[[1]])
+# multiFiles <- readMultipleCTSS(fnames=ctss_files)
+#
+# #head(scoreAsTPM(singleFile))
+# TCs <- simpleTCs(ctss=multiFiles, ctssCutoff=1, tpmCutoff=0.001)
+# length(TCs)
+# sum(width(TCs) > 1000)
+#
+# #head(overlapCTSS(tcs=TCs, ctss=singleFile))
+# #EM <- quantifyFeatures(tcs=TCs, ctss=multiFiles)
+#
+# # Annotate
+# TCs$txType <- suppressWarnings(assignTxType(gr=TCs, txdb=TxDb.Hsapiens.UCSC.hg38.knownGene, rangeColumn="thick"))
+# TCs$gene <- suppressWarnings(assignGene(gr=TCs, txdb=TxDb.Hsapiens.UCSC.hg38.knownGene, rangeColumn="thick"))
+#
+# tmpGene <- ifelse(grepl(pattern="Novel", x=TCs$gene), "Novel", "Known")
+# table(TCs$txType, tmpGene)
+
+
 #
 #
 # # Pombe files
@@ -365,7 +380,7 @@ summarizeCAGE <- function(ctss, design, fun=findTagClusters, ...){
 # rownames(design) <- apply(design, 1, function(x) paste(x[4:6], collapse=""))
 #
 #
-# #TCs <- findTagClusters(ctssFiles=ctss_grs, tpmCutoff=0)
+# #TCs <- simpleTCs(ctssFiles=ctss_grs, tpmCutoff=0)
 # #EM <- quantifyFeatures(tcs=TCs, ctss=ctss_grs)
 # #SE <- assembleRSE(ctss=ctss_grs, tcs=TCs, em=EM, design=design)
 # SE <- summarizeCAGE(ctss=ctss_grs, design=design)

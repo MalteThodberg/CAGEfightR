@@ -4,7 +4,7 @@
 \alias{summarizeCAGE}
 \title{Summarize CAGE experiment.}
 \usage{
-summarizeCAGE(ctss, design, fun = findTagClusters, ...)
+summarizeCAGE(ctss, design, fun = simpleTCs, ...)
 }
 \arguments{
 \item{ctss}{GRangesList: CTSS-GRanges.}

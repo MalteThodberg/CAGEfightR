@@ -12,6 +12,7 @@ Imports:
     S4Vectors,
     IRanges,
     GenomicRanges,
+    GenomicFeatures,
     SummarizedExperiment,
     data.table
 License: GPL-3

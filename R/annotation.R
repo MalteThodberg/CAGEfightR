@@ -10,7 +10,7 @@
 #' # ADD_EXAMPLES_HERE
 #' @import S4Vectors IRanges GenomicRanges
 #' @export
-swapRanges <- function(gr, column){
+swapRanges <- function(gr, column="thick"){
 	# TO DO
 	# Check all columns are actually ranges
 	# Allow other name than swap in function

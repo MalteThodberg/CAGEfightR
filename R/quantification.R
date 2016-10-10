@@ -1,7 +1,7 @@
-quantifyFeatures <- function(ctss, features) UseMethod("quantifyFeatures")
+quantifyFeatures <- function(ctss, features, cores) UseMethod("quantifyFeatures")
 
 # Default method
-quantifyFeatures.default <- function(ctss, features){
+quantifyFeatures.default <- function(ctss, features, cores){
 	stop("ctss must be either a character or GRangesList")
 }
 
@@ -16,11 +16,25 @@ countScoredOverlaps <- function(gr, features){
 }
 
 # High memory BED
-quantifyFeatures.GRangesList <- function(ctss, features){
+quantifyFeatures.GRangesList <- function(ctss, features, cores=NULL){
+	# Get some basic info for printing
+	nFeatures <- length(features)
+	nSamples <- length(ctss)
+	m <- sprintf("Quantifying expression of %d features in %d samples",
+							 nFeatures, nSamples)
+	message(m)
+
 	# Quantify each GRange in GRanges list
-	x <- pblapply(ctss, countScoredOverlaps, features=features)
+	if(is.null(cores)){
+		x <- pblapply(ctss, countScoredOverlaps, features=features)
+	}else{
+		message(paste0("Using cores: ", cores))
+		x <- mclapply(ctss, countScoredOverlaps, features=features,
+									mc.preschedule=TRUE, mc.cores=cores)
+	}
 
 	# Merge into matrix
+	message("Building Expression Matrix")
 	x <- do.call(cbind, x)
 	rownames(x) <- names(features)
 

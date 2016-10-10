@@ -56,11 +56,9 @@ coverageOfCTSS.character <- function(ctss, ctssCutoff){
 
 		# Concatenate
 		x <- rbind(x, y)
-		#z <- rbind(x, y)
 
 		# Calculate Coverage
 		x <- x[, .(score=sum(score)), by = c("seqnames", "start", "end", "strand")]
-		#z <- z[, .(score=sum(score)), by = c("seqnames", "start", "end", "strand")]
 
 		pbCounter <- pbCounter + 1
 		setTxtProgressBar(pb, pbCounter)

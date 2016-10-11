@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' # ADD_EXAMPLES_HERE
-#' @import data.table
+#' @import S4Vectors IRanges GenomicRanges data.table
 #' @export
 coverageOfCTSS <- function(ctss, ctssCutoff=0) UseMethod("coverageOfCTSS")
 
@@ -31,9 +31,13 @@ coverageOfCTSS.GRangesList <- function(ctss, ctssCutoff=0){
 	d <- d[,.(score=sum(TPM)), by = c("seqnames", "start", "end", "strand")]
 
 	message("Building GRanges")
-	d <- GenomicRanges::makeGRangesFromDataFrame(df=d,
-																 keep.extra.columns=TRUE,
-																 starts.in.df.are.0based=FALSE)
+	# d <- GenomicRanges::makeGRangesFromDataFrame(df=d,
+	# 															 keep.extra.columns=TRUE,
+	# 															 starts.in.df.are.0based=FALSE)
+	d <- GRanges(seqnames=Rle(d$seqnames),
+							 ranges=IRanges(d$start, width=1),
+							 strand=Rle(d$strand),
+							 score=d$score)
 	# Return
 	d
 }
@@ -81,7 +85,12 @@ coverageOfCTSS.character <- function(ctss, ctssCutoff=0){
 
 	# To GRanges
 	message("Building GRanges")
-	makeGRangesFromDataFrame(df=x,
-													 keep.extra.columns=TRUE,
-													 starts.in.df.are.0based=TRUE )
+	# makeGRangesFromDataFrame(df=x,
+	# 												 keep.extra.columns=TRUE,
+	# 												 starts.in.df.are.0based=TRUE)
+	GRanges(seqnames=Rle(x$seqnames),
+							 ranges=IRanges(x$start+1, width=1),
+							 strand=Rle(x$strand),
+							 score=x$score)
+
 }

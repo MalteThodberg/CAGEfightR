@@ -51,13 +51,19 @@ importAsGRangesList.character <- function(ctss){
 
 	# Turn into GRanges
 	message("Building GRangesList")
-	d <- makeGRangesFromDataFrame(df=d,
-																	keep.extra.columns=TRUE,
-																	starts.in.df.are.0based=TRUE)
+	# d <- makeGRangesFromDataFrame(df=d,
+	# 																keep.extra.columns=TRUE,
+	# 																starts.in.df.are.0based=TRUE)
+	#
+	# # Run length encode scores
+	# score(d) <- Rle(score(d))
+	# d$sample <- Rle(d$sample)
 
-	# Run length encode scores
-	score(d) <- Rle(score(d))
-	d$sample <- Rle(d$sample)
+	d <- GRanges(seqnames=Rle(d$seqnames),
+							 ranges=IRanges(d$start+1, width=1),
+							 strand=Rle(d$strand),
+							 score=Rle(d$score),
+							 sample=Rle(d$sample))
 
 	# Split into GRangesList
 	d <- split(d, d$sample)

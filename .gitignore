@@ -3,4 +3,5 @@
 .RData
 .Ruserdata
 ctssFiles.rda
+snippet.R
 .DS_Store

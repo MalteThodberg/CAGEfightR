@@ -1,4 +1,15 @@
-# Simple Tag clustering
+#' Simple Tag Clustering
+#'
+#' Finds Tag Cluster (TCs) with a TPM above a certain threshold. Addtionally calculates the sum and peak position of the TCs.
+#'
+#' @param ctssCoverage GRanges: CTSS coverage.
+#' @param tpmCutoff numeric: Minium TPM coverage to be considered as TC.
+#' @param mergeDist integer: Merge TCs within this distance.
+#'
+#' @return GRanges with TPM sum as the score column, and TC peak as the thick column.
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @export
 simpleTagClustering <- function(ctssCoverage, tpmCutoff=0, mergeDist=20){
 	# Split coverage by strand
 	message("Calculating coverage by strand")

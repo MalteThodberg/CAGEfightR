@@ -1,11 +1,38 @@
+#' Quantify CTSS across features
+#'
+#' Counts the number of CTSS-tags in a set of features
+#'
+#' @param ctss GRangesList or character: CTSS data stores as a GRangesList or a vector of paths to CTSS-files.
+#' @param features GRanges: Ranges to be quantified.
+#' @param cores NULL or integer: If not NULL, use multiple cores to quantify features.
+#'
+#' @return matrix with rows as features and columns as samples.
+#'
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @import S4Vectors IRanges GenomicRanges
+#' @export
 quantifyFeatures <- function(ctss, features, cores) UseMethod("quantifyFeatures")
 
-# Default method
+#' @describeIn quantifyFeatures default method (Always throws an error)
+#' @export
 quantifyFeatures.default <- function(ctss, features, cores){
 	stop("ctss must be either a character or GRangesList")
 }
 
-# Count overlaps with scores
+#' Internal function: countOverlaps with scores
+#'
+#' Similar to countOverlaps, but takes into account the scores column.
+#'
+#' @param gr GRanges: Ranges with scores.
+#' @param features GRanges: Ranges to be quantified.
+#'
+#' @return numeric vector of same length as features.
+#'
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @import S4Vectors IRanges GenomicRanges
+#' @export
 countScoredOverlaps <- function(gr, features){
 		# Solution from bioconductor by M Morgan
 		hits <- as(findOverlaps(query=features, subject=gr), "List")
@@ -15,7 +42,8 @@ countScoredOverlaps <- function(gr, features){
 		weightedCount
 }
 
-# High memory BED
+#' @describeIn quantifyFeatures high memory method
+#' @export
 quantifyFeatures.GRangesList <- function(ctss, features, cores=NULL){
 	# Get some basic info for printing
 	nFeatures <- length(features)
@@ -26,10 +54,10 @@ quantifyFeatures.GRangesList <- function(ctss, features, cores=NULL){
 
 	# Quantify each GRange in GRanges list
 	if(is.null(cores)){
-		x <- pblapply(ctss, countScoredOverlaps, features=features)
+		x <- pbapply::pblapply(ctss, countScoredOverlaps, features=features)
 	}else{
 		message(paste0("Using cores: ", cores))
-		x <- mclapply(ctss, countScoredOverlaps, features=features,
+		x <- parallel::mclapply(ctss, countScoredOverlaps, features=features,
 									mc.preschedule=TRUE, mc.cores=cores)
 	}
 
@@ -42,8 +70,14 @@ quantifyFeatures.GRangesList <- function(ctss, features, cores=NULL){
 	x
 }
 
-# High memory BED
-quantifyFeatures.character <- function(ctss, features){
+#' @describeIn quantifyFeatures low memory method
+#' @export
+quantifyFeatures.character <- function(ctss, features, cores=NULL){
+	# Multiple cores not allowed
+	if(!is.null(cores)){
+		stop("Low memory quantification does not currently support using multiple cores")
+	}
+
 	# Quantify each GRange in GRanges list
 	tmp_fun <- function(x, f){
 		# Load file
@@ -61,7 +95,7 @@ quantifyFeatures.character <- function(ctss, features){
 		d
 	}
 
-	x <- pblapply(ctss, tmp_fun, f=features)
+	x <- pbapply::pblapply(ctss, tmp_fun, f=features)
 
 	# Merge into matrix
 	x <- do.call(cbind, x)

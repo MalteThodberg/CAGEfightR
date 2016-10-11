@@ -54,6 +54,7 @@ assignTxType <- function(gr, txdb, tssUpstream=100, tssDownstream=100, proximalU
 #' @param gr GRanges: Ranges to annotated.
 #' @param txdb TxDb: Transcript database to use for annotation
 #' @param proximalUpstream integer: Maximum distance upstream of annotated promoter to be considered part of genes.
+#' @param proximalDownstream integer: Maximum distance downstream of annotated promoter to be considered part of genes.
 #' @param multiHits character: How to choose when multiple genes overlap.
 #' @return character vector of same length as gr containing Entrez transcript IDs for each range.
 #' @examples
@@ -93,6 +94,7 @@ assignTxID <- function(gr, txdb, proximalUpstream=1000, proximalDownstream=100, 
 #' @param gr GRanges: Ranges to annotated.
 #' @param txdb TxDb: Transcript database to use for annotation
 #' @param proximalUpstream integer: Maximum distance upstream of annotated promoter to be considered part of genes.
+#' @param proximalDownstream integer: Maximum distance downstream of annotated promoter to be considered part of genes.
 #' @param multiHits character: How to choose when multiple genes overlap.
 #' @return character vector of same length as gr containing Entrez gene IDs for each range.
 #' @examples
@@ -126,7 +128,6 @@ assignGeneID <- function(gr, txdb, proximalUpstream=1000, proximalDownstream=100
 	geneName
 }
 
-
 #' Collapse an Expression Matrix by summin over genes
 #'
 #' Summarise a transcript-level EM to a gene-level EM, i.e. for GO-term analysis.
@@ -139,6 +140,8 @@ assignGeneID <- function(gr, txdb, proximalUpstream=1000, proximalDownstream=100
 #' @return Expression matrix summed by genes.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @import data.table
+#' @export
 sumByGene <- function(em, genes, keepUnannotated=FALSE, prefix="Novel"){
 	# Build data.table
 	d <- data.table(gene=genes, em)

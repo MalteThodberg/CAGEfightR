@@ -1,12 +1,26 @@
-# Generic for calculating TPM
+#' Calculate CTSS coverage
+#'
+#' Calculates TPM-coverage for a series of CTSS-files.
+#'
+#' @param ctss GRangesList or character: CTSS data stores as a GRangesList or a vector of paths to CTSS-files.
+#' @param ctssCutoff integer: Trim away positions with this or less CAGE-tags.
+#'
+#' @return GRanges with bp-wise TPM-coverage.
+#'
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @import data.table
+#' @export
 coverageOfCTSS <- function(ctss, ctssCutoff=0) UseMethod("coverageOfCTSS")
 
-# Default method
+#' @describeIn coverageOfCTSS default method (always throws an error)
+#' @export
 coverageOfCTSS.default <- function(ctss, ctssCutoff=0){
 	stop("ctss must be either a character or GRangesList")
 }
 
-# High memory version for bed
+#' @describeIn coverageOfCTSS High memory method
+#' @export
 coverageOfCTSS.GRangesList <- function(ctss, ctssCutoff=0){
 	message("Filtering CTSS & Calculating TPM")
 	d <- as.data.table(ctss)
@@ -17,20 +31,21 @@ coverageOfCTSS.GRangesList <- function(ctss, ctssCutoff=0){
 	d <- d[,.(score=sum(TPM)), by = c("seqnames", "start", "end", "strand")]
 
 	message("Building GRanges")
-	d <- makeGRangesFromDataFrame(df=d,
+	d <- GenomicRanges::makeGRangesFromDataFrame(df=d,
 																 keep.extra.columns=TRUE,
 																 starts.in.df.are.0based=FALSE)
 	# Return
 	d
 }
 
-# Low memory version for BED
-coverageOfCTSS.character <- function(ctss, ctssCutoff){
+#' @describeIn coverageOfCTSS Low memory method
+#' @export
+coverageOfCTSS.character <- function(ctss, ctssCutoff=0){
 	# Setup progress bar
 	message("Reading files")
-	pb <- txtProgressBar(min=0, max=length(ctss), style=3)
+	pb <- utils::txtProgressBar(min=0, max=length(ctss), style=3)
 	pbCounter <- 0
-	setTxtProgressBar(pb, pbCounter)
+	utils::setTxtProgressBar(pb, pbCounter)
 
 	# Read first file
 	x <- fastReadBED(ctss[1])
@@ -42,7 +57,7 @@ coverageOfCTSS.character <- function(ctss, ctssCutoff){
 	x[, score := score / (sum(score)/1e6)]
 
 	pbCounter <- pbCounter + 1
-	setTxtProgressBar(pb, pbCounter)
+	utils::setTxtProgressBar(pb, pbCounter)
 
 	for(i in ctss[-1]){
 		# Read first file
@@ -61,7 +76,7 @@ coverageOfCTSS.character <- function(ctss, ctssCutoff){
 		x <- x[, .(score=sum(score)), by = c("seqnames", "start", "end", "strand")]
 
 		pbCounter <- pbCounter + 1
-		setTxtProgressBar(pb, pbCounter)
+		utils::setTxtProgressBar(pb, pbCounter)
 }
 
 	# To GRanges

@@ -5,7 +5,7 @@
 \title{Annotate GRanges with transcript type}
 \usage{
 assignTxType(gr, txdb, tssUpstream = 100, tssDownstream = 100,
-  proximalUpstream = 1000, rangeColumn = NULL)
+  proximalUpstream = 1000)
 }
 \arguments{
 \item{gr}{GRanges: Ranges to annotated.}
@@ -17,8 +17,6 @@ assignTxType(gr, txdb, tssUpstream = 100, tssDownstream = 100,
 \item{tssDownstream}{integer: Distance to extend annotated promoter downstream.}
 
 \item{proximalUpstream}{integer: Maximum distance upstream of promoter to be considered proximal.}
-
-\item{rangeColumn}{character: Name of column in gr with an alternative set of ranges (For example Tag Cluster (TC) peaks)}
 }
 \value{
 character vector of same length as gr containing TxType for each range.

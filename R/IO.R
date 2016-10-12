@@ -50,7 +50,7 @@ importAsGRangesList.character <- function(ctss, cores=NULL){
 	}else{
 		message(paste0("Using cores: ", cores))
 		d <- parallel::mclapply(ctss, fastReadBED,
-											 mc.preschedule=TRUE, mc.cores=cores)
+											 mc.preschedule=FALSE, mc.cores=cores)
 	}
 
 	# Concatenate

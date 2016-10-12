@@ -58,7 +58,7 @@ quantifyFeatures.GRangesList <- function(ctss, features, cores=NULL){
 	}else{
 		message(paste0("Using cores: ", cores))
 		x <- parallel::mclapply(ctss, countScoredOverlaps, features=features,
-									mc.preschedule=TRUE, mc.cores=cores)
+									mc.preschedule=FALSE, mc.cores=cores)
 	}
 
 	# Merge into matrix

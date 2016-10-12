@@ -1,4 +1,4 @@
-#' Quickly read simple BED-file
+#' Internal function: Quickly read simple BED-file
 #'
 #' Uses fread from data.table to quickly reading a simple bed file. Only scores are kept, any names are discarded
 #'
@@ -7,6 +7,7 @@
 #' @return data.table
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @export
 fastReadBED <- function(fname){
 	# TO DO:
 	# Handle compressed files by calling gunzip.
@@ -26,24 +27,31 @@ fastReadBED <- function(fname){
 #' Import a series of files containing CTSS data into a GRangesList. The file extensions are used to determine how the file is loaded, currently supportet is .bed, .bedGraph and .bw.
 #'
 #' @param ctss character: Vector of paths to CTSS-files.
+#' @param cores integer: Number of cores to use on import.
 #'
 #' @return GRangesList of the same length as ctss, containing CTSS scores for each file.
 #' @import S4Vectors IRanges GenomicRanges
 #' @export
-importAsGRangesList <- function(ctss) UseMethod("importAsGRangesList")
+importAsGRangesList <- function(ctss, cores=NULL) UseMethod("importAsGRangesList")
 
 #' @describeIn importAsGRangesList Default method (always throws an error)
 #' @export
-importAsGRangesList.default <- function(ctss){
+importAsGRangesList.default <- function(ctss, cores=NULL){
 	stop("Supported classes: character, BigWigList or BAM")
 }
 
 #' @describeIn importAsGRangesList Character method
 #' @export
-importAsGRangesList.character <- function(ctss){
+importAsGRangesList.character <- function(ctss, cores=NULL){
 	# Import as data.table
 	message("Reading CTSS-BED files")
-	d <- pbapply::pblapply(ctss, fastReadBED)
+	if(is.null(cores)){
+		d <- pbapply::pblapply(ctss, fastReadBED)
+	}else{
+		message(paste0("Using cores: ", cores))
+		d <- parallel::mclapply(ctss, fastReadBED,
+											 mc.preschedule=TRUE, mc.cores=cores)
+	}
 
 	# Concatenate
 	message("Concatenating")

@@ -6,14 +6,16 @@
 \alias{importAsGRangesList.default}
 \title{Import CTSS data into a GRangesList}
 \usage{
-importAsGRangesList(ctss)
+importAsGRangesList(ctss, cores = NULL)
 
-\method{importAsGRangesList}{default}(ctss)
+\method{importAsGRangesList}{default}(ctss, cores = NULL)
 
-\method{importAsGRangesList}{character}(ctss)
+\method{importAsGRangesList}{character}(ctss, cores = NULL)
 }
 \arguments{
 \item{ctss}{character: Vector of paths to CTSS-files.}
+
+\item{cores}{integer: Number of cores to use on import.}
 }
 \value{
 GRangesList of the same length as ctss, containing CTSS scores for each file.

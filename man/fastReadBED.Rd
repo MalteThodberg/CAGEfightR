@@ -2,7 +2,7 @@
 % Please edit documentation in R/IO.R
 \name{fastReadBED}
 \alias{fastReadBED}
-\title{Quickly read simple BED-file}
+\title{Internal function: Quickly read simple BED-file}
 \usage{
 fastReadBED(fname)
 }

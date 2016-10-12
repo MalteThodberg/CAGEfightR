@@ -7,18 +7,20 @@
 \alias{coverageOfCTSS.default}
 \title{Calculate CTSS coverage}
 \usage{
-coverageOfCTSS(ctss, ctssCutoff = 0)
+coverageOfCTSS(ctss, ctssCutoff = 0, cores = NULL)
 
-\method{coverageOfCTSS}{default}(ctss, ctssCutoff = 0)
+\method{coverageOfCTSS}{default}(ctss, ctssCutoff = 0, cores = NULL)
 
-\method{coverageOfCTSS}{GRangesList}(ctss, ctssCutoff = 0)
+\method{coverageOfCTSS}{GRangesList}(ctss, ctssCutoff = 0, cores = NULL)
 
-\method{coverageOfCTSS}{character}(ctss, ctssCutoff = 0)
+\method{coverageOfCTSS}{character}(ctss, ctssCutoff = 0, cores = NULL)
 }
 \arguments{
 \item{ctss}{GRangesList or character: CTSS data stores as a GRangesList or a vector of paths to CTSS-files.}
 
 \item{ctssCutoff}{integer: Trim away positions with this or less CAGE-tags.}
+
+\item{cores}{integer: Number of cores to use for calculations.}
 }
 \value{
 GRanges with bp-wise TPM-coverage.

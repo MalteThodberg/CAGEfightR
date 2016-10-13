@@ -151,6 +151,7 @@ coverageOfCTSS.character <- function(ctss, ctssCutoff=0, cores=NULL){
 												 mc.preschedule=FALSE, mc.cores=cores)
 
 		# Merge results
+		message("Merging chunks")
 		d <- Reduce(mergeCoverage, d)
 	}
 

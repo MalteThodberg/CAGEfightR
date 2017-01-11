@@ -2,7 +2,7 @@
 % Please edit documentation in R/annotation.R
 \name{sumByGene}
 \alias{sumByGene}
-\title{Collapse an Expression Matrix by summin over genes}
+\title{Collapse an Expression Matrix by summing over genes}
 \usage{
 sumByGene(em, genes, keepUnannotated = FALSE, prefix = "Novel")
 }
@@ -13,7 +13,7 @@ sumByGene(em, genes, keepUnannotated = FALSE, prefix = "Novel")
 
 \item{keepUnannotated}{logical: Whether to discard (FALSE) or keep (TRUE) un annotated transcripts.}
 
-\item{prefix}{character: If keepUnannotated is TRUE, this prefix is added to all unannotated transcripts along with counter.}
+\item{prefix}{character: If keepUnannotated is TRUE, this prefix is added to all unannotated transcripts along with a counter.}
 }
 \value{
 Expression matrix summed by genes.

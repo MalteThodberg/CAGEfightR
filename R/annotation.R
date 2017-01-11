@@ -128,42 +128,80 @@ assignGeneID <- function(gr, txdb, proximalUpstream=1000, proximalDownstream=100
 	geneName
 }
 
-#' Collapse an Expression Matrix by summin over genes
+#' Collapse an Expression Matrix by summing over genes
 #'
 #' Summarise a transcript-level EM to a gene-level EM, i.e. for GO-term analysis.
 #'
 #' @param em matrix: Expression matrix.
 #' @param genes factor or character: Vector of gene names to group by.
 #' @param keepUnannotated logical: Whether to discard (FALSE) or keep (TRUE) un annotated transcripts.
-#' @param prefix character: If keepUnannotated is TRUE, this prefix is added to all unannotated transcripts along with counter.
+#' @param prefix character: If keepUnannotated is TRUE, this prefix is added to all unannotated transcripts along with a counter.
 #'
 #' @return Expression matrix summed by genes.
 #' @examples
 #' # ADD_EXAMPLES_HERE
-#' @import data.table
 #' @export
 sumByGene <- function(em, genes, keepUnannotated=FALSE, prefix="Novel"){
-	# Build data.table
-	d <- data.table(gene=genes, em)
+	# Check that input is matrix and factor
+	stopifnot(is.matrix(em))
+	stopifnot(is.character(genes))
 
-	# Either remove or relabel NAs
-	if(keepUnannotated==FALSE){
-		d <- d[!is.na(gene)]
-	}else if(keepUnannotated==TRUE){
-		d[,gene := ifelse(is.na(gene),
-											paste0(prefix, seq_len(sum(is.na(gene)))),
-											gene)]
+	# Relabel unannotated if they should be kept
+	nNovel <- sum(is.na(genes))
+
+	if(keepUnannotated){
+		message(paste0("Relabelling ", nNovel, " unannotated features..."))
+		genes <- ifelse(is.na(genes), paste0(prefix, seq_len(sum(is.na(genes)))), genes)
+	}else{
+		message(paste0("Discarding ", nNovel, " unannotated features..."))
 	}
 
-	# Sum by gene
-	d <- d[, lapply(.SD, sum), by="gene"]
+	# Sum by gene (this automatically skips NAs)
+	o <- by(data=em, INDICES=factor(genes), FUN=colSums)
 
-	# Data.table to matrix
-	rowgene <- d$gene
-	d[,gene := NULL]
-	m <- as.matrix(d)
-	rownames(m) <- rowgene
+	# Coerce back to matrix
+	o <- do.call(rbind, o)
 
 	# Return
-	m
+	o
 }
+
+# #' Collapse an Expression Matrix by summin over genes
+# #'
+# #' Summarise a transcript-level EM to a gene-level EM, i.e. for GO-term analysis.
+# #'
+# #' @param em matrix: Expression matrix.
+# #' @param genes factor or character: Vector of gene names to group by.
+# #' @param keepUnannotated logical: Whether to discard (FALSE) or keep (TRUE) un annotated transcripts.
+# #' @param prefix character: If keepUnannotated is TRUE, this prefix is added to all unannotated transcripts along with counter.
+# #'
+# #' @return Expression matrix summed by genes.
+# #' @examples
+# #' # ADD_EXAMPLES_HERE
+# #' @import data.table
+# #' @export
+# sumByGene <- function(em, genes, keepUnannotated=FALSE, prefix="Novel"){
+# 	# Build data.table
+# 	d <- data.table(gene=genes, em)
+#
+# 	# Either remove or relabel NAs
+# 	if(keepUnannotated==FALSE){
+# 		d <- d[!is.na(gene)]
+# 	}else if(keepUnannotated==TRUE){
+# 		d[,gene := ifelse(is.na(gene),
+# 											paste0(prefix, seq_len(sum(is.na(gene)))),
+# 											gene)]
+# 	}
+#
+# 	# Sum by gene
+# 	d <- d[, lapply(.SD, sum), by="gene"]
+#
+# 	# Data.table to matrix
+# 	rowgene <- d$gene
+# 	d[,gene := NULL]
+# 	m <- as.matrix(d)
+# 	rownames(m) <- rowgene
+#
+# 	# Return
+# 	m
+# }

@@ -24,3 +24,9 @@ Summarize a transcript-level EM to a gene-level EM,  i.e. for GO-term analysis. 
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Annotation functions: \code{\link{assignGeneID}},
+  \code{\link{assignTxID}}, \code{\link{assignTxType}},
+  \code{\link{relabelUnannotated}},
+  \code{\link{simplifyTxTypes}}
+}

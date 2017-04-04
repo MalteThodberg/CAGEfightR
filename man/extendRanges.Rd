@@ -22,6 +22,11 @@ Extends the ranges of GRanges upstream and/or downstream, while retaining associ
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Helper functions: \code{\link{TPM}},
+  \code{\link{resolvedOverlaps}},
+  \code{\link{splitByStrand}}, \code{\link{swapRanges}}
+}
 \author{
 Hervé Pagès
 }

@@ -8,6 +8,7 @@
 #' @return GRanges with swapped ranges. Old ranges are in the column "swap"
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Helper functions
 #' @import S4Vectors IRanges GenomicRanges
 #' @export
 swapRanges <- function(gr, column="thick"){
@@ -41,6 +42,7 @@ swapRanges <- function(gr, column="thick"){
 #' @examples
 #' # ADD_EXAMPLES_HERE
 #' @author Hervé Pagès
+#' @family Helper functions
 #' @import S4Vectors IRanges GenomicRanges
 #' @export
 extendRanges <- function(gr, upstream=0, downstream=0){
@@ -72,6 +74,7 @@ extendRanges <- function(gr, upstream=0, downstream=0){
 #' @return Similar to findOverlaps with select="first", "last" or "arbitrary".
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Helper functions
 #' @import S4Vectors IRanges GenomicRanges
 #' @export
 resolvedOverlaps <- function(query, subject, select, ...){

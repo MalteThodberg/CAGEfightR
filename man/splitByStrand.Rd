@@ -19,5 +19,7 @@ Split a GRanges into a GRangesList by strand.
 # ADD_EXAMPLES_HERE
 }
 \seealso{
-Other Helper functions: \code{\link{TPM}}
+Other Helper functions: \code{\link{TPM}},
+  \code{\link{extendRanges}},
+  \code{\link{resolvedOverlaps}}, \code{\link{swapRanges}}
 }

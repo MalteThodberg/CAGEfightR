@@ -151,6 +151,7 @@ countClusters <- function(thresholds, cv, mergeDist=20){
 #' @return data.frame with two columns: threshold and nTCs (number of Tag Clusters)
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Tag-clustering functions
 #' @import S4Vectors IRanges GenomicRanges BiocParallel
 #' @export
 tuneTagClustering <- function(ctssCoverage, stepSize=1, mergeDist=20, biocParallel=bpparam()){

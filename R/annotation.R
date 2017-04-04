@@ -12,6 +12,7 @@
 #' @return character vector of same length as gr containing TxType for each range.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Annotation functions
 #' @import S4Vectors IRanges GenomicRanges GenomicFeatures
 #' @export
 assignTxType <- function(gr, txdb, tssUpstream=100, tssDownstream=100, proximalUpstream=1000, asFactor=FALSE){
@@ -66,6 +67,7 @@ assignTxType <- function(gr, txdb, tssUpstream=100, tssDownstream=100, proximalU
 #' @return factor with simplified txTypes
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Annotation functions
 #' @export
 simplifyTxTypes <- function(txTypes, scheme="genic"){
 	stopifnot(is.factor(txTypes))
@@ -103,6 +105,7 @@ simplifyTxTypes <- function(txTypes, scheme="genic"){
 #' @return character vector of the same length as geneID
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Annotation functions
 #' @export
 relabelUnannotated <- function(geneIDs, prefix="Novel"){
 	stopifnot(is.character(geneIDs))
@@ -131,6 +134,7 @@ relabelUnannotated <- function(geneIDs, prefix="Novel"){
 #' @return character vector of same length as gr containing transcript names.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Annotation functions
 #' @import S4Vectors IRanges GenomicRanges GenomicFeatures
 #' @export
 assignTxID <- function(gr, txdb, upstream=1000, downstream=100){
@@ -183,6 +187,7 @@ assignTxID <- function(gr, txdb, upstream=1000, downstream=100){
 #' @return character vector of same length as gr containing a single gene ID for each range.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Annotation functions
 #' @import S4Vectors IRanges GenomicRanges GenomicFeatures
 #' @export
 assignGeneID <- function(gr, txdb, upstream=1000, downstream=0, resolveRule="shortest"){
@@ -219,6 +224,7 @@ assignGeneID <- function(gr, txdb, upstream=1000, downstream=0, resolveRule="sho
 #' @return RangedSummarizedExperiment with inputAssay summed over genes and rowRanges as a GRangesList. If calcStats=TRUE, rowData contains gene-wise statistics. colData and metaData are unchanged from the original RangedSummarizedExperiment.
 #' @examples
 #' # ADD_EXAMPLES_HERE
+#' @family Annotation functions
 #' @import S4Vectors IRanges GenomicRanges SummarizedExperiment
 #' @export
 sumOverGenes <- function(RSE, inputAssay, geneID, calcStats=TRUE){

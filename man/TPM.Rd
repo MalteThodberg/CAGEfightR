@@ -19,5 +19,7 @@ Calculate Tags-Per-Million (TPM) for a numeric vector.
 # ADD_EXAMPLES_HERE
 }
 \seealso{
-Other Helper functions: \code{\link{splitByStrand}}
+Other Helper functions: \code{\link{extendRanges}},
+  \code{\link{resolvedOverlaps}},
+  \code{\link{splitByStrand}}, \code{\link{swapRanges}}
 }

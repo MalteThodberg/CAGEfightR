@@ -25,3 +25,7 @@ This function counts the number of Tag Clusters (TCs) for an exponentially incre
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Tag-clustering functions: \code{\link{simpleTagClustering}},
+  \code{\link{tagClustering}}
+}

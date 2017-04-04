@@ -20,3 +20,9 @@ Simplify annotation of transcript types (txTypes).
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Annotation functions: \code{\link{assignGeneID}},
+  \code{\link{assignTxID}}, \code{\link{assignTxType}},
+  \code{\link{relabelUnannotated}},
+  \code{\link{sumOverGenes}}
+}

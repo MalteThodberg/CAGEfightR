@@ -29,3 +29,9 @@ Annotate a set of ranges in a GRanges object with transcript type (TxType) based
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Annotation functions: \code{\link{assignGeneID}},
+  \code{\link{assignTxID}},
+  \code{\link{relabelUnannotated}},
+  \code{\link{simplifyTxTypes}}, \code{\link{sumOverGenes}}
+}

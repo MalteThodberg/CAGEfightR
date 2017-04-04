@@ -23,5 +23,6 @@ Finds Tag Cluster (TCs) with a TPM above a certain threshold. Addtionally calcul
 # ADD_EXAMPLES_HERE
 }
 \seealso{
-Other Tag-clustering functions: \code{\link{tagClustering}}
+Other Tag-clustering functions: \code{\link{tagClustering}},
+  \code{\link{tuneTagClustering}}
 }

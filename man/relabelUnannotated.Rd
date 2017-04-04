@@ -20,3 +20,8 @@ Relabels unannotated genes, i.e. as "Novel1". Usesful when testing for Alternati
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Annotation functions: \code{\link{assignGeneID}},
+  \code{\link{assignTxID}}, \code{\link{assignTxType}},
+  \code{\link{simplifyTxTypes}}, \code{\link{sumOverGenes}}
+}

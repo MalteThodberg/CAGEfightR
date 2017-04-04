@@ -27,3 +27,9 @@ Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Ide
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Annotation functions: \code{\link{assignTxID}},
+  \code{\link{assignTxType}},
+  \code{\link{relabelUnannotated}},
+  \code{\link{simplifyTxTypes}}, \code{\link{sumOverGenes}}
+}

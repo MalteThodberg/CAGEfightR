@@ -24,3 +24,8 @@ Similar to findOverlaps, but provides to additional methods for resolving the ca
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Helper functions: \code{\link{TPM}},
+  \code{\link{extendRanges}}, \code{\link{splitByStrand}},
+  \code{\link{swapRanges}}
+}

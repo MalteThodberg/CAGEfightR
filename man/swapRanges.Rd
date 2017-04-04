@@ -20,3 +20,9 @@ Swap out the range of a GRanges-object with another IRanges-object stored inside
 \examples{
 # ADD_EXAMPLES_HERE
 }
+\seealso{
+Other Helper functions: \code{\link{TPM}},
+  \code{\link{extendRanges}},
+  \code{\link{resolvedOverlaps}},
+  \code{\link{splitByStrand}}
+}

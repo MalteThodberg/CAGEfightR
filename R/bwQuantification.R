@@ -14,7 +14,7 @@
 #' @export
 countScoredOverlaps <- function(gr, features){
 	# Solution from bioconductor by M Morgan
-	hits <- as(findOverlaps(query=features, subject=gr), "List")
+	hits <- methods::as(findOverlaps(query=features, subject=gr), "List")
 	weightedCount <- sum(extractList(score(gr), hits))
 
 	# Return

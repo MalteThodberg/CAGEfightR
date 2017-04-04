@@ -2,7 +2,7 @@
 % Please edit documentation in R/ranges.R
 \name{swapRanges}
 \alias{swapRanges}
-\title{Swap ranges}
+\title{Swap ranges in a GRanges.}
 \usage{
 swapRanges(gr, column = "thick")
 }
@@ -20,4 +20,3 @@ Swap out the range of a GRanges-object with another IRanges-object stored inside
 \examples{
 # ADD_EXAMPLES_HERE
 }
-

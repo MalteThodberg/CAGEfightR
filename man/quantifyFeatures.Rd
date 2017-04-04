@@ -25,4 +25,3 @@ Counts the number of CTSS-tags in a set of features
 \seealso{
 Other Quantification functions: \code{\link{countScoredOverlaps}}
 }
-

@@ -35,4 +35,3 @@ Other IO functions: \code{\link{checkBigWigGenomes}},
   \code{\link{fastReadBigWig}},
   \code{\link{uniqueBigWigGenomes}}
 }
-

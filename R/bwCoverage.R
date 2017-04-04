@@ -34,8 +34,9 @@ splitByStrand <- function(gr){
 #' Function that trims away weakly expressed CTSSs by discarding based on CTSS counts and/or TPM-values, before performing a final TPM-calculation.
 #'
 #' @param gr GRanges: GRanges holding CTSS counts in the score column.
-#' @param preFilterCTSS Integer: Minimum count for retained CTSSs.
-#' @param preFilterTPM Numeric: Minimum TPM-value for retained CTSSs.
+#' @param preFilterPositions GRanges: Ranges to discard from calculations.
+#' @param preFilterCTSS integer: Minimum count for retained CTSSs.
+#' @param preFilterTPM numeric: Minimum TPM-value for retained CTSSs.
 #'
 #' @note The order of trimming is: Optional trimming on CTSS counts, optional trimming of TPM-values, final calculation of TPM.
 #'
@@ -45,8 +46,13 @@ splitByStrand <- function(gr){
 #' @family Coverage functions
 #' @import GenomicRanges
 #' @export
-trimAndNormalizeGR <- function(gr, preFilterCTSS=NULL, preFilterTPM=NULL){
-	# Filter on CTSS
+trimAndNormalizeGR <- function(gr, preFilterPositions=NULL, preFilterCTSS=NULL, preFilterTPM=NULL){
+	# Filter on positions
+	if(!is.null(preFilterCTSS)){
+		gr <- subset(gr, !overlapsAny(preFilterPositions))
+	}
+
+	# Filter on TSS
 	if(!is.null(preFilterCTSS)){
 		gr <- subset(gr, score >= preFilterCTSS)
 	}
@@ -80,7 +86,10 @@ trimAndNormalizeGR <- function(gr, preFilterCTSS=NULL, preFilterTPM=NULL){
 #' @export
 coverageOfCTSS <- function(grl, normalizationFunction=trimAndNormalizeGR, biocParallel=bpparam(), ...){
 	# Checks
-	# Should check if an apply loop produces only GRanges
+	grl_classes <- unique(vapply(grl, class, character(1)))
+	grl_seqinfos <- unique(lapply(grl, seqinfo))
+	stopifnot(length(grl_classes) == 1,
+						length(grl_seqinfos) == 1)
 
 	if(is.null(normalizationFunction)){
 		message("Assuming CTSS is already preprocessed...")
@@ -93,12 +102,12 @@ coverageOfCTSS <- function(grl, normalizationFunction=trimAndNormalizeGR, biocPa
 	}
 
 	# Flatten and split by strand
-	message("Splitting...")
+	message("Splitting by strand...")
 	grs <- splitByStrand(unlist(grl))
 	rm(grl)
 
 	# Plus cov
-	message("Coverage...")
+	message("Calculating coverage...")
 	plus <- coverage(grs$`+`, weight="score")
 	minus <- coverage(grs$`-`, weight="score")
 	rm(grs)
@@ -110,6 +119,55 @@ coverageOfCTSS <- function(grl, normalizationFunction=trimAndNormalizeGR, biocPa
 
 	# Subset out zero ranges
 	o <- subset(o, score > 0)
+
+	# Copy over seqinfo
+	seqinfo(o) <- grl_seqinfos[[1]]
+
+	# Return
+	o
+}
+
+#' Calculate global CTSS support.
+#'
+#' Given a series of GRanges calculates the support of each basepair as the number of samples with non-zero counts.
+#'
+#' @param grl GRangesList or SimpleList: GRanges with CTSSs in the score column.
+#'
+#' @return GRanges with global support as the score-column.
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @family Coverage functions
+#' @import S4Vectors IRanges GenomicRanges
+#' @export
+supportOfCTSS <- function(grl){
+	# Checks
+	grl_classes <- unique(vapply(grl, class, character(1)))
+	grl_seqinfos <- unique(lapply(grl, seqinfo))
+	stopifnot(length(grl_classes) == 1,
+						length(grl_seqinfos) == 1)
+
+	# Flatten and split by strand
+	message("Splitting by strand...")
+	grs <- splitByStrand(unlist(grl))
+	rm(grl)
+
+	# Plus cov
+	message("Calculating support...")
+	plus <- coverage(grs$`+`)
+	minus <- coverage(grs$`-`)
+	rm(grs)
+
+	# Merge as GR
+	message("Output...")
+	o <- c(GRanges(plus, strand="+"),
+				 GRanges(minus, strand="-"))
+	rm(plus, minus)
+
+	# Subset out zero ranges
+	o <- subset(o, score > 0)
+
+	# Copy over seqinfo
+	seqinfo(o) <- grl_seqinfos[[1]]
 
 	# Return
 	o

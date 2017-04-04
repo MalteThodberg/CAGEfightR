@@ -22,4 +22,3 @@ Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed befor
 Other Shape functions: \code{\link{InterQuartileRange}},
   \code{\link{calculateShape}}
 }
-

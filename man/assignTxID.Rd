@@ -4,27 +4,23 @@
 \alias{assignTxID}
 \title{Annotate GRanges with transcript ID}
 \usage{
-assignTxID(gr, txdb, proximalUpstream = 1000, proximalDownstream = 100,
-  multiHits = "arbitrary")
+assignTxID(gr, txdb, upstream = 1000, downstream = 100)
 }
 \arguments{
 \item{gr}{GRanges: Ranges to annotated.}
 
 \item{txdb}{TxDb: Transcript database to use for annotation}
 
-\item{proximalUpstream}{integer: Maximum distance upstream of annotated promoter to be considered part of genes.}
+\item{upstream}{integer: Maximum distance upstream of annotated TSS to be considered part of genes.}
 
-\item{proximalDownstream}{integer: Maximum distance downstream of annotated promoter to be considered part of genes.}
-
-\item{multiHits}{character: How to choose when multiple genes overlap.}
+\item{downstream}{integer: Maximum distance downstream of annotated TSS to be considered part of genes.}
 }
 \value{
-character vector of same length as gr containing Entrez transcript IDs for each range.
+character vector of same length as gr containing transcript names.
 }
 \description{
-Annotate a set of ranges in a GRanges object with Entrez Transcript Identifier (ID) based on their genic context. Genes are obtained from a TxDb object.
+Annotate a set of ranges in a GRanges object with Transcript Identifier (TxID) based on their genic context. Transcripts are obtained from a TxDb object.
 }
 \examples{
 # ADD_EXAMPLES_HERE
 }
-

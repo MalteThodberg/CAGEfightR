@@ -4,14 +4,17 @@
 \alias{trimAndNormalizeGR}
 \title{Basic preprocessing of CTSS-files.}
 \usage{
-trimAndNormalizeGR(gr, preFilterCTSS = NULL, preFilterTPM = NULL)
+trimAndNormalizeGR(gr, preFilterPositions = NULL, preFilterCTSS = NULL,
+  preFilterTPM = NULL)
 }
 \arguments{
 \item{gr}{GRanges: GRanges holding CTSS counts in the score column.}
 
-\item{preFilterCTSS}{Integer: Minimum count for retained CTSSs.}
+\item{preFilterPositions}{GRanges: Ranges to discard from calculations.}
 
-\item{preFilterTPM}{Numeric: Minimum TPM-value for retained CTSSs.}
+\item{preFilterCTSS}{integer: Minimum count for retained CTSSs.}
+
+\item{preFilterTPM}{numeric: Minimum TPM-value for retained CTSSs.}
 }
 \value{
 GRanges with TPM-values in the score column.
@@ -26,6 +29,6 @@ The order of trimming is: Optional trimming on CTSS counts, optional trimming of
 # ADD_EXAMPLES_HERE
 }
 \seealso{
-Other Coverage functions: \code{\link{coverageOfCTSS}}
+Other Coverage functions: \code{\link{coverageOfCTSS}},
+  \code{\link{supportOfCTSS}}
 }
-

@@ -25,4 +25,3 @@ Other IO functions: \code{\link{checkBigWigGenomes}},
   \code{\link{commonBigWigGenome}},
   \code{\link{fastReadBigWig}}, \code{\link{readCTSS}}
 }
-

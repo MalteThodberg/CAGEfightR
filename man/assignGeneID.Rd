@@ -4,27 +4,26 @@
 \alias{assignGeneID}
 \title{Annotate GRanges with gene ID}
 \usage{
-assignGeneID(gr, txdb, proximalUpstream = 1000, proximalDownstream = 100,
-  multiHits = "arbitrary")
+assignGeneID(gr, txdb, upstream = 1000, downstream = 0,
+  resolveRule = "shortest")
 }
 \arguments{
 \item{gr}{GRanges: Ranges to annotated.}
 
-\item{txdb}{TxDb: Transcript database to use for annotation}
+\item{txdb}{TxDb: Transcript database to use for annotation.}
 
-\item{proximalUpstream}{integer: Maximum distance upstream of annotated promoter to be considered part of genes.}
+\item{upstream}{integer: Region upstream of gene to be considered part of the gene.}
 
-\item{proximalDownstream}{integer: Maximum distance downstream of annotated promoter to be considered part of genes.}
+\item{downstream}{integer: Region downstream of gene to be considered part of the gene.}
 
-\item{multiHits}{character: How to choose when multiple genes overlap.}
+\item{resolveRule}{character: How to resolve multiple overlaps: "first", "last", "arbitrary", "shortest" or "longest".}
 }
 \value{
-character vector of same length as gr containing Entrez gene IDs for each range.
+character vector of same length as gr containing a single gene ID for each range.
 }
 \description{
-Annotate a set of ranges in a GRanges object with Entrez Gene Identifier (ID) based on their genic context. Genes are obtained from a TxDb object.
+Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Genes are obtained from a TxDb object.
 }
 \examples{
 # ADD_EXAMPLES_HERE
 }
-

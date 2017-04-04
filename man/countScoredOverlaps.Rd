@@ -23,4 +23,3 @@ Similar to countOverlaps, but takes into account the scores column.
 \seealso{
 Other Quantification functions: \code{\link{quantifyFeatures}}
 }
-

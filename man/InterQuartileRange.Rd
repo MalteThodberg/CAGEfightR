@@ -26,4 +26,3 @@ Calculates the interquartile range of a vector.
 Other Shape functions: \code{\link{ShannonEntropy}},
   \code{\link{calculateShape}}
 }
-

@@ -26,6 +26,6 @@ Given a series of GRanges, preprocesses and normalizes the CTSS-counts before ca
 # ADD_EXAMPLES_HERE
 }
 \seealso{
-Other Coverage functions: \code{\link{trimAndNormalizeGR}}
+Other Coverage functions: \code{\link{supportOfCTSS}},
+  \code{\link{trimAndNormalizeGR}}
 }
-

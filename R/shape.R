@@ -86,8 +86,8 @@ calculateShape <- function(ctssCoverage, TCs, shapeFunction, ...){
 
 	# Views
 	message("Applying function to each TC...")
-	views_plus <- Views(coverage_plus, as(TCsByStrand$`+`, "RangesList"))
-	views_minus <- Views(coverage_minus, as(TCsByStrand$`-`, "RangesList"))
+	views_plus <- Views(coverage_plus, methods::as(TCsByStrand$`+`, "RangesList"))
+	views_minus <- Views(coverage_minus, methods::as(TCsByStrand$`-`, "RangesList"))
 	rm(coverage_plus, coverage_minus)
 
 	# Applying functions to views

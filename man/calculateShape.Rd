@@ -28,4 +28,3 @@ Apply a shape-function to the global coverage of every TC.
 Other Shape functions: \code{\link{InterQuartileRange}},
   \code{\link{ShannonEntropy}}
 }
-

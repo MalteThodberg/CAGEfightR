@@ -21,4 +21,3 @@ Split a GRanges into a GRangesList by strand.
 \seealso{
 Other Helper functions: \code{\link{TPM}}
 }
-

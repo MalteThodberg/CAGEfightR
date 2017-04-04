@@ -27,4 +27,3 @@ Other IO functions: \code{\link{checkBigWigGenomes}},
   \code{\link{commonBigWigGenome}}, \code{\link{readCTSS}},
   \code{\link{uniqueBigWigGenomes}}
 }
-

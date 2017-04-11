@@ -175,7 +175,7 @@ readCTSS <- function(bwPlus, bwMinus, genome=NULL, outFormat="GRangesList", bioc
 
 	#Read into R
 	message("Reading in CTSS data from BigWig-files...")
-	o <- bpmapply(FUN=fastReadBigWig, bwPlus, bwPlus,
+	o <- bpmapply(FUN=fastReadBigWig, bwPlus, bwMinus,
 								MoreArgs=list(seqInfo=genome),
 								BPPARAM=biocParallel)
 

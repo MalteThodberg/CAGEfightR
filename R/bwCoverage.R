@@ -48,8 +48,8 @@ splitByStrand <- function(gr){
 #' @export
 trimAndNormalizeGR <- function(gr, preFilterPositions=NULL, preFilterCTSS=NULL, preFilterTPM=NULL){
 	# Filter on positions
-	if(!is.null(preFilterCTSS)){
-		gr <- subset(gr, !overlapsAny(preFilterPositions))
+	if(!is.null(preFilterPositions)){
+		gr <- subset(gr, !overlapsAny(gr, preFilterPositions))
 	}
 
 	# Filter on TSS

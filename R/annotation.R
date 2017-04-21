@@ -32,11 +32,14 @@ assignTxType <- function(gr, txdb, tssUpstream=100, tssDownstream=100, proximalU
 	CDSs <- cds(txdb)
 	Antis <- transcripts(txdb)
 	strand(Antis) <- ifelse(strand(Antis) == "+", "-", "+")
+	PROMPTs <- Promoters
+	strand(PROMPTs) <- ifelse(strand(PROMPTs) == "+", "-", "+")
 
 	# Overlap sequentially
 	message("Overlapping sequentially...")
 	featureType <- rep("intergenic", length(gr))
 	featureType <- ifelse(overlapsAny(query=gr, subject=Antis), "antisense", featureType)
+	featureType <- ifelse(overlapsAny(query=gr, subject=PROMPTs), "PROMPT", featureType)
 	featureType <- ifelse(overlapsAny(query=gr, subject=Introns), "intron", featureType)
 	featureType <- ifelse(overlapsAny(query=gr, subject=Exons), "exon", featureType)
 	featureType <- ifelse(overlapsAny(query=gr, subject=CDSs), "CDS", featureType)
@@ -50,7 +53,7 @@ assignTxType <- function(gr, txdb, tssUpstream=100, tssDownstream=100, proximalU
 													levels=c("intergenic",
 																	 "proximal", "promoter", "fiveUTR",
 																	 "CDS", "intron", "exon", "threeUTR",
-																	 "antisense"))
+																	 "PROMPT", "antisense"))
 	}
 
 	# Return
@@ -75,13 +78,13 @@ simplifyTxTypes <- function(txTypes, scheme="genic"){
 	if(scheme == "genic"){
 		levels(txTypes) <- list(intergenic=c("proximal", "intergenic"),
 													 intragenic=c("promoter", "fiveUTR", "CDS", "intron", "exon", "threeUTR"),
-													 antisense=c("antisense"))
+													 antisense=c("PROMPT", "antisense"))
 	}else if(scheme == "promoter proximity"){
 		levels(txTypes) <- list(promoter=c("promoter"),
 													 adjacent=c("proximal", "fiveUTR"),
 													 intragenic=c("CDS", "intron", "exon", "threeUTR"),
 													 intergenic=c("intergenic"),
-													 antisense=c("antisense"))
+													 antisense=c("PROMPT", "antisense"))
 	}else{
 		message("Using supplied conversion scheme...")
 		levels(txTypes) <- scheme

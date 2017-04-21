@@ -18,7 +18,8 @@ Imports:
     rtracklayer,
     GenomicFeatures,
     SummarizedExperiment,
-    BiocParallel
+    BiocParallel,
+    Gviz
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

@@ -8,16 +8,17 @@ Maintainer: <malte.thodberg@bio.ku.dk>
 Description: Includes functions for: Finding Tag Cluster (TCs), quantifying
     expression as an Expression Matrix (EM), annotating TCs using transcript models,
     finding Bidirectonal Clusters (BCs).
+Depends:
+    GenomicRanges,
+    SummarizedExperiment
 Imports:
 		methods,
     BiocGenerics,
     S4Vectors,
     IRanges,
-    GenomicRanges,
     GenomeInfoDb,
     rtracklayer,
     GenomicFeatures,
-    SummarizedExperiment,
     BiocParallel,
     Gviz
 License: GPL-3

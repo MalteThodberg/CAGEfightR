@@ -4,7 +4,7 @@
 \alias{tuneTagClustering}
 \title{Determine optimal expression threshold for Tag Clustering.}
 \usage{
-tuneTagClustering(ctssCoverage, stepSize = 1, mergeDist = 20,
+tuneTagClustering(ctssCoverage, stepSize = 10, mergeDist = 20,
   biocParallel = bpparam())
 }
 \arguments{

@@ -11,14 +11,15 @@
 #' @export
 ShannonEntropy <- function(x){
 	# To normal vector
-	x <- as.vector(x[x > 0])
+	#x <- as.vector(x[x > 0])
+	x <- as.vector(x)
 
 	# Scale by sum
 	x <- x / sum(x)
 
 	# Calculate entropy
-	#o <- -sum(ifelse(x > 0, x * log2(x), 0))
-	o <- -sum(x * log2(x))
+	o <- -sum(ifelse(x > 0, x * log2(x), 0))
+	#o <- -sum(x * log2(x))
 
 	# Return
 	o

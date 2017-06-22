@@ -7,13 +7,13 @@
 BC(plusUpstream, plusDownstream, minusUpstream, minusDownstream)
 }
 \arguments{
-\item{plusUpstream}{RleList or other: Sum of plus strand upstream (reference=0.0)}
+\item{plusUpstream}{RleList, Rle or other: Sum of plus strand upstream (reference=0.0)}
 
-\item{plusDownstream}{RleList or other: Sum of plus strand downstream (reference=0.5)}
+\item{plusDownstream}{RleList, Rle or other: Sum of plus strand downstream (reference=0.5)}
 
-\item{minusUpstream}{RleList or other: Sum of minus strand upstream (reference=0.0)}
+\item{minusUpstream}{RleList, Rle or other: Sum of minus strand upstream (reference=0.0)}
 
-\item{minusDownstream}{RleList or other: Sum of minus strand downstream (reference=0.5)}
+\item{minusDownstream}{RleList, Rle or other: Sum of minus strand downstream (reference=0.5)}
 }
 \value{
 Bhattacharyya coefficient

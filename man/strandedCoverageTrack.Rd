@@ -14,7 +14,7 @@ strandedCoverageTrack(gr, plusColor = "cornflowerblue",
 
 \item{minusColor}{character: Color for minus-strand coverage.}
 
-\item{...}{additional names passed on to DataTrack.}
+\item{...}{additional arguments passed on to DataTrack.}
 }
 \value{
 DataTrack-object.

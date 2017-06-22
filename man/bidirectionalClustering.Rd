@@ -5,12 +5,12 @@
 \title{Bidirectional clustering of genome-wide coverage}
 \usage{
 bidirectionalClustering(ctssCoverage, window = 199, balanceThreshold = 0.99,
-  balanceFun = BC, advancedStats = FALSE, ...)
+  balanceFun = BC, advancedStats = FALSE, biocParallel = bpparam(), ...)
 }
 \arguments{
 \item{ctssCoverage}{GRanges: CTSS coverage.}
 
-\item{window}{integer: Width of sliding window used for calculating sumes.}
+\item{window}{integer: Width of sliding window used for calculating sums.}
 
 \item{balanceThreshold}{numeric: Minimum balance score to be considered a bidirectional site.}
 
@@ -18,7 +18,9 @@ bidirectionalClustering(ctssCoverage, window = 199, balanceThreshold = 0.99,
 
 \item{advancedStats}{logical: Whether to return internal statistics for defining bidirectional sites.}
 
-\item{...}{additional arguments passed to balanceFun..}
+\item{biocParallel}{BiocParallelParam: Settings for parallel backend.}
+
+\item{...}{additional arguments passed to balanceFun.}
 }
 \value{
 GRanges with bidirectional sites: Minimum width is 1 + 2*window, TPM sum (on both strands) in the score column, and the maximal bidirectional site in the thick column. If advancedStats=TRUE, additional columns are added to the GRanges.

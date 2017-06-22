@@ -5,16 +5,18 @@
 \title{Tag Cluster Genome Browser Track}
 \usage{
 tagClusterTrack(gr, plusColor = "cornflowerblue", minusColor = "tomato",
-  ...)
+  unstrandedColor = "hotpink", ...)
 }
 \arguments{
 \item{gr}{GRanges: GRanges with peaks in the thick-column.}
 
-\item{plusColor}{character: Color for plus-strand coverage.}
+\item{plusColor}{character: Color for plus-strand features.}
 
-\item{minusColor}{character: Color for minus-strand coverage.}
+\item{minusColor}{character: Color for minus-strand features.}
 
-\item{...}{additional names passed on to GeneRegionTrack.}
+\item{unstrandedColor}{character: Color for unstranded features.}
+
+\item{...}{additional arguments passed on to GeneRegionTrack.}
 }
 \value{
 GeneRegionTrack-object.

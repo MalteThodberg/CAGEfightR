@@ -7,7 +7,7 @@
 InterQuartileRange(x, lower = 0.25, upper = 0.75)
 }
 \arguments{
-\item{x}{Numeric: values.}
+\item{x}{numeric Rle vector: Coverage series.}
 
 \item{lower}{numeric: Lower quartile.}
 
@@ -24,5 +24,5 @@ Calculates the interquartile range of a vector.
 }
 \seealso{
 Other Shape functions: \code{\link{ShannonEntropy}},
-  \code{\link{calculateShape}}
+  \code{\link{calculateShape}}, \code{\link{sumRounding}}
 }

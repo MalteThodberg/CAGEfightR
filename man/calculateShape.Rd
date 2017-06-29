@@ -26,5 +26,5 @@ Apply a shape-function to the global coverage of every TC.
 }
 \seealso{
 Other Shape functions: \code{\link{InterQuartileRange}},
-  \code{\link{ShannonEntropy}}
+  \code{\link{ShannonEntropy}}, \code{\link{sumRounding}}
 }

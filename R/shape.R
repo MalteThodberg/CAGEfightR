@@ -2,7 +2,7 @@
 #'
 #' Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed before calculation.
 #'
-#' @param x numeric vector.
+#' @param x numeric Rle vector: Coverage series.
 #'
 #' @return Numeric.
 #' @examples
@@ -29,7 +29,7 @@ ShannonEntropy <- function(x){
 #'
 #' Calculates the interquartile range of a vector.
 #'
-#' @param x Numeric: values.
+#' @param x numeric Rle vector: Coverage series.
 #' @param lower numeric: Lower quartile.
 #' @param upper numeric: Upper quartile.
 #'
@@ -54,6 +54,81 @@ InterQuartileRange <- function(x, lower=0.25, upper=0.75){
 
 	# Return difference
 	upperPos - lowerPos
+}
+
+#' Round Rle vector to integers while preserving sum
+#'
+#' Round an Rle vector, while preserving the sum of the vector as closely as possible. Slightly slower than runningRounding. Can be used with the HartigansDip function.
+#'
+#' @param x numeric Rle vector: Coverage series.
+#'
+#' @return Integer vector.
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @references \url{https://stackoverflow.com/a/32544987}
+#' @import S4Vectors
+#' @family Shape functions
+#' @export
+sumRounding <- function(x) {
+	x <- as.vector(x)
+	y <- floor(x)
+	indices <- tail(order(x-y), round(sum(x)) - sum(y))
+	y[indices] <- y[indices] + 1
+	y
+}
+
+#' Round Rle vector to integers while preserving running sum
+#'
+#' Round an Rle vector, while preserving the running sum. Slightly faster than sumRounding. Can be used with the HartigansDip function.
+#'
+#' @param x numeric Rle vector: Coverage series.
+#'
+#' @return Integer vector.
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @references \url{https://stackoverflow.com/a/36970695}
+#' @import S4Vectors
+#' @export
+runningRounding <- function(x) {
+	x <- as.vector(x)
+	diff(c(0, round(cumsum(x))))
+}
+
+#' Round Rle vector to integers
+#'
+#' Wrapper for round(). Can be used with the HartigansDip function.
+#'
+#' @param x numeric Rle vector.
+#'
+#' @return Integer vector.
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @import S4Vectors
+#' @export
+simpleRounding <- function(x){
+	round(as.vector(x))
+}
+
+#' Hartigans' dip statistics
+#'
+#' Calculates the Hartigans Dip Statistics for a vector, by first rounding values to integers. A dip statistics of 0 indicates a unimodal distribtuion and a dip statistics of 1 indicates a bi- or multimodal distribution.
+#'
+#' @param x numeric Rle vector: Coverage series.
+#' @param roundingFun function: Function for rounding an Rle vector.
+#'
+#' @return numeric.
+#' @examples
+#' # ADD_EXAMPLES_HERE
+#' @export
+HartigansDip <- function(x, roundingFun=runningRounding){
+	# Round
+	x <- roundingFun(x)
+
+	# Expand
+	x <-  rep(1:length(x), x )
+
+	# Dip
+	diptest::dip(x, full.result=FALSE, min.is.0=TRUE)
 }
 
 #' Calculate TC shape

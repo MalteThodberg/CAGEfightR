@@ -7,7 +7,7 @@
 ShannonEntropy(x)
 }
 \arguments{
-\item{x}{numeric vector.}
+\item{x}{numeric Rle vector: Coverage series.}
 }
 \value{
 Numeric.
@@ -20,5 +20,5 @@ Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed befor
 }
 \seealso{
 Other Shape functions: \code{\link{InterQuartileRange}},
-  \code{\link{calculateShape}}
+  \code{\link{calculateShape}}, \code{\link{sumRounding}}
 }

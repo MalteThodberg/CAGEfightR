@@ -80,7 +80,7 @@ quickCAGE <- function(bwPlus, bwMinus, design, genome=NULL, keepCoverage=FALSE, 
 	# Check if coverage should be kept in output
 	if(keepCoverage){
 		metadata(RSE)$globalCoverage <- global_cov
-		stopifnot(seqinfo(RSE) != seqinfo(global_cov))
+		stopifnot(identical(seqinfo(RSE), seqinfo(global_cov)))
 	}
 
 	### Post-checks

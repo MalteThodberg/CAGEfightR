@@ -4,25 +4,22 @@
 \alias{assignGeneID}
 \title{Annotate GRanges with gene ID}
 \usage{
-assignGeneID(gr, txdb, upstream = 1000, downstream = 0,
-  resolveRule = "shortest")
+assignGeneID(gr, txdb, upstream = 1000, downstream = 0)
 }
 \arguments{
-\item{gr}{GRanges: Ranges to annotated.}
+\item{gr}{GRanges: Features to annotate.}
 
 \item{txdb}{TxDb: Transcript database to use for annotation.}
 
 \item{upstream}{integer: Region upstream of gene to be considered part of the gene.}
 
 \item{downstream}{integer: Region downstream of gene to be considered part of the gene.}
-
-\item{resolveRule}{character: How to resolve multiple overlaps: "first", "last", "arbitrary", "shortest" or "longest".}
 }
 \value{
 character vector of same length as gr containing a single gene ID for each range.
 }
 \description{
-Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Genes are obtained from a TxDb object.
+Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Genes are obtained from a TxDb object. Features overlapping multiple genes are resolved by distance to the nearest gene start.
 }
 \examples{
 # ADD_EXAMPLES_HERE

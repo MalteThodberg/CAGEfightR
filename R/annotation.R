@@ -179,13 +179,12 @@ assignTxID <- function(gr, txdb, upstream=1000, downstream=100){
 
 #' Annotate GRanges with gene ID
 #'
-#' Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Genes are obtained from a TxDb object.
+#' Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Genes are obtained from a TxDb object. Features overlapping multiple genes are resolved by distance to the nearest gene start.
 #'
-#' @param gr GRanges: Ranges to annotated.
+#' @param gr GRanges: Features to annotate.
 #' @param txdb TxDb: Transcript database to use for annotation.
 #' @param upstream integer: Region upstream of gene to be considered part of the gene.
 #' @param downstream integer: Region downstream of gene to be considered part of the gene.
-#' @param resolveRule character: How to resolve multiple overlaps: "first", "last", "arbitrary", "shortest" or "longest".
 #'
 #' @return character vector of same length as gr containing a single gene ID for each range.
 #' @examples
@@ -193,26 +192,41 @@ assignTxID <- function(gr, txdb, upstream=1000, downstream=100){
 #' @family Annotation functions
 #' @import S4Vectors IRanges GenomicRanges GenomicFeatures
 #' @export
-assignGeneID <- function(gr, txdb, upstream=1000, downstream=0, resolveRule="shortest"){
-	# Extract and expand
+assignGeneID <- function(gr, txdb, upstream=1000, downstream=0){
+	# Prechecks
+	stopifnot(class(gr) == "GRanges",
+						class(txdb) == "TxDb",
+						upstream >= 0,
+						downstream >= 0)
+
+	# Extract gene models
 	message("Extracting genes...")
 	Genes <- genes(txdb)
-	Genes <- extendRanges(Genes, upstream=upstream, downstream=downstream)
-	Genes <- trim(Genes)
 
-	# Overlap
+	# Expand genes and define TSSs
+	Proximal <- trim(extendRanges(Genes, upstream=upstream, downstream=downstream))
+	TSS <- resize(Genes, width=1, fix="start")
+
+	# Find overlaps and calculate distance to TSSs
 	message("Overlapping...")
-	o <- resolvedOverlaps(query=gr, subject=Genes, select=resolveRule)
+	hits <- methods::as(findOverlaps(gr, Proximal), "Hits")
+	mcols(hits)$distance <- distance(gr[from(hits)], TSS[to(hits)])
 
-	# Translate to gene names
-	o <- ifelse(is.na(o), NA, names(Genes)[o])
+	# Resolve by distance to nearest TSS
+	hits <- hits[order(from(hits), mcols(hits)$distance)]
+	hits <- breakTies(hits, method="last")
 
-	# Check
-	stopifnot(length(o) == length(gr),
-						is.character(o))
+	# Extract ids
+	hits <- methods::as(hits, "List")
+	hits <- extractList(names(Genes), hits)
+	hits <- as.character(hits)
+	stopifnot(length(hits) == length(gr))
 
 	# Return
-	o
+	message("Overlap Summary:")
+	message("Features overlapping genes: ", round(mean(!is.na(hits)) * 100, digits=2), " %")
+	message("Number of unique genes: ", length(unique(hits)))
+	hits
 }
 
 #' Collapse Expression Matrix and Ranges by summing over genes
@@ -270,6 +284,44 @@ sumOverGenes <- function(RSE, inputAssay, geneID, calcStats=TRUE){
 
 ### LEGACY VERSIONS
 
+#' #' Annotate GRanges with gene ID
+#' #'
+#' #' Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Genes are obtained from a TxDb object.
+#' #'
+#' #' @param gr GRanges: Ranges to annotated.
+#' #' @param txdb TxDb: Transcript database to use for annotation.
+#' #' @param upstream integer: Region upstream of gene to be considered part of the gene.
+#' #' @param downstream integer: Region downstream of gene to be considered part of the gene.
+#' #' @param resolveRule character: How to resolve multiple overlaps: "first", "last", "arbitrary", "shortest" or "longest".
+#' #'
+#' #' @return character vector of same length as gr containing a single gene ID for each range.
+#' #' @examples
+#' #' # ADD_EXAMPLES_HERE
+#' #' @family Annotation functions
+#' #' @import S4Vectors IRanges GenomicRanges GenomicFeatures
+#' #' @export
+#' assignGeneID <- function(gr, txdb, upstream=1000, downstream=0, resolveRule="shortest"){
+#' 	# Extract and expand
+#' 	message("Extracting genes...")
+#' 	Genes <- genes(txdb)
+#' 	Genes <- extendRanges(Genes, upstream=upstream, downstream=downstream)
+#' 	Genes <- trim(Genes)
+#'
+#' 	# Overlap
+#' 	message("Overlapping...")
+#' 	o <- resolvedOverlaps(query=gr, subject=Genes, select=resolveRule)
+#'
+#' 	# Translate to gene names
+#' 	o <- ifelse(is.na(o), NA, names(Genes)[o])
+#'
+#' 	# Check
+#' 	stopifnot(length(o) == length(gr),
+#' 						is.character(o))
+#'
+#' 	# Return
+#' 	o
+#' }
+#'
 #' #' Annotate GRanges with gene ID
 #' #'
 #' #' Annotate a set of ranges in a GRanges object with Entrez Gene Identifier (ID) based on their genic context. Genes are obtained from a TxDb object.

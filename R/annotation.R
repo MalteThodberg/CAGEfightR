@@ -261,10 +261,14 @@ sumOverGenes <- function(RSE, inputAssay, geneID, calcStats=TRUE){
 
 	# Discard NA and check names match
 	new_m <- new_m[!is.na(rownames(new_m)),]
-	stopifnot(rownames(new_m) == names(new_gr))
-
+	
+	# Check that names match
+	stopifnot(setequal(rownames(new_m), names(new_gr)))
+	if(!all(rownames(new_m) == names(new_gr))){
+		new_m <- new_m[names(new_gr),]
+	}
+	
 	# Reassemble
-
 	o <- SummarizedExperiment(assays=list(new_m),
 														rowRanges=new_gr,
 														colData=colData(RSE),

@@ -214,7 +214,7 @@ assignGeneID <- function(gr, txdb, upstream=1000, downstream=0){
 
 	# Resolve by distance to nearest TSS
 	hits <- hits[order(from(hits), mcols(hits)$distance)]
-	hits <- breakTies(hits, method="last")
+	hits <- breakTies(hits, method="first")
 
 	# Extract ids
 	hits <- methods::as(hits, "List")
@@ -261,13 +261,13 @@ sumOverGenes <- function(RSE, inputAssay, geneID, calcStats=TRUE){
 
 	# Discard NA and check names match
 	new_m <- new_m[!is.na(rownames(new_m)),]
-	
+
 	# Check that names match
 	stopifnot(setequal(rownames(new_m), names(new_gr)))
 	if(!all(rownames(new_m) == names(new_gr))){
 		new_m <- new_m[names(new_gr),]
 	}
-	
+
 	# Reassemble
 	o <- SummarizedExperiment(assays=list(new_m),
 														rowRanges=new_gr,

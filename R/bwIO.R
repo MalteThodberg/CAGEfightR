@@ -143,6 +143,10 @@ fastReadBigWig <- function(fnamePlus, fnameMinus, seqInfo=NULL){
 #' @import S4Vectors IRanges GenomicRanges GenomeInfoDb rtracklayer
 #' @export
 readCTSS <- function(bwPlus, bwMinus, genome=NULL, outFormat="GRangesList", biocParallel=bpparam(), ...){
+	### Prechecks
+	stopifnot(class(bwPlus) == "BigWigFileList",
+						class(bwPlus) == class(bwMinus))
+
 	# Check genome if not provided
 	if(is.null(genome)){
 		# Check if all files have the same genome

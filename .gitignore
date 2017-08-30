@@ -7,3 +7,4 @@ snippet.R
 snippet1.R
 .DS_Store
 flowchart.mmd
+inst/doc

@@ -213,8 +213,10 @@ assignGeneID <- function(gr, txdb, upstream=1000, downstream=0){
 	mcols(hits)$distance <- distance(gr[from(hits)], TSS[to(hits)])
 
 	# Resolve by distance to nearest TSS
-	hits <- hits[order(from(hits), mcols(hits)$distance)]
-	hits <- breakTies(hits, method="first")
+	#hits <- hits[order(from(hits), mcols(hits)$distance)]
+	#hits <- breakTies(hits, method="first")
+
+	hits <- hits[which.min(splitAsList(mcols(hits)$distance, queryHits(hits)), global=TRUE)]
 
 	# Extract ids
 	hits <- methods::as(hits, "List")

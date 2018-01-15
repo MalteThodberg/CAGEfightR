@@ -118,7 +118,9 @@ fastReadBigWig <- function(fnamePlus, fnameMinus, seqInfo=NULL){
 	if(!is.null(seqInfo)){
 		# Call error if genomes can't me merged with filename in question!
 		chr_map <- match(seqlevels(seqInfo), seqlevels(gr))
-		seqinfo(gr, new2old=chr_map, force=TRUE) <- seqInfo
+		#seqinfo(gr, new2old=chr_map, force=TRUE) <- seqInfo # Doesn't work afer update
+		seqinfo(gr, new2old=chr_map, pruning.mode="coarse") <- seqInfo # Doesn't work afer update
+
 	}
 
 	# Seqinfo

@@ -2,7 +2,7 @@ Package: CAGEfightR
 Type: Package
 Title: Analysis of Cap Analysis of Gene Expression (CAGE) data using
     Bioconductor
-Version: 0.2.0
+Version: 0.3.0
 Author: Malte Thodberg
 Maintainer: <malte.thodberg@bio.ku.dk>
 Description: Includes functions for: Finding Tag Cluster (TCs), quantifying

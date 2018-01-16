@@ -10,24 +10,30 @@ Description: Includes functions for: Finding Tag Cluster (TCs), quantifying
     finding Bidirectonal Clusters (BCs).
 Depends:
     R (>= 2.10),
-    GenomicRanges,
-    rtracklayer,
-    SummarizedExperiment
+    GenomicRanges (>= 1.30.1),
+    rtracklayer (>= 1.38.2),
+    SummarizedExperiment (>= 1.8.1)
 Imports:
+		pryr(>= 0.1.3),
+		assertthat(>= 0.2.0),
 		methods,
-    BiocGenerics,
-    S4Vectors,
-    IRanges,
-    GenomeInfoDb,
-    GenomicFeatures,
+		Matrix(>= 1.2-12),
+		Matrix.utils(>= 0.9.6),
+    BiocGenerics(>= 0.24.0),
+    S4Vectors(>= 0.16.0),
+    IRanges(>= 2.12.0),
+    GenomeInfoDb(>= 1.14.0),
+    GenomicFeatures(>= 1.30.0),
     TxDb.Mmusculus.UCSC.mm9.knownGene,
-    BiocParallel,
-    Gviz,
-    diptest,
+    org.Mm.eg.db,
+    BiocParallel(>= 1.12.0),
+    GenomicFiles(>= 1.14.0),
+    Gviz(>= 1.22.2)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    BiocStyle
 VignetteBuilder: knitr

@@ -1,0 +1,646 @@
+---
+title: "Introduction to CAGEfightR"
+author: Malte Thodberg
+package: CAGEfightR
+abstract: >
+  CAGEfightR is an R/Bioconductor for analyzing Cap Analysis of Gene Expression Data, including identification and quantification of both TSSs and enhancers, detailed annotation using transcript models, quantification of gene expression and visualizing it all in a genome browser.
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Introduction to CAGEfightR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Installation
+
+Install the most recent stable version from Bioconductor:
+
+```{r bioconductor, eval=FALSE}
+source("https://bioconductor.org/biocLite.R")
+biocLite("CAGEfightR")
+```
+
+And load `CAGEfightR`:
+
+```{r library, results='hide', message=FALSE}
+library(CAGEfightR)
+```
+
+Alternatetively, you can install the development version directly from GitHub using `devtools`:
+
+```{r github, eval=FALSE}
+devtools::install_github("MalteThodberg/CAGEfightR")
+```
+
+# Citation
+
+If you use CAGEfightR, please cite the following article:
+
+```{r citation}
+citation("CAGEfightR")
+```
+
+# Quick start for the impatient
+
+A CAGEfightR anaysis usually starts with loading CAGE Transcript Start Sites from BigWig-files (one for each strand):
+
+```{r BigWig_files, results="hide", tidy=TRUE}
+# Load the example data
+data("exampleDesign")
+head(exampleDesign)
+
+# Locate files on your harddrive
+bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEtestR")
+bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEtestR")
+
+# Create two named BigWigFileList-objects:
+bw_plus <- BigWigFileList(bw_plus)
+bw_minus <- BigWigFileList(bw_minus)
+names(bw_plus) <- exampleDesign$Name
+names(bw_minus) <- exampleDesign$Name
+```
+
+The first step is to quantify CTSSs across all samples using `quantifyCTSSs`, which will return the results a `RangedSummarizedExperiment`:
+
+```{r quickCTSSs, tidy=TRUE}
+# Get genome information
+genomeInfo <- SeqinfoForBSGenome("mm9")
+
+# Quantify CTSSs
+CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign, genome=genomeInfo)
+```
+
+The wrapper function `quickTSSs` will automatically find and quantify TSSs, returning the results as a `RangedSummarizedExperiment`:
+
+```{r quickTSSs, tidy=TRUE}
+TSSs <- quickTSSs(CTSSs)
+```
+
+Similarly, `quickEnhancers` will find and quantify enhancers:
+
+```{r quickEnhancers, tidy=TRUE}
+enhancers <- quickEnhancers(CTSSs)
+```
+
+We can then use transcript models stored in a `TxDb`-object to annotate each TSSs and enhancer with their transcript context:
+
+```{r quickAnnotate, tidy=TRUE}
+# Use the built in annotation for mm9
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+
+# Annotate both TSSs and enhancers
+TSSs <- assignTxType(TSSs, txModels=txdb)
+enhancers <- assignTxType(enhancers, txModels=txdb)
+```
+
+Usually, enhancers overlapping known transcripts are removed:
+
+```{r quickFilter, tidy=TRUE}
+enhancers <- subset(enhancers, txType %in% c("intergenic", "intron"))
+```
+
+For usage with other Bioconductor package, it can be useful to merge TSSs and enhancers into a single object:
+
+```{r quickCombine, tidy=TRUE}
+# Add an identifier column
+rowRanges(TSSs)$clusterType <- "TSS"
+rowRanges(enhancers)$clusterType <- "enhancer"
+
+# Combine TSSs and enhancers, discarding TSSs if they overlap enhancers
+RSE <- combineClusters(TSSs, enhancers, removeIfOverlapping="object1")
+```
+
+Finally, for use with packages for calling differential expression (DESeq2, edgeR, limma, etc.) very lowly expressed features are removed:
+
+```{r quickSupport, tidy=TRUE}
+# Only keep features with more than 0 counts in more than 1 sample:
+RSE <- subsetBySupport(RSE, inputAssay = "counts", outputColumn = "support", unexpressed = 0, minSamples = 1)
+```
+
+# Background and theory
+
+## Introduction to CAGE
+
+Some background biology...
+
+## Central S4-classes
+
+There are two key S4-classes to understand when using CAGEfightR:
+
+The GRanges class: Genomic locations or ranges are stored as `GRanges`-objects from the `r Biocpkg("GenomicRanges")` package. `GRanges` contain chromosome (`seqnames`), start (`start`) and end (`end`) positions of ranges, along with chromosome lengths (`seqinfo`). An important additional features is added information for each range via metadata columns (`mcols`). These can be anything almost anything, as long as they can be put into a `DataFrame`. Some metadata columns have special meanings: the score column (accesible via the `score` function) and thick column, as these column can be exported to a standard BED-format file via the `export` function from the `r Biocpkg("rtracklayer")` package. An important variant of the `GRanges` class is the `GPos` class, which store single basepair width ranges. In almost all cases it works exactly like a `GRanges`, but is much more memory efficient.
+
+The RangedSummarizedExperiment: ...
+
+## Overview of functions
+
+# Detailed Introduction
+
+The following section contains a detailed walkthrough of most of the functions in `CAGEfightR`, using the built-in dataset. To keep this vignette compact, the example dataset is extremely small - for a more realistic analysis of a full CAGE dataset using using both `CAGEfightR` and additional packages, see the accompanying workflows _XXX_.
+
+## CAGE Transcription Start Site (CTSS) level analysis
+
+As shown in the introduction, the first step of a `CAGEfightR` analysis is import CTSSs from BigWig-files with the `quantifyCTSSs` function. Rather then repeating this, we use the built-in `exampleCTSSs` object:
+
+```{r exampleCTSSs, tidy=TRUE}
+data(exampleCTSSs)
+exampleCTSSs
+```
+
+This is a somewhat special `RangedSummarizedExperiment`: Firstly, The assay is not a normal `matrix`, but rather a _sparse matrix_ (`dgCMatrix` from the `r CRANpkg("Matrix")` package). Since CAGE data is inherintly sparse (vast majority sites in the genome have no counts), storing CTSSs as a sparse allows for much faster and memory efficient processing of data:
+
+```{r dgCMatrix, tidy=TRUE}
+head(assay(exampleCTSSs))
+```
+
+Secondly, the ranges are stored as `GPos` rather than a `GRanges`: This allows for very memory efficient storage of the millions of single basepair positions with CTSSs.
+
+```{r GPos, tidy=TRUE}
+rowRanges(exampleCTSSs)
+```
+
+### Calculating pooled CTSSs
+
+For clustering CTSSs, we first want to calculate the the overall CTSSs signal across all samples, called _pooled_ CTSSs. However, since the different samples have different library sizes, CTSS counts must first be normalized. The simplest way of doing this is to use Tags-Per-Million (TPM, not to be confused with Transcripts-Per-Million or TxPM used in RNA-Seq):
+
+```{r calc, tidy=TRUE}
+exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM")
+```
+
+`calcTPM` will first calculate the total number of tags for each sample and store them in colData and then scale counts into TPM and add them as a new assay:
+
+```{r libSizes, tidy=TRUE}
+# Library sizes
+colData(exampleCTSSs)
+
+# TPM values
+head(assay(exampleCTSSs, "TPM"))
+```
+
+As this is just a subset of the original dataset, we instead use the total number tags from the the complete dataset, by specifying the name of the column in colData (Note that a warning is passed that we are overwritting the previous TPM assay):
+
+```{r preCalcTPM, tidy=TRUE}
+exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", totalTags="totalTags", outputAssay="TPM")
+head(assay(exampleCTSSs, "TPM"))
+```
+
+Then `calcPooled` will sum TPM across sample for each CTSS and store it in the score-column:
+
+```{r pooled, tidy=TRUE}
+# Library sizes
+exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+rowRanges(exampleCTSSs)
+```
+
+### Calculating CTSS support to remove excess noise
+
+In some cases you might have a very large number and/or very noisy samples (For example due to poor RNA quality), which can lead to an increase in the number of single tags spread across the genome. To alleviate this issue, CTSSd appearing in only a single or few samples can be discarded. We refer to this as calculating the _support_: the number of samples expressing a feature above some threshold:
+
+```{r support, tidy=TRUE}
+# Count number of samples with MORE ( > ) than 0 counts:
+exampleCTSSs <- calcSupport(exampleCTSSs, inputAssay="counts", outputColumn="support", unexpressed=0)
+table(rowRanges(exampleCTSSs)$support)
+```
+
+The majority of CTSSs are only expressed in a single sample. We can discard these sites using `subset`, and then recalculate TPM values:
+
+```{r subset, tidy=TRUE}
+supportedCTSSs <- subset(exampleCTSSs, support > 1)
+supportedCTSSs <- calcTPM(supportedCTSSs, totalTags="totalTags")
+supportedCTSSs <- calcPooled(supportedCTSSs)
+```
+Note, `CAGEfightR` warned that it was overwritting columns: Another option would be to save the output as new columns. The `subsetBySupport` function wraps the common task of calling `calcSupport` and `subset`.
+
+### Unidirectional clustering: Finding Tag Cluster (TCs) or Transcription Start Sites (TSSs)
+
+Once we have obtained pooled CTSSs, we can identify various types clusters: Transcripts are rarely transcribed from just a single CTSS, but rather from a collection or cluster of nearby CTSSs corresponding to a single TSS.
+
+The simplest way of doing this is to group nearby CTSSs on the same strand into Tag Clusters (TCs), which are likely to represent real TSSs (although some post-filtering is usually a good idea, see next section). `CAGEfightR` does this by a slice-reduce approach: It finds sites above some value (slice) and then merges nearby sites (reduce). In the simplest form this can be run as:
+
+```{r naiveTC, tidy=TRUE}
+naive_TCs <- clusterUnidirectionally(exampleCTSSs, pooledCutoff=0, mergeDist=20)
+```
+
+`clusterUnidirectionally` find TCs and outputs some summary statistics. We see that we have some very wide TCs (> 1000 bp wide). This is the result of a few spread out tags that link several major TCs, so does represent the TSS structure very well.As explained in the `CAGEfightR` paper, this can be avoided by _tuning_ the cutoff used for slicing: The smallest value for cutoff value producing the largest number of TCs is chosen:
+
+```{r tuning, tidy=TRUE}
+tuned <- tuneTagClustering(exampleCTSSs, mergeDist=20)
+tuned
+```
+
+Increasing the slice-cutoff by a very small amount greatly increases the number of TCs, by preventing merging of major TSSs by weakly expressed CTSSs. We can then use this tuned cutff value to identify tag cluster
+
+```{r tagClustering, tidy=TRUE}
+optimalCutoff <- tuned[which.max(tuned$nTCs),1]
+TCs <- clusterUnidirectionally(exampleCTSSs, pooledCutoff=optimalCutoff, mergeDist=20)
+```
+
+Note, we no longer have any very long TCs (For a real dataset it's not uncommon to have a just few very long TCs left). Let's take a closer look at what's returned:
+
+```{r TCanatomy, tidy=TRUE}
+TCs
+```
+The `GRanges` includes the chromosome, start and end positions of each TCs, as well as two other key values: The TC peak in the thick column: This the single position within the TC with the highest pooled TPM, and the sum of pooled TPM within the TC in the score column. In case you want to save TCs to a bed file, you can use the `export` function from the `r Biocpkg("rtracklayer")` package.
+
+### Bidirectional clustering: Finding Enhancers
+
+CAGE is a unique technology in that it allows for the robust identification of enhancers by transcription of enhancer RNAs (eRNAs). Active enhancers produce weak but consistent bidirectional transcription of capped eRNAs, resulting in a characteristic CTSS pattern of two diverging peaks approximally 400 basepairs apart.
+
+CAGEfightR can identify this pattern by calculating a balance score ranging from 0 to 1, where 1 corresponds to perfectly divergent site (Technically, the balance score is the _Bhattacharyya coefficient_ measuring agreement with the "ideal" divergent site, see the `CAGEfightR` paper). Again, a slice-reduce approach can be use to identify invidividual enhancers based on the balance scores. We refer to this approach as _bidirectional clustering_ as opposed to the conventional _unidirectonal cluster_ used to identify TSSs: and hence the name of the cluster functions: `clusterBidirectionally` and `clusterUnidirectionally`:
+
+```{r bidirectionalClustering, tidy=TRUE}
+enhancers <- clusterBidirectionally(exampleCTSSs, balanceThreshold=0.95)
+```
+
+Let's look closer at the returned `GRanges`:
+
+```{r enhancerAnatomy, tidy=TRUE}
+enhancers
+```
+
+The `GRanges` includes the chromosome start end positions of each enhancer (enhancers are unstranded), as well as two other key values: the score column holds the sum of pooled CTSSs of the enhancer (on both strands) and the enhancer midpoint in the thick column: This is the maximally balanced site in the enhancers. Again, the `export` function from the `r Biocpkg("rtracklayer")` package can be used to export enhancers to a BED-file.
+
+As balance here is solely defined on the pooled CTSSs, a useful filter is to make sure the bidirectional site is also bidirectional in at least a single sample. Similarly to how we calculated support, we can calculate the sample-wise _bidirectionality_ of enhancers:
+
+```{r bidirectionality, tidy=TRUE}
+# Calculate number of bidirectional samples
+enhancers <- calcBidirectionality(enhancers, samples=exampleCTSSs)
+
+# Summarize
+table(enhancers$bidirectionality)
+```
+
+Many enhancers are not observed to be bidirectional in one or more samples. We can remove these using `subset` (The `subsetBySupport` function wraps the common task of calling `calcBidirectionality` and `subset`):
+
+```{r subsetBidirectionality, tidy=TRUE}
+enhancers <- subset(enhancers, bidirectionality > 0)
+```
+
+This bidirectional clustering approach identifies _any_ bidirectional site in the genome. This means that for example bidirectional promoters will also detected (given that they are sufficiently balanced). To remove these cases, annotation with transcript models can be used to remove bidirectional cluster overlapping known promoters and exons. This is described in the next section.
+
+## Cluster level analysis
+
+Once interesting clusters (unidirectional TSSs and bidirectional enhancers) have been identified, they have to be quantified, annotated with transcript models. We show this functionality using the built-in example data:
+
+```{r exampleClusters, tidy=TRUE}
+# Load the example datasets
+data(exampleCTSSs)
+data(exampleUnidirectional)
+data(exampleBidirectional)
+```
+
+### Quantifying expression at cluster level
+
+To look at differential expression, we must quantify the expression of each TSS in each sample (in almost all cases you want to quantify the raw CTSS count). This can be done using the `quantifyClusters` function (The example datasets have already been quantified, so here we will requantify the ranges):
+
+```{r quantifyClusters, tidy=TRUE}
+requantified_TSSs <- quantifyClusters(exampleCTSSs, clusters=rowRanges(exampleUnidirectional), inputAssay="counts")
+requantified_enhancers <- quantifyClusters(exampleCTSSs, clusters=rowRanges(exampleBidirectional), inputAssay="counts")
+```
+
+This returns a RangedSummarizedExperiment with clusters in rowRanges and an expression matrix in assays.
+
+### Removing weakly expressed clusters
+
+We often wish to remove weakly expressed features. Similarly to CTSSs, a simple approach is to remove cluster based on counts using the `subsetBySupport` function:
+
+```{r supportOnCounts, tidy=TRUE}
+# Only keep enhancers expressed in more than one sample
+supported_enhancers <- subsetBySupport(exampleBidirectional, inputAssay="counts", unexpressed=0, minSamples=1)
+```
+
+Similarly, we can also first calculate TPM values for clusters, and then filter on TPM values:
+```{r supportOnTPM, tidy=TRUE}
+# Calculate TPM
+exampleUnidirectional <- calcTPM(exampleUnidirectional, totalTags = "totalTags")
+
+# Only TSSs expressed at more than 1 TPM in more than 2 samples
+exampleUnidirectional <- subsetBySupport(exampleUnidirectional, inputAssay="TPM", unexpressed=1, minSamples=2)
+```
+
+### Annotation with transcript models
+
+While CAGE can identify TSSs and enhancers completely independent of annotation, it is often useful to compare these to existing annotations. Bioconductor stores transcript models using the `TxDb` class from the `r Biocpkg("GenomicFeatures")` package. There are multiple ways to obtain a `TxDb` object:
+
+- Use the `TxDb` included as Bioconductor packages (**INSERT LINK**): For this vignette we use the `r Biocpkg("TxDb.Mmusculus.UCSC.mm9.knownGene")` package
+- Import a GTF or GFF3 file using the `makeTxDbFromGFF` function from `r Biocpkg("GenomicFeatures")`.
+- Use the `r Biocpkg("AnnotationHub")` package to directly download `TxDb` objects for a wide range of organisms
+- Use `makeTxDbFromBiomart`,  `makeTxDbFromUCSC` or `makeTxDbFromEnsembl` from from `r Biocpkg("GenomicFeatures")` to create `TxDb` objects from various online sources.
+
+In case you really do not want to use a `TxDb` object, all annotation functions in `CAGEfightR` also accepts `GRanges` or `GRangesList` as input.
+
+```{r txdb, tidy=TRUE}
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+txdb
+```
+
+First, we might simply inquire as to what transcripts overlaps our clusters, which is done via the `assignTxID` function:
+
+```{r assignTxID, tidy=TRUE}
+exampleUnidirectional <- assignTxID(exampleUnidirectional, txModels=txdb, outputColumn="txID")
+```
+
+Note, that a single TSS can overlap multiple transcripts (names are separated with a `;`):
+
+```{r multipleTxs, tidy=TRUE}
+rowRanges(exampleUnidirectional)[5:6]
+```
+
+In many cases, we are not so much interested in what specific transcripts a cluster overlaps, but rather _where_ in a transcript a cluster lies - for example whether it is located at the annotated TSSs, in the 5'-UTR or in the CDS region. However, due to overlapping transcripts, these categories might overlap, for example a region might be an exon in one transcripts, but skipped in another due to alternative splicing. To get around this, `CAGEfightR` implements a hierachical annotation scheme (See the `CAGEfightR` paper for a detailed description), implemented in the `assignTxType` function:
+
+```{r assignTxType, tidy=TRUE}
+exampleUnidirectional <- assignTxType(exampleUnidirectional, txModels=txdb, outputColumn="txTyp")
+```
+
+The function returns a small summary of the annotation: At the top of the hierachy we have overlap with annotated promoter (+/- 100 basepairs from the annotated TSSs, with this distance being changeable by the user.), followed by proximal (- 1000 upstrema of the annotated TSS). Coding transcripts can be annotated as 5'-UTR, 3-'UTR, CDS and intron, while non-conding transcripts are simply annotated as exon or intron. At the bottom of the hierachy, clusters overlapping genes on the opposite strand are annotated as antisense. Finally, in case a cluster does not overlap any transcript, it is annotated as intergenic.
+
+Highly expressed TSSs can be quite wide, and overlap many different categories. It can be useful to only annotate the TSSs peak rather than the the entire TSSs to obtain more representative annotations:
+
+```{r swappedTxType, tidy=TRUE}
+exampleUnidirectional <- assignTxType(exampleUnidirectional, txModels=txdb, outputColumn="peakTxType", swap="thick")
+```
+
+Annotation with transcript models are particular useful for enhancers, since bidirectional cluster might in some cases be very balanced bidirectional promoters. We can remove enhancers overlapping known transcripts:
+
+```{r enhancerTxType, tidy=TRUE}
+# Annotate with TxTypes
+exampleBidirectional <- assignTxType(exampleBidirectional, txModels=txdb, outputColumn="txType")
+
+# Only keep intronic and intergenic enhancers
+exampleBidirectional <- subset(exampleBidirectional, txType %in% c("intron", "intergenic"))
+```
+
+Of course, this way of filtering relies on having accurate transcript models!
+
+### Quantifying shape of TSSs
+
+We have already looked at two characteristics of TSSs in addition their genomic location: the expression level (score column) and TSSs peak (thick column). One can further describe TSSs beyond these two measures. For example, it was found that mammalian TSSs can be divided into "sharp" or "broad" TSSs, by comparing the Interquartile Range (IQR). We refer to such a measure as a _shape statistic_ and `CAGEfightR` includes a few built-in functions for shape statistics (IQR, entropy and multimodality) as well as an easy framework for implementing your own.
+
+Let's see how this works by calculating the IQR for TSSs. First, we need to calculate pooled CTSS:
+```{r calcIQR, tidy=TRUE}
+# Recalculate pooled signal
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags = "totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs)
+
+# Calculate shape
+exampleUnidirectional <- calcShape(exampleUnidirectional, pooled=exampleCTSSs, outputColumn = "IQR", shapeFunction = shapeIQR, lower=0.25, upper=0.75)
+```
+A plot of the distribution of IQR values reveals the distinction between broad and sharp TSSs:
+```{r histIQR, tidy=TRUE}
+hist(rowRanges(exampleUnidirectional)$IQR, 
+		 breaks=max(rowRanges(exampleUnidirectional)$IQR), 
+		 xlim=c(0,100), xlab = "IQR", 
+		 col="red")
+```
+
+`shapeEntropy` and `shapeMultimodality` works in the same way. Advanced users may implement their own shape statistic by writing a new function:
+
+```{r customShape, tidy=TRUE}
+# Write a function that quantifies the lean of a TSS
+shapeLean <- function(x, direction){
+	# Coerce to normal vector
+	x <- as.vector(x)
+	
+	# Find highest position:
+	i <- which.max(x)
+	
+	# Calculate sum
+	i_total <- sum(x)
+	
+	# Calculate lean fraction
+	if(direction == "right"){
+		i_lean <- sum(x[i:length(x)])
+	}else if(direction == "left"){
+		i_lean <- sum(x[1:i])
+	}else{
+		stop("direction must be left or right!")
+	}
+	
+	# Calculate lean
+	o <- i_lean / i_total
+	
+	# Return
+	o
+}
+
+# Calculate lean statistics, additional arguments can be passed to calcShape via "..."
+exampleUnidirectional <- calcShape(exampleUnidirectional, exampleCTSSs, 
+					outputColumn = "leanRight", shapeFunction=shapeLean, 
+					direction="right")
+
+exampleUnidirectional <- calcShape(exampleUnidirectional, exampleCTSSs, 
+					outputColumn = "leanLeft", shapeFunction=shapeLean, 
+					direction="left")
+```
+
+## Gene level analysis
+
+CAGE can detect TSSs and enhancers completely independent of existing gene models. However many databases of functional annotation, such as GO and KEGG terms, are only available at gene level. Similarly, one might need to compare CAGE data to existing RNA-Seq or Microarray data only available at the gene level.
+
+Another typical analysis is to look at Differential TSS Usage (DTU), sometimes refered to as alternative TSSs or promoter switches. Here the aim is to identify if genes utilize different TSSs under different conditions, independently of whether the overall gene expression changes.
+
+### Annotation with gene models
+
+In a similar fashion to transcript annotation described in 5.2.3, gene models are obtained via `TxDb` objects:
+
+```{r geneSetup, tidy=TRUE}
+# Load example TSS 
+data("exampleUnidirectional")
+
+# Remove weakly expressed features
+exampleUnidirectional <- calcTPM(exampleUnidirectional, totalTags = "totalTags")
+exampleUnidirectional <- subsetBySupport(exampleUnidirectional, inputAssay="TPM", unexpressed=1, minSamples=2)
+
+# Use the Bioconductor mm9 UCSC TxXb 
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+```
+
+The `assignGeneID` function annotate ranges with gene IDs:
+
+```{r geneModels, tidy=TRUE}
+exampleUnidirectional <- assignGeneID(exampleUnidirectional, geneModels=txdb, outputColumn="geneID")
+```
+
+TSSs not overlappping any genes recieving NA, and in the (usually rare) case of a TSS overlapping multiple genes, the gene with the closest annotated TSS is chosen:
+
+What type of gene ID is returned of course depends on the source of the `TxDb` object supplied. In this case, it is Entrez IDs, the most commonly used ID system in Bioconductor. Entrez IDs can be used to find the corresponding gene symbols using an `OrgDb` object:
+
+```{r symbols, tidy=TRUE}
+# Use Bioconductor OrgDb package
+library(org.Mm.eg.db)
+odb <- org.Mm.eg.db
+
+# Match IDs to symbols
+symbols <- mapIds(odb, keys=rowRanges(exampleUnidirectional)$geneID, 
+									keytype="ENTREZID", column="SYMBOL")
+
+# Add to object
+rowRanges(exampleUnidirectional)$symbol <- as.character(symbols)
+```
+
+For most gene-level operations in `CAGEfightR` NAs (TSSs not overlapping genes) are simply renmoved. If you wish to keep these TSSs, you can relabel them as "Novel" genes via the `assignMissingID` function:
+
+```{r assignMissing, tidy=TRUE}
+exampleUnidirectional <- assignMissingID(exampleUnidirectional, outputColumn="symbol")
+```
+
+### Quantify expression as gene level
+
+Once TSSs have been assigned to genes, TSSs expression can be summed up within genes to obtain a gene-level expression matrix via the `quantifyGenes` function:
+
+```{r quantifyGenes, tidy=TRUE}
+genelevel <- quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts")
+```
+
+This returns a `RangedSummarizedExperiment` with the same number of rows as genes. The ranges are returned as a `GRangesList` of the individual TSSs making up the expression of the genes:
+
+```{r geneGRangesList, tidy=TRUE}
+rowRanges(genelevel)
+```
+
+Gene-level values are accesible via the `rowData` function:
+
+```{r rowData, tidy=TRUE}
+rowData(genelevel)
+```
+
+The gene-level expression matrix can now be supplied to many other Bioconductor packages, including DESeq2, edgeR, limma etc.
+
+### Removing TSSs based on gene composition
+
+When looking at Differential TSS Usage (DTU) we are interested in changes in the contribution of individual TSSs to overall gene expression. Since CAGE can detect even very lowly expressed TSSs, it is common to see TSSs making up only a very small fraction of the total gene expression. Removing these TSSs can improve power and clarity of downstream analysis.
+
+`CAGEfightR` can calculate the _composition_ value of intragenic TSSs, defined as the number of samples expressing a TSS as more than a certain fraction of total gene expression. This is implemented in the `calcComposition` function:
+
+```{r calcComposition, tidy=TRUE}
+# Remove TSSs not belonging to any genes
+intragenicTSSs <- subset(exampleUnidirectional, !is.na(geneID))
+
+# Calculate composition: The number of samples expressing TSSs above 10% of the total gene expression.
+intragenicTSSs <- calcComposition(intragenicTSSs, outputColumn="composition", 
+																	unexpressed=0.1, genes="geneID")
+
+# Overview of composition values:
+table(rowRanges(intragenicTSSs)$composition)
+```
+We can see that many TSSs makes up less than 10% in all samples. These can be removed with `subset`:
+
+```{r subsetComposition, tidy=TRUE}
+# Remove TSSs with a composition score less than 3
+intragenicTSSs <- subset(intragenicTSSs, composition > 2)
+```
+
+The `subsetByComposition` function wraps the common task of calling `calcComposition` and `subset`. After filtering, the resulting expression matrix can be used with popular Bioconductor packages for DTU calling, such as DEXSeq, DRIMSeq, edgeR and limma.
+
+## Plotting CAGE data in a genome browser
+
+Zenbu is an excellent online genome browser for visualizing CAGE data in relation to annotation in an interative manner. For producing figures (or possibly a very large number of figures) of specific genomic regions, it can be useful to use R to generate genome browser-like plots.
+
+`CAGEfightR` can produce genome browser plots via the popular and extensive `r Biocpkg("Gviz")` package. `CAGEfightR` provides functions for generating genome browser tracks for both CTSSs and clusters. For general generation and customization of GViz plots we refer to the GViz manual (**LINK**). Below we include some basic examples of visualizing CAGE data.
+
+First we load use the built-in datasets:
+
+```{r GViz, tidy=TRUE}
+library(Gviz)
+
+data("exampleCTSSs")
+data("exampleUnidirectional")
+data("exampleBidirectional")
+```
+
+First we make a track of pooled CTSSs:
+
+```{r builtCTSStrack, tidy=TRUE}
+# Calculate pooled CTSSs
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs)
+
+# Built the track
+pooled_track <- trackCTSS(exampleCTSSs, name="CTSSs")
+```
+The returned object is a `DataTrack`, which we can plot a specific genomic region of:
+
+```{r plotCTSStrack, tidy=TRUE}
+# Plot the main TSS of the myob gene
+plotTracks(pooled_track, from=74601950, to=74602100, chromosome="chr18")
+```
+
+Secondly, we make a track of clusters: This function can handle both TSSs and enhancers, so we first merge them into a single object:
+
+```{r clusterTrack, tidy=TRUE}
+# Remove columns
+exampleUnidirectional$totalTags <- NULL
+exampleBidirectional$totalTags <- NULL
+
+# Combine TSSs and enhancers, discarding TSSs if they overlap enhancers
+CAGEclusters <- combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional, removeIfOverlapping="object1")
+
+# Only keep features with more than 0 counts in more than 2 samples
+CAGEclusters <- subsetBySupport(CAGEclusters, inputAssay = "counts", unexpressed=0, minSamples=2)
+
+# Built track
+cluster_track <- trackClusters(CAGEclusters, name="Clusters", col=NA)
+```
+
+The returned object is a `GeneRegionTrack`, which we can plot the same genomic region of:
+
+```{r plotClustertrack, tidy=TRUE}
+# Plot the main TSS of the myob gene
+plotTracks(cluster_track, from=74601950, to=74602100, chromosome="chr18")
+```
+
+Of course, we want to combine several different tracks into a single overview. There is multiple ways of doing this, and the code below is just one such way:
+
+```{r prettybrowser, tidy=TRUE}
+# Genome axis tracks
+axis_track <- GenomeAxisTrack()
+
+# Transcript model track
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+tx_track <- GeneRegionTrack(txdb, name="Gene Models", col=NA, fill="bisque4", shape="arrow")
+
+# Merge all tracks
+all_tracks <- list(axis_track, tx_track, cluster_track, pooled_track)
+
+# Plot the Hdhd2 gene
+plotTracks(all_tracks, from=77182700, to=77184000, chromosome="chr18")
+
+# Plot an intergenic enhancer
+plotTracks(all_tracks, from=53499000, to=53499600, chromosome="chr19")
+```
+
+## Parallel execution
+
+Currently, two functions can utilize multiple cores for computation, `quantifyCTSSs` and `tuneTagClustering`. The central one is `quantifyCTSSs`, which is usually the slowest and most memory consuming step of a `CAGEfightR` analysis. `quantifyCTSSs` automatically uses the default backend registered with the `r Biocpkg("BiocParallel")` package. This can be changed in the following way:
+
+```{r parallel, tidy=TRUE, eval=FALSE}
+library(BiocParallel)
+
+# Setup for parallel execustion with 3 threads:
+register(MulticoreParam(workers=3))
+
+# Disable parallel execution
+register(SerialParam())
+```
+
+# Future directions
+
+Cluster decomposition, sample-wise shapes, DelayedArrays, etc...
+
+# Session Info
+
+```{r sessionInfo, tidy=TRUE}
+sessionInfo()
+```
+

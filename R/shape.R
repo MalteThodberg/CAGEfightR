@@ -1,159 +1,48 @@
-#' Calculate Shannon Entropy
-#'
-#' Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed before calculation.
-#'
-#' @param x numeric Rle vector: Coverage series.
-#'
-#' @return Numeric.
-#' @examples
-#' # ADD_EXAMPLES_HERE
-#' @family Shape functions
-#' @export
-ShannonEntropy <- function(x){
-	# To normal vector
-	#x <- as.vector(x[x > 0])
-	x <- as.vector(x)
+#### Main shape function ####
 
-	# Scale by sum
-	x <- x / sum(x)
-
-	# Calculate entropy
-	o <- -sum(ifelse(x > 0, x * log2(x), 0))
-	#o <- -sum(x * log2(x))
-
-	# Return
-	o
-}
-
-#' Calculate InterQuartile Range
+#' Quantify Tag Cluster shapes
 #'
-#' Calculates the interquartile range of a vector.
+#' Apply a shape-function to the pooled CTSS of every TC.
 #'
-#' @param x numeric Rle vector: Coverage series.
-#' @param lower numeric: Lower quartile.
-#' @param upper numeric: Upper quartile.
-#'
-#' @return Numeric
-#' @examples
-#' # ADD_EXAMPLES_HERE
-#' @family Shape functions
-#' @export
-InterQuartileRange <- function(x, lower=0.25, upper=0.75){
-	# To normal vector
-	x <- as.vector(x)
-
-	# Scale by sum
-	x <- x / sum(x)
-
-	# Cumulate sum
-	x <- cumsum(x)
-
-	# Find the threshold
-	lowerPos <- Position(function(y) y >= lower, x)
-	upperPos <- Position(function(y) y >= upper, x) + 1
-
-	# Return difference
-	upperPos - lowerPos
-}
-
-#' Round Rle vector to integers while preserving sum
-#'
-#' Round an Rle vector, while preserving the sum of the vector as closely as possible. Slightly slower than runningRounding. Can be used with the HartigansDip function.
-#'
-#' @param x numeric Rle vector: Coverage series.
-#'
-#' @return Integer vector.
-#' @examples
-#' # ADD_EXAMPLES_HERE
-#' @references \url{https://stackoverflow.com/a/32544987}
-#' @import S4Vectors
-#' @family Shape functions
-#' @export
-sumRounding <- function(x) {
-	x <- as.vector(x)
-	y <- floor(x)
-	indices <- tail(order(x-y), round(sum(x)) - sum(y))
-	y[indices] <- y[indices] + 1
-	y
-}
-
-#' Round Rle vector to integers while preserving running sum
-#'
-#' Round an Rle vector, while preserving the running sum. Slightly faster than sumRounding. Can be used with the HartigansDip function.
-#'
-#' @param x numeric Rle vector: Coverage series.
-#'
-#' @return Integer vector.
-#' @examples
-#' # ADD_EXAMPLES_HERE
-#' @references \url{https://stackoverflow.com/a/36970695}
-#' @import S4Vectors
-#' @export
-runningRounding <- function(x) {
-	x <- as.vector(x)
-	diff(c(0, round(cumsum(x))))
-}
-
-#' Round Rle vector to integers
-#'
-#' Wrapper for round(). Can be used with the HartigansDip function.
-#'
-#' @param x numeric Rle vector.
-#'
-#' @return Integer vector.
-#' @examples
-#' # ADD_EXAMPLES_HERE
-#' @import S4Vectors
-#' @export
-simpleRounding <- function(x){
-	round(as.vector(x))
-}
-
-#' Hartigans' dip statistics
-#'
-#' Calculates the Hartigans Dip Statistics for a vector, by first rounding values to integers. A dip statistics of 0 indicates a unimodal distribtuion and a dip statistics of 1 indicates a bi- or multimodal distribution.
-#'
-#' @param x numeric Rle vector: Coverage series.
-#' @param roundingFun function: Function for rounding an Rle vector.
-#'
-#' @return numeric.
-#' @examples
-#' # ADD_EXAMPLES_HERE
-#' @export
-HartigansDip <- function(x, roundingFun=runningRounding){
-	# Round
-	x <- roundingFun(x)
-
-	# Expand
-	x <-  rep(1:length(x), x )
-
-	# Dip
-	diptest::dip(x, full.result=FALSE, min.is.0=TRUE)
-}
-
-#' Calculate TC shape
-#'
-#' Apply a shape-function to the global coverage of every TC.
-#'
-#' @param ctssCoverage GRanges: GRanges with CTSS as score column.
-#' @param TCs GRanges: TCs to be analyzed.
+#' @param object GenomicRanges or RangedSummarizedExperiment: Tag clusters.
+#' @param pooled GenomicRanges or RangedSummarizedExperiment: Pooled CTSS as the score column.
+#' @param outputColumn character: Name of column to hold shape statistics.
 #' @param shapeFunction function: Function to apply to each TC (See details).
 #' @param ... additional arguments passed to shapeFunction.
 #'
-#' @return Numeric vector of same length as TCs holding output from shapeFunction.
-#' @examples
-#' # ADD_EXAMPLES_HERE
+#' @return Adds a column
 #' @family Shape functions
-#' @import S4Vectors IRanges GenomicRanges
 #' @export
-calculateShape <- function(ctssCoverage, TCs, shapeFunction, ...){
-	# Names are used for merging
-	stopifnot(!is.null(names(TCs)))
+setGeneric("calcShape", function(object, pooled, ...) {
+	standardGeneric("calcShape")
+})
+
+#' @import assertthat S4Vectors IRanges GenomicRanges
+#' @rdname calcShape
+setMethod("calcShape", signature(object="GRanges", pooled="GenomicRanges"), function(object, pooled, outputColumn="IQR", shapeFunction=shapeIQR, ...){
+	# Pre-checks
+	assert_that(!is.null(score(pooled)),
+							is.numeric(score(pooled)),
+							isDisjoint(pooled),
+							is.character(outputColumn),
+							is.function(shapeFunction),
+							identical(seqlengths(object), seqlengths(pooled)))
+
+	# Warnings
+	if(outputColumn %in% colnames(mcols(object))){
+		warning("object already has a column named ", outputColumn," in mcols: It will be overwritten!")
+	}
+
+	# Names need to be set for sorting later
+	if(is.null(names(object))){
+		message("Adding names...")
+		names(object) <- paste("TC", seq_along(object))
+	}
 
 	# Split by strand
 	message("Splitting coverage by strand...")
-	covByStrand <- splitByStrand(ctssCoverage)
-	TCsByStrand <- splitByStrand(TCs)
+	covByStrand <- splitByStrand(pooled)
+	TCsByStrand <- splitByStrand(object)
 
 	# Coverage by strand
 	coverage_plus <- coverage(covByStrand$`+`, weight="score")
@@ -174,15 +63,145 @@ calculateShape <- function(ctssCoverage, TCs, shapeFunction, ...){
 	message("Assembling output...")
 	stat_plus <- as.numeric(unlist(stat_plus, use.names=FALSE))
 	names(stat_plus) <- names(TCsByStrand$`+`)
-
 	stat_minus <- as.numeric(unlist(stat_minus, use.names=FALSE))
 	names(stat_minus) <- names(TCsByStrand$`-`)
 	rm(TCsByStrand)
 
 	# Reassemble in same order
 	o <- c(stat_plus, stat_minus)
-	o <- o[match(names(TCs), names(o))]
+	o <- o[match(names(object), names(o))]
 	names(o) <- NULL
+	rm(stat_plus, stat_minus)
+
+	# Add to object
+	mcols(object)[,outputColumn] <- o
+
+	# Return
+	object
+})
+
+#' @import SummarizedExperiment
+#' @rdname calcShape
+setMethod("calcShape", signature(object="RangedSummarizedExperiment", pooled="GenomicRanges"), function(object, pooled, ...){
+	rowRanges(object) <- calcShape(rowRanges(object), pooled, ...)
+	object
+})
+
+#' @import SummarizedExperiment
+#' @rdname calcShape
+setMethod("calcShape", signature(object="GRanges", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
+	calcShape(object, rowRanges(pooled), ...)
+})
+
+#' @import SummarizedExperiment
+#' @rdname calcShape
+setMethod("calcShape", signature(object="RangedSummarizedExperiment", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
+	rowRanges(object) <- calcShape(rowRanges(object), rowRanges(pooled), ...)
+	object
+})
+
+#' @import SummarizedExperiment
+#' @rdname calcShape
+setMethod("calcShape", signature(object="GRanges", pooled="GPos"), function(object, pooled, ...){
+	warning("Using temporary GPos-method in calcShape!")
+	calcShape(object, methods::as(pooled, "GRanges"), ...)
+
+})
+
+#### Individual shape functions ####
+
+#' Shape statitic: Interquartile range
+#'
+#' Calculates the interquartile range of a vector.
+#'
+#' @param x numeric Rle vector: Coverage series.
+#' @param lower numeric: Lower quartile.
+#' @param upper numeric: Upper quartile.
+#'
+#' @return Numeric
+#' @family Shape functions
+#' @import S4Vectors
+#' @export
+shapeIQR <- function(x, lower=0.25, upper=0.75){
+	# To normal vector
+	x <- as.vector(x)
+
+	# Scale by sum
+	x <- x / sum(x)
+
+	# Cumulate sum
+	x <- cumsum(x)
+
+	# Find the threshold
+	lowerPos <- Position(function(y) y >= lower, x)
+	upperPos <- Position(function(y) y >= upper, x)
+
+	# Return difference
+	upperPos - lowerPos
+}
+
+#' Shape statistic: Shannon Entropy
+#'
+#' Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed before calculation.
+#'
+#' @param x numeric Rle vector: Coverage series.
+#'
+#' @return Numeric.
+#' @family Shape functions
+#' @import S4Vectors
+#' @export
+shapeEntropy <- function(x){
+	# To normal vector
+	#x <- as.vector(x[x > 0])
+	x <- as.vector(x)
+
+	# Scale by sum
+	x <- x / sum(x)
+
+	# Calculate entropy
+	o <- suppressWarnings(-sum(ifelse(x > 0, x * log2(x), 0)))
+
+	# Return
+	o
+}
+
+isobreak <- function(i, x){
+	# Split into segments
+	x1 <- x[1:i]
+	x2 <- x[i:length(x)]
+
+	# Reverse second
+	x2 <- -x2
+
+	# Fit isotonic
+	fit1 <- stats::isoreg(x1)
+	fit2 <- stats::isoreg(x2)
+
+	# Extract RSEM
+	res1 <- sum(stats::residuals(fit1)^2)
+	res2 <- sum(stats::residuals(fit2)^2)
+
+	# Return
+	res1 + res2
+}
+
+#' Shape statistic: Multimodality
+#'
+#' @param x numeric Rle vector: Coverage series.
+#'
+#' @return Numeric.
+#' @family Shape functions
+#' @import S4Vectors
+#' @export
+shapeMultimodality <- function(x){
+	# Convert from Rle
+	x <- as.vector(x)
+
+	# Isobreak regression for all breakpoints
+	o <- vapply(X=seq_along(x), FUN=isobreak, FUN.VALUE=numeric(1), x=x)
+
+	# Best solution
+	o <- min(o)
 
 	# Return
 	o

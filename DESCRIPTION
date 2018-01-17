@@ -23,7 +23,7 @@ Imports:
     S4Vectors(>= 0.16.0),
     IRanges(>= 2.12.0),
     GenomeInfoDb(>= 1.14.0),
-    GenomicFeatures(>= 1.30.0),
+    GenomicFeatures(>= 1.29.11),
     TxDb.Mmusculus.UCSC.mm9.knownGene,
     org.Mm.eg.db,
     BiocParallel(>= 1.12.0),

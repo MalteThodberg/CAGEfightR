@@ -165,7 +165,7 @@ calcComposition <- function(object, inputAssay="counts", outputColumn="compositi
 	L <- splitAsList(x=assay(object, inputAssay), f=rowData(object)[,genes], drop = FALSE)
 
 	# Scale and find high compositions
-	L <- endoapply(L, function(x) scale(x, center=FALSE, scale=colSums(x)) > unexpressed)
+	L <- endoapply(L, function(x) scale(x, center=FALSE, scale=Matrix::colSums(x)) > unexpressed) # Scale always coerces to a base::matrix!
 
 	# Calculate count high compositions
 	L <- endoapply(L, rowSums, na.rm=TRUE)

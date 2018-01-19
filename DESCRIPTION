@@ -21,6 +21,7 @@ Imports:
 		methods,
 		Matrix(>= 1.2-12),
 		Matrix.utils(>= 0.9.6),
+		grr,
     BiocGenerics(>= 0.24.0),
     S4Vectors(>= 0.16.0),
     IRanges(>= 2.12.0),

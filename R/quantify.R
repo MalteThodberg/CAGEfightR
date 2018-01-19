@@ -159,27 +159,30 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 #' @param object RangedSummarizedExperiment: CTSSs.
 #' @param clusters GRanges: Clusters ro be quantified.
 #' @param inputAssay character: Name of holding values to be quantified
+#' @param sparse logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.
 #'
 #' @return RangedSummarizedExperiment with quantified CTSSs for each region in cluster, with seqinfo and colData is copied over.
 #'
 #' @importClassesFrom Matrix dgCMatrix
 #' @import S4Vectors GenomicRanges rtracklayer SummarizedExperiment assertthat
 #' @export
-quantifyClusters <- function(object, clusters, inputAssay="counts"){
+quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE){
 	# Pre-checks
 	assert_that(class(object) == "RangedSummarizedExperiment",
 							not_empty(object),
 							isDisjoint(object),
-							class(clusters) == "GRanges",
+							methods::is(clusters, "GRanges"),
 							not_empty(clusters),
 							isDisjoint(clusters),
 							identical(seqinfo(object), seqinfo(clusters)),
 							is.string(inputAssay),
-							inputAssay %in% assayNames(object))
+							inputAssay %in% assayNames(object),
+							is.flag(sparse))
 
 	# Find overlaps
 	message("Finding overlaps...")
 	hits <- findOverlaps(query=object, subject=clusters, select="arbitrary")
+	hits <- factor(hits, levels=seq_along(clusters))
 	missing_hits <- is.na(hits)
 
 	# Warn if there is no overlap
@@ -189,22 +192,7 @@ quantifyClusters <- function(object, clusters, inputAssay="counts"){
 
 	# Summarize
 	message("Aggregating within clusters...")
-	mat <- Matrix.utils::aggregate.Matrix(x=assay(object, inputAssay), groupings=hits, fun="sum")
-
-	# Coerce to integer matrix
-	message("Preparing output...")
-	# Coerce to basic matrix
-	mat <- Matrix::as.matrix(mat)
-
-	# Remove NA row if present
-	if(any(missing_hits)){
-		mat <- mat[-nrow(mat),]
-	}
-
-	# Simplify if possible
-	if(all(mat == floor(mat))){
-		storage.mode(mat) <- "integer"
-	}
+	mat <- rowsum2(x=assay(object, inputAssay), group=hits, drop=FALSE, sparse=sparse)
 
 	# Check output is the right format and assign names.
 	stopifnot(nrow(mat) == length(clusters))
@@ -227,11 +215,12 @@ quantifyClusters <- function(object, clusters, inputAssay="counts"){
 #' @param object RangedSummarizedExperiment: Transcript-level counts.
 #' @param genes character: Name of column in rowData holding genes (NAs will be discarded).
 #' @param inputAssay character: Name of assay holding values to be quantified, usually raw counts.
+#' @param sparse logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.
 #'
 #' @return RangedSummarizedExperiment with rows corresponding to genes. All other information is copied over from object.
 #' @import assertthat S4Vectors GenomicRanges SummarizedExperiment
 #' @export
-quantifyGenes <- function(object, genes, inputAssay="counts"){
+quantifyGenes <- function(object, genes, inputAssay="counts", sparse=FALSE){
 	# Pre-checks
 	assert_that(methods::is(object, "RangedSummarizedExperiment"),
 							isDisjoint(object),
@@ -239,16 +228,17 @@ quantifyGenes <- function(object, genes, inputAssay="counts"){
 							is.element(genes, colnames(rowData(object))),
 							is.character(rowData(object)[,genes]),
 							is.string(inputAssay),
-							inputAssay %in% assayNames(object))
+							inputAssay %in% assayNames(object),
+							is.flag(sparse))
+
+	# Factor genes
+	genes <- factor(rowData(object)[,genes])
 
 	# Split ranges
-	new_gr <- splitAsList(rowRanges(object), rowData(object)[,genes], drop=TRUE)
+	new_gr <- splitAsList(rowRanges(object), f=genes, drop=TRUE)
 
 	# Sum matrix
-	new_m <- suppressWarnings(rowsum(assay(object, inputAssay), group=rowData(object)[,genes]))
-
-	# Discard NA
-	new_m <- new_m[!is.na(rownames(new_m)),]
+	new_m <- rowsum2(assay(object, inputAssay), group=genes, drop=TRUE, sparse=sparse)
 
 	# Check that names match
 	stopifnot(setequal(rownames(new_m), names(new_gr)))

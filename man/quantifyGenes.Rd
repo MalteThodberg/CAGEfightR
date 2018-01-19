@@ -4,7 +4,7 @@
 \alias{quantifyGenes}
 \title{Quantify genes}
 \usage{
-quantifyGenes(object, genes, inputAssay = "counts")
+quantifyGenes(object, genes, inputAssay = "counts", sparse = FALSE)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: Transcript-level counts.}
@@ -12,6 +12,8 @@ quantifyGenes(object, genes, inputAssay = "counts")
 \item{genes}{character: Name of column in rowData holding genes (NAs will be discarded).}
 
 \item{inputAssay}{character: Name of assay holding values to be quantified, usually raw counts.}
+
+\item{sparse}{logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.}
 }
 \value{
 RangedSummarizedExperiment with rows corresponding to genes. All other information is copied over from object.

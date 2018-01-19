@@ -4,7 +4,7 @@
 \alias{quantifyClusters}
 \title{Quantify Tag Clusters (TCs)}
 \usage{
-quantifyClusters(object, clusters, inputAssay = "counts")
+quantifyClusters(object, clusters, inputAssay = "counts", sparse = FALSE)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CTSSs.}
@@ -12,6 +12,8 @@ quantifyClusters(object, clusters, inputAssay = "counts")
 \item{clusters}{GRanges: Clusters ro be quantified.}
 
 \item{inputAssay}{character: Name of holding values to be quantified}
+
+\item{sparse}{logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.}
 }
 \value{
 RangedSummarizedExperiment with quantified CTSSs for each region in cluster, with seqinfo and colData is copied over.

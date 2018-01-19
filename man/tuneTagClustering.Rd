@@ -11,7 +11,7 @@
 tuneTagClustering(object, ...)
 
 \S4method{tuneTagClustering}{GenomicRanges}(object, steps = 10L,
-  maxExponent = 1, mergeDist = 20L, searchMethod = "exponential")
+  mergeDist = 20L, searchMethod = "minUnique", maxExponent = 1)
 
 \S4method{tuneTagClustering}{RangedSummarizedExperiment}(object, ...)
 
@@ -24,11 +24,11 @@ tuneTagClustering(object, ...)
 
 \item{steps}{integer: Number of thresholds to analyze (in addition to treshold=0).}
 
-\item{maxExponent}{numeric: The maximal threshold to analyse is obtained as min(score)*2^maxExponent.}
-
 \item{mergeDist}{integer: Merge TCs within this distance.}
 
 \item{searchMethod}{character: For advanced user only, see details.}
+
+\item{maxExponent}{numeric: The maximal threshold to analyse is obtained as min(score)*2^maxExponent (only used if searchMethod="exponential").}
 }
 \value{
 data.frame with two columns: threshold and nTCs (number of Tag Clusters)

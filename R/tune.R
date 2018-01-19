@@ -6,9 +6,9 @@
 #'
 #' @param object GenomicRanges or RangedSummarizedExperiment: Pooled CTSS.
 #' @param steps integer: Number of thresholds to analyze (in addition to treshold=0).
-#' @param maxExponent numeric: The maximal threshold to analyse is obtained as min(score)*2^maxExponent.
 #' @param mergeDist integer: Merge TCs within this distance.
 #' @param searchMethod character: For advanced user only, see details.
+#' @param maxExponent numeric: The maximal threshold to analyse is obtained as min(score)*2^maxExponent (only used if searchMethod="exponential").
 #' @param ... additional arguments passed to methods.
 #'
 #' @return data.frame with two columns: threshold and nTCs (number of Tag Clusters)
@@ -20,7 +20,7 @@ setGeneric("tuneTagClustering", function(object, ...) {
 
 #' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname tuneTagClustering
-setMethod("tuneTagClustering", signature(object="GenomicRanges"), function(object, steps=10L, maxExponent=1, mergeDist=20L, searchMethod="exponential"){
+setMethod("tuneTagClustering", signature(object="GenomicRanges"), function(object, steps=10L, mergeDist=20L, searchMethod="minUnique", maxExponent=1){
 	# Pre-checks
 	assert_that(isDisjoint(object),
 							!is.null(score(object)),

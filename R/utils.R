@@ -1,13 +1,4 @@
-#' Split by strand.
-#'
-#' Splits an object into a list by strand
-#'
-#' @param object object with strand information (GRanges, Gpos, RangedSummarizedExperiment, etc.).
-#'
-#' @return List with three elements: +, - and *.
-#' @family Helper functions
 #' @import GenomicRanges SummarizedExperiment
-#' @export
 splitByStrand <- function(object){
 	split(object, strand(object))
 }
@@ -19,4 +10,14 @@ extendRanges <- function(object, upstream, downstream){
 	object <- punion(object, U)
 	object <- punion(object, D)
 	object
+}
+
+#' @import S4Vectors IRanges GenomicRanges
+countScoredOverlaps <- function(query, subject){
+	# Solution from bioconductor by M Morgan
+	hits <- methods::as(findOverlaps(query=query, subject=subject), "List")
+	weightedCount <- sum(extractList(score(subject), hits))
+
+	# Return
+	weightedCount
 }

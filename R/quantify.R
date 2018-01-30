@@ -131,10 +131,13 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 	message("Importing CTSSs from minus strand...")
 	minus_strand <- gf_wrapper(files=minusStrand, ranges=grl, seqinfo=genome, strand="-")
 
-	# Merge and realize
+	# Merge
 	message("Merging strands...")
 	o <- rbind(plus_strand, minus_strand)
 	rm(plus_strand, minus_strand)
+
+	# Attach design
+	colData(o) <- design
 
 	# Post-checks
 	stopifnot(class(rowRanges(o)) == "GRanges",

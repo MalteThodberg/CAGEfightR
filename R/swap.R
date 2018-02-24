@@ -32,13 +32,15 @@ setMethod("swapRanges", signature(object="GenomicRanges"), function(object, inpu
 	}
 
 	# Save old range as new column
+	onames <- names(object)
 	mcols(object)[,outputColumn] <- ranges(object)
 
 	# Switch in the new column
 	ranges(object) <- mcols(object)[,inputColumn]
 
 	# Use original names
-	names(object) <- names(mcols(object)[,outputColumn])
+	#names(object) <- names(mcols(object)[,outputColumn])
+	names(object) <- onames
 
 	# Return
 	object

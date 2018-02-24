@@ -58,8 +58,8 @@ data("exampleDesign")
 head(exampleDesign)
 
 # Locate files on your harddrive
-bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEtestR")
-bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEtestR")
+bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
+bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
 
 # Create two named BigWigFileList-objects:
 bw_plus <- BigWigFileList(bw_plus)

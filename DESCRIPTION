@@ -4,7 +4,7 @@ Title: Analysis of Cap Analysis of Gene Expression (CAGE) data using
     Bioconductor
 Version: 0.3.0
 Author: Malte Thodberg
-Maintainer: <malte.thodberg@bio.ku.dk>
+Maintainer: Malte Thodberg <malte.thodberg@bio.ku.dk>
 Description: Includes functions for: Finding Tag Cluster (TCs), quantifying
     expression as an Expression Matrix (EM), annotating TCs using transcript models,
     finding Bidirectonal Clusters (BCs).
@@ -40,3 +40,4 @@ Suggests: knitr,
     rmarkdown,
     BiocStyle
 VignetteBuilder: knitr
+biocViews: Software, Transcription, Coverage, Gene Regulation, Peak Detection, DataImport, DataRepresentation, Transcriptomics, Sequencing, Annotation, GenomeBrowsers, Normalization, Preprocessing, Visualization

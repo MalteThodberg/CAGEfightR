@@ -15,6 +15,17 @@ Numeric.
 \description{
 Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed before calculation.
 }
+\examples{
+# Hypothetical shard/broad clusters:
+x_sharp <- Rle(c(1,1,1,4,5,2,1,1))
+x_broad <- Rle(c(1,2,3,5,4,3,2,1))
+
+# Calculate Entropy
+shapeEntropy(x_sharp)
+shapeEntropy(x_broad)
+
+# See calcShape for more usage examples
+}
 \seealso{
 Other Shape functions: \code{\link{calcShape}},
   \code{\link{shapeIQR}}, \code{\link{shapeMultimodality}}

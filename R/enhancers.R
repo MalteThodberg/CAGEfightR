@@ -88,10 +88,24 @@ BC <- function(plusUpstream, plusDownstream, minusUpstream, minusDownstream){
 #' @param ... additional arguments passed to methods.
 #'
 #' @return GRanges with bidirectional sites: Minimum width is 1 + 2*window, TPM sum (on both strands) in the score column, maximal bidirectional site in the thick column and maximum balance in the balance column.
-#' @examples
-#' # ADD_EXAMPLES_HERE
+#' @family Clustering functions
+#'
 #' @import assertthat S4Vectors IRanges GenomicRanges
 #' @export
+#' @examples
+#' \dontrun{
+#' data(exampleCTSSs)
+#'
+#' # Calculate pooledTPM, using supplied number of total tags
+#' exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+#' exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+#'
+#' # Cluster using defaults: balance-treshold of 199 and window of 199 bp:
+#' clusterBidirectionally(exampleCTSSs)
+#'
+#' # Use custom thresholds:
+#' clusterBidirectionally(exampleCTSSs, balanceThreshold=0.99, window=101)
+#' }
 setGeneric("clusterBidirectionally", function(object, ...) {
 	standardGeneric("clusterBidirectionally")
 })
@@ -200,7 +214,13 @@ setMethod("clusterBidirectionally", signature(object="GPos"), function(object, .
 #' @param ... additional arguments passed to methods.
 #'
 #' @return object returned with bidirectionality scores added in mcols.
+#' @family Calculation functions
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#' data(exampleBidirectional)
+#'
+#' calcBidirectionality(exampleBidirectional, samples=exampleCTSSs)
 setGeneric("calcBidirectionality", function(object, ...) {
 	standardGeneric("calcBidirectionality")
 })
@@ -218,8 +238,8 @@ setMethod("calcBidirectionality", signature(object="GRanges"), function(object, 
 							isDisjoint(samples),
 							not_empty(seqlengths(samples)),
 							noNA(seqlengths(samples)),
-							!is.null(score(rowRanges(samples))),
-							is.numeric(score(rowRanges(samples))),
+							#!is.null(score(rowRanges(samples))),
+							#is.numeric(score(rowRanges(samples))),
 							is.string(inputAssay),
 							inputAssay %in% assayNames(samples),
 							is.string(outputColumn))
@@ -280,7 +300,17 @@ setMethod("calcBidirectionality", signature(object="RangedSummarizedExperiment")
 #' @param ... additional arguments passed to methods.
 #'
 #' @return object with bidirectionality values added as a column, and low bidirectionaly regions removed.
+#'
+#' @family Subsetting functions
+#' @family Calculation functions
+#'
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#' data(exampleBidirectional)
+#'
+#' # Keep only clusters that are bidirectional in at least one sample:
+#' subsetByBidirectionality(exampleBidirectional, samples=exampleCTSSs)
 setGeneric("subsetByBidirectionality", function(object, ...) {
 	standardGeneric("subsetByBidirectionality")
 })

@@ -19,3 +19,21 @@ RangedSummarizedExperiment with pooled expression added as a column in rowRanges
 \description{
 Calculate pooled expression across all samples.
 }
+\examples{
+data(exampleCTSSs)
+
+# Calculate TPM using supplied total number of tags:
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+
+# Sum TPM values over samples:
+calcPooled(exampleCTSSs)
+}
+\seealso{
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcComposition}}, \code{\link{calcShape}},
+  \code{\link{calcSupport}}, \code{\link{calcTPM}},
+  \code{\link{calcTotalTags}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+}

@@ -33,5 +33,23 @@ GRanges with bidirectional sites: Minimum width is 1 + 2*window, TPM sum (on bot
 Finds sites with (balanced and divergent) bidirectional transcription using sliding windows of summed coverage: The Bhattacharyya coefficient (BC) is used to quantify depature from a perfectly balanced site, and a slice-reduce is used to identify sites.
 }
 \examples{
-# ADD_EXAMPLES_HERE
+\dontrun{
+data(exampleCTSSs)
+
+# Calculate pooledTPM, using supplied number of total tags
+exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+
+# Cluster using defaults: balance-treshold of 199 and window of 199 bp:
+clusterBidirectionally(exampleCTSSs)
+
+# Use custom thresholds:
+clusterBidirectionally(exampleCTSSs, balanceThreshold=0.99, window=101)
+}
+}
+\seealso{
+Other Clustering functions: \code{\link{clusterUnidirectionally}},
+  \code{\link{trimToPeak}},
+  \code{\link{trimToPercentiles}},
+  \code{\link{tuneTagClustering}}
 }

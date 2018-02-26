@@ -31,3 +31,18 @@ object returned with bidirectionality scores added in mcols.
 \description{
 For each bidirectional site, calculates how many individual samples shows transcription in both directions.
 }
+\examples{
+data(exampleCTSSs)
+data(exampleBidirectional)
+
+calcBidirectionality(exampleBidirectional, samples=exampleCTSSs)
+}
+\seealso{
+Other Calculation functions: \code{\link{calcComposition}},
+  \code{\link{calcPooled}}, \code{\link{calcShape}},
+  \code{\link{calcSupport}}, \code{\link{calcTPM}},
+  \code{\link{calcTotalTags}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+}

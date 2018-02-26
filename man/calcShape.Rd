@@ -29,7 +29,8 @@ calcShape(object, pooled, ...)
 \arguments{
 \item{object}{GenomicRanges or RangedSummarizedExperiment: Tag clusters.}
 
-\item{pooled}{GenomicRanges or RangedSummarizedExperiment: Pooled CTSS as the score column.}
+\item{pooled}{GenomicRanges or RangedSummarizedExperiment: Pooled CTSS as the
+score column.}
 
 \item{...}{additional arguments passed to shapeFunction.}
 
@@ -43,7 +44,31 @@ Adds a column
 \description{
 Apply a shape-function to the pooled CTSS of every TC.
 }
+\examples{
+data(exampleCTSSs)
+data(exampleUnidirectional)
+
+# Calculate pooled CTSSs using pre-calculated number of total tags:
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs)
+
+# Calculate shape statistics
+calcShape(exampleUnidirectional, pooled=exampleCTSSs,
+    outputColumn="entropy", shapeFunction=shapeEntropy)
+calcShape(exampleUnidirectional, pooled=exampleCTSSs, outputColumn="IQR",
+    shapeFunction=shapeIQR, lower=0.2, upper=0.8)
+
+# See the vignette for how to implement custom shape functions!
+}
 \seealso{
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcComposition}}, \code{\link{calcPooled}},
+  \code{\link{calcSupport}}, \code{\link{calcTPM}},
+  \code{\link{calcTotalTags}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+
 Other Shape functions: \code{\link{shapeEntropy}},
   \code{\link{shapeIQR}}, \code{\link{shapeMultimodality}}
 }

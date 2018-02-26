@@ -15,17 +15,39 @@ swapRanges(object, ...)
 \S4method{swapRanges}{RangedSummarizedExperiment}(object, ...)
 }
 \arguments{
-\item{object}{GRanges or RangedSummarizedExperiment: Primary ranges to be swapped out.}
+\item{object}{GRanges or RangedSummarizedExperiment: Primary ranges to be
+swapped out.}
 
 \item{...}{additional arguments passed to methods.}
 
-\item{inputColumn}{character: Name of column holding IRanges to be swapped in.}
+\item{inputColumn}{character: Name of column holding IRanges to be swapped
+in.}
 
-\item{outputColumn}{character or NULL: Name of column to hold swapped out ranges, if NULL original ranges are not saved.}
+\item{outputColumn}{character or NULL: Name of column to hold swapped out
+ranges, if NULL original ranges are not saved.}
 }
 \value{
 GRanges with inputColumn swapped in as ranges.
 }
 \description{
-Swap out the range of a GRanges-object with another IRanges-object stored inside the same object. I.e., swapping cluster widths with cluster peaks.
+Swap out the range of a GRanges-object with another IRanges-object stored
+inside the same object. I.e., swapping cluster widths with cluster peaks.
+}
+\examples{
+data(exampleUnidirectional)
+gr <- rowRanges(exampleUnidirectional)
+
+# Swap in peaks as main ranges
+peaks <- swapRanges(gr)
+head(width(gr))
+head(width(peaks))
+
+# swapRanges() can also be directly called on a RangedSummarizedExperiment:
+swapRanges(exampleUnidirectional)
+
+# The original can optionally be saved in the output object
+swapRanges(gr, outputColumn = "swapped")
+}
+\seealso{
+Other Swapping functions: \code{\link{swapScores}}
 }

@@ -24,3 +24,21 @@ RangedSummarizedExperiment with TPM-values as a new assay. If totalTags is NULL,
 \description{
 Calculate CAGE Tags-Per-Million (TPM)
 }
+\examples{
+data(exampleUnidirectional)
+
+# Calculate TPM:
+calcTPM(exampleUnidirectional)
+
+# Use pre-calculated total number of tags:
+calcTPM(exampleUnidirectional, outputAssay="TPMsupplied", totalTags="totalTags")
+}
+\seealso{
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcComposition}}, \code{\link{calcPooled}},
+  \code{\link{calcShape}}, \code{\link{calcSupport}},
+  \code{\link{calcTotalTags}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+}

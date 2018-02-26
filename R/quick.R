@@ -7,6 +7,8 @@
 #' @return RangedSummarizedExperiment containing location and counts of TSSs
 #' @import GenomicRanges SummarizedExperiment
 #' @export
+#' @examples
+#' # See the CAGEfightR vignette for an overview!
 quickTSSs <- function(object){
 	# Pre-checks
 	assert_that(methods::is(object, "RangedSummarizedExperiment"),
@@ -48,6 +50,8 @@ quickTSSs <- function(object){
 #' @return RangedSummarizedExperiment containing location and counts of enhancers.
 #' @import GenomicRanges SummarizedExperiment
 #' @export
+#' @examples
+#' # See the CAGEfightR vignette for an overview!
 quickEnhancers <- function(object){
 	# Pre-checks
 	assert_that(methods::is(object, "RangedSummarizedExperiment"),

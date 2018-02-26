@@ -43,6 +43,24 @@ GRanges with txID added in column outputColumn (inside rowRanges in case object 
 \description{
 Annotate a set of ranges in a GRanges object with transcript IDs based on their genic context. All overlapping transcripts are returned. Transcripts are obtained from a TxDb object, or can manually supplied as a GRanges.
 }
+\examples{
+data(exampleUnidirectional)
+
+# Obtain transcript models from a TxDb-object:
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+
+# Assign txIDs
+assignTxID(exampleUnidirectional,
+           txModels=txdb,
+           outputColumn="geneID")
+
+# Assign txIDs using only TC peaks:
+assignTxID(exampleUnidirectional,
+             txModels=txdb,
+             outputColumn="geneID",
+             swap="thick")
+}
 \seealso{
 Other Annotation functions: \code{\link{assignGeneID}},
   \code{\link{assignMissingID}}, \code{\link{assignTxType}}

@@ -22,5 +22,25 @@ subsetBySupport(object, inputAssay = "counts", outputColumn = "support",
 RangedSummarizedExperiment with support added as a column in rowRanges and features with less support than minSamples removed.
 }
 \description{
-Subset by support across samples
+A convienient wrapper around calcSupport and subset.
+}
+\examples{
+data(exampleBidirectional)
+
+# Keep clusters with at least one tag in two samples
+subsetBySupport(exampleBidirectional)
+
+# Keep clusters with at least two tags in four samples
+subsetBySupport(exampleBidirectional, unexpressed=1, minSamples=2)
+}
+\seealso{
+Other Subsetting functions: \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}}
+
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcComposition}}, \code{\link{calcPooled}},
+  \code{\link{calcShape}}, \code{\link{calcSupport}},
+  \code{\link{calcTPM}}, \code{\link{calcTotalTags}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}}
 }

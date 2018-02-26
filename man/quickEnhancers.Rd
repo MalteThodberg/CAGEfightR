@@ -15,3 +15,6 @@ RangedSummarizedExperiment containing location and counts of enhancers.
 \description{
 A convienient wrapper around clusterBidirectionally, subsetByBidirectionality and quantifyClusters.
 }
+\examples{
+# See the CAGEfightR vignette for an overview!
+}

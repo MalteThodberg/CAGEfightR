@@ -22,3 +22,23 @@ RangedSummarizedExperiment with support added as a column in rowRanges.
 \description{
 Calculate support of CAGE data.
 }
+\examples{
+data(exampleUnidirectional)
+
+# Count samples with at at least a single tags
+exampleUnidirectional <- calcSupport(exampleUnidirectional, inputAssay="counts", unexpressed=0)
+
+# Count number of samples with more than 1 TPM and save as a new column.
+exampleUnidirectional <- calcTPM(exampleUnidirectional, totalTags = "totalTags")
+exampleUnidirectional <- calcSupport(exampleUnidirectional, inputAssay="TPM",
+    unexpressed=1, outputColumn="TPMsupport")
+}
+\seealso{
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcComposition}}, \code{\link{calcPooled}},
+  \code{\link{calcShape}}, \code{\link{calcTPM}},
+  \code{\link{calcTotalTags}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+}

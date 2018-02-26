@@ -37,3 +37,28 @@ Visualize balance scores used for detectiong of bidirectional sites. Mainly inte
 \note{
 Potentially consumes a large amount of memory!
 }
+\examples{
+library(Gviz)
+data(exampleCTSSs)
+data(exampleBidirectional)
+
+# Calculate pooled CTSSs
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs)
+
+# Find a bidirectional cluster to plot:
+BC <- rowRanges(exampleBidirectional[10,])
+start(BC) <- start(BC) - 250
+end(BC) <- end(BC) + 250
+subsetOfCTSSs <- subsetByOverlaps(exampleCTSSs, BC)
+
+# Build balance track
+balance_track <- trackBalance(subsetOfCTSSs)
+
+# Plot
+plotTracks(balance_track, from=start(BC), to=end(BC), chromosome=seqnames(BC))
+}
+\seealso{
+Other Genome Browser functions: \code{\link{trackCTSS}},
+  \code{\link{trackClusters}}
+}

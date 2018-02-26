@@ -32,8 +32,21 @@ GeneRegionTrack-object.
 Create a Gviz-track of clusters (unidirectional TCs or bidirectional enhancers), where cluster strand and peak is indicated.
 }
 \examples{
-# ADD_EXAMPLES_HERE
+library(Gviz)
+data(exampleUnidirectional)
+
+# Find some wide unidirectional clusters:
+TCs <- subset(exampleUnidirectional, width >= 100)
+
+# Create track
+clusters_track <- trackClusters(TCs[1:2,], name="Tag clusters", col=NULL)
+
+# Plot
+plotTracks(clusters_track)
+
+# See vignette for examples on how to combine multiple Gviz tracks
 }
 \seealso{
-Other Genome Browser functions: \code{\link{trackCTSS}}
+Other Genome Browser functions: \code{\link{trackBalance}},
+  \code{\link{trackCTSS}}
 }

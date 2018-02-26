@@ -19,6 +19,17 @@ Numeric
 \description{
 Calculates the interquartile range of a vector.
 }
+\examples{
+# Hypothetical shard/broad clusters:
+x_sharp <- Rle(c(1,1,1,4,5,2,1,1))
+x_broad <- Rle(c(1,2,3,5,4,3,2,1))
+
+# Calculate IQR
+shapeIQR(x_sharp)
+shapeIQR(x_broad)
+
+# See calcShape for more usage examples
+}
 \seealso{
 Other Shape functions: \code{\link{calcShape}},
   \code{\link{shapeEntropy}},

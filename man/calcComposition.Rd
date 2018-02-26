@@ -24,3 +24,30 @@ RangedSummarizedExperiment with composition added as a column in rowData.
 \description{
 For every feature (e.g. TSSs) count in how many samples it is expressed above a certain fraction (e.g. 10 percent) within a grouping, usually genes. This counts is refered to as a composition value.
 }
+\examples{
+data(exampleUnidirectional)
+
+# Annotate clusters with geneIDs:
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+exampleUnidirectional <- assignGeneID(exampleUnidirectional,
+                                      geneModels=txdb,
+                                      outputColumn="geneID",
+                                      swap="thick")
+
+# Calculate composition values:
+exampleUnidirectional <- subset(exampleUnidirectional, !is.na(geneID))
+calcComposition(exampleUnidirectional)
+
+# Use a lower threshold
+calcComposition(exampleUnidirectional, unexpressed=0.05, outputColumn="lenientComposition")
+}
+\seealso{
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcPooled}}, \code{\link{calcShape}},
+  \code{\link{calcSupport}}, \code{\link{calcTPM}},
+  \code{\link{calcTotalTags}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+}

@@ -19,3 +19,16 @@ RangedSummarizedExperiment with total tags added as a column in colData.
 \description{
 Calculate the total number of CAGE tags across samples.
 }
+\examples{
+data(exampleUnidirectional)
+calcTotalTags(exampleUnidirectional)
+}
+\seealso{
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcComposition}}, \code{\link{calcPooled}},
+  \code{\link{calcShape}}, \code{\link{calcSupport}},
+  \code{\link{calcTPM}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+}

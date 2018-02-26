@@ -8,7 +8,18 @@
 #' @importClassesFrom Matrix dgCMatrix
 #' @import assertthat SummarizedExperiment
 #' @return RangedSummarizedExperiment with support added as a column in rowRanges.
+#' @family Calculation functions
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#'
+#' # Count samples with at at least a single tags
+#' exampleUnidirectional <- calcSupport(exampleUnidirectional, inputAssay="counts", unexpressed=0)
+#'
+#' # Count number of samples with more than 1 TPM and save as a new column.
+#' exampleUnidirectional <- calcTPM(exampleUnidirectional, totalTags = "totalTags")
+#' exampleUnidirectional <- calcSupport(exampleUnidirectional, inputAssay="TPM",
+#'     unexpressed=1, outputColumn="TPMsupport")
 calcSupport <- function(object, inputAssay="counts", outputColumn="support", unexpressed=0){
 	# Prechecks
 	assert_that(methods::is(object, "SummarizedExperiment"),
@@ -37,7 +48,11 @@ calcSupport <- function(object, inputAssay="counts", outputColumn="support", une
 #' @importClassesFrom Matrix dgCMatrix
 #' @import assertthat SummarizedExperiment
 #' @return RangedSummarizedExperiment with total tags added as a column in colData.
+#' @family Calculation functions
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#' calcTotalTags(exampleUnidirectional)
 calcTotalTags <- function(object, inputAssay="counts", outputColumn="totalTags"){
 	# Prechecks
 	assert_that(class(object) == "RangedSummarizedExperiment",
@@ -66,10 +81,19 @@ calcTotalTags <- function(object, inputAssay="counts", outputColumn="totalTags")
 #' @param outputColumn character: Name of column in colData to hold number of total tags, only used if totalTags is NULL.
 #'
 #' @return RangedSummarizedExperiment with TPM-values as a new assay. If totalTags is NULL, total tags added as a column in colData.
+#' @family Calculation functions
 #'
 #' @importClassesFrom Matrix dgCMatrix
 #' @import assertthat SummarizedExperiment
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#'
+#' # Calculate TPM:
+#' calcTPM(exampleUnidirectional)
+#'
+#' # Use pre-calculated total number of tags:
+#' calcTPM(exampleUnidirectional, outputAssay="TPMsupplied", totalTags="totalTags")
 calcTPM <- function(object, inputAssay="counts", outputAssay="TPM", totalTags=NULL, outputColumn="totalTags"){
 	# Prechecks
 	assert_that(class(object) == "RangedSummarizedExperiment",
@@ -112,7 +136,16 @@ calcTPM <- function(object, inputAssay="counts", outputAssay="TPM", totalTags=NU
 #' @importClassesFrom Matrix dgCMatrix
 #' @import assertthat SummarizedExperiment
 #' @return RangedSummarizedExperiment with pooled expression added as a column in rowRanges.
+#' @family Calculation functions
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#'
+#' # Calculate TPM using supplied total number of tags:
+#' exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+#'
+#' # Sum TPM values over samples:
+#' calcPooled(exampleCTSSs)
 calcPooled <- function(object, inputAssay="TPM", outputColumn="score"){
 	# Prechecks
 	assert_that(class(object) == "RangedSummarizedExperiment",
@@ -144,7 +177,25 @@ calcPooled <- function(object, inputAssay="TPM", outputColumn="score"){
 #'
 #' @import assertthat S4Vectors SummarizedExperiment
 #' @return RangedSummarizedExperiment with composition added as a column in rowData.
+#' @family Calculation functions
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#'
+#' # Annotate clusters with geneIDs:
+#' library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+#' txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+#' exampleUnidirectional <- assignGeneID(exampleUnidirectional,
+#'                                       geneModels=txdb,
+#'                                       outputColumn="geneID",
+#'                                       swap="thick")
+#'
+#' # Calculate composition values:
+#' exampleUnidirectional <- subset(exampleUnidirectional, !is.na(geneID))
+#' calcComposition(exampleUnidirectional)
+#'
+#' # Use a lower threshold
+#' calcComposition(exampleUnidirectional, unexpressed=0.05, outputColumn="lenientComposition")
 calcComposition <- function(object, inputAssay="counts", outputColumn="composition", unexpressed=0.1, genes="geneID"){
 	assert_that(methods::is(object, "SummarizedExperiment"),
 							is.string(inputAssay),

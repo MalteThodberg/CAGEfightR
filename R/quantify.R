@@ -73,7 +73,9 @@ gf_wrapper <- function(files, ranges, seqinfo, strand){
 
 #' Quantify CAGE Transcriptions Start Sites (CTSSs)
 #'
-#' This function reads in CTSS data from a series of BigWig-files and returns a basepair-by-sample count matrix. To save memory, the count matrix is stored as a sparse matrix (dgCMatrix), and basepair positions as GPos-object.
+#' This function reads in CTSS count data from a series of BigWig-files and returns a
+#' CTSS-by-library count matrix. To save memory, the count matrix is stored
+#' as a sparse matrix (dgCMatrix), and CTSS positions as GPos-object.
 #'
 #' @param plusStrand BigWigFileList: BigWig files with plus-strand CTSS data.
 #' @param minusStrand BigWigFileList: BigWig files with minus-strand CTSS data.
@@ -82,11 +84,37 @@ gf_wrapper <- function(files, ranges, seqinfo, strand){
 #' @param tileWidth integer: Size of tiles to parallelize over.
 #'
 #' @return RangedSummarizedExperiment, where assay is a sparse matrix (dgCMatrix) of CTSS counts and rowRanges is GPos-object.
-#'
 #' @family Quantification functions
 #' @importClassesFrom Matrix dgCMatrix
 #' @import S4Vectors rtracklayer SummarizedExperiment assertthat
 #' @export
+#' @examples
+#' \dontrun{
+#' # Load the example data
+#' data("exampleDesign")
+#' # Use the BigWig-files included with the package:
+#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
+#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
+#'
+#' # Create two named BigWigFileList-objects:
+#' bw_plus <- BigWigFileList(bw_plus)
+#' bw_minus <- BigWigFileList(bw_minus)
+#' names(bw_plus) <- exampleDesign$Name
+#' names(bw_minus) <- exampleDesign$Name
+#'
+#' # Quantify CTSSs, by default this will use the smallest common genome:
+#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign)
+#'
+#' # Alternatively, a genome can be specified:
+#' si <- seqinfo(bw_plus[[1]])
+#' si <- si["chr18"]
+#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign, genome=si)
+#'
+#' # Quantification can be speed up by using multiple cores:
+#' library(BiocParallel)
+#' register(MulticoreParam(workers=3))
+#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign, genome=si)
+#' }
 quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, tileWidth=1e8L){
 	# Pre-checks
 	assert_that(class(plusStrand) == "BigWigFileList",
@@ -157,7 +185,7 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 
 ### TCs and Genes
 
-#' Quantify Tag Clusters (TCs)
+#' Quantify expression of clusters (TSSs or enhancers)
 #'
 #' @param object RangedSummarizedExperiment: CTSSs.
 #' @param clusters GRanges: Clusters ro be quantified.
@@ -166,9 +194,23 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 #'
 #' @return RangedSummarizedExperiment with quantified CTSSs for each region in cluster, with seqinfo and colData is copied over.
 #'
+#' @family Quantification functions
 #' @importClassesFrom Matrix dgCMatrix
 #' @import S4Vectors GenomicRanges rtracklayer SummarizedExperiment assertthat
 #' @export
+#' @examples
+#' # CTSSs stored in a RangedSummarizedExperiment:
+#' data(exampleCTSS)
+#'
+#' # Clusters to be quantified as a GRanges:
+#' data(exampleUnidirectional)
+#' clusters <- rowRanges(exampleUnidirectional)
+#'
+#' # Quantify clusters:
+#' quantifyClusters(exampleCTSSs, clusters)
+#'
+#' # For exceptionally large datasets, the resulting count matrix can be left sparse:
+#' quantifyClusters(exampleCTSSs, rowRanges(exampleUnidirectional), sparse=TRUE)
 quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE){
 	# Pre-checks
 	assert_that(class(object) == "RangedSummarizedExperiment",
@@ -211,7 +253,7 @@ quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE
 	o
 }
 
-#' Quantify genes
+#' Quantify expression of genes
 #'
 #' Obtain a gene-level EM by summing transcripts within genes. Unannotated transcripts (NAs) are discarded.
 #'
@@ -221,8 +263,22 @@ quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE
 #' @param sparse logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.
 #'
 #' @return RangedSummarizedExperiment with rows corresponding to genes. All other information is copied over from object.
+#' @family Quantification functions
 #' @import assertthat S4Vectors GenomicRanges SummarizedExperiment
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#'
+#' # Annotate clusters with geneIDs:
+#' library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+#' txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+#' exampleUnidirectional <- assignGeneID(exampleUnidirectional, geneModels=txdb, outputColumn="geneID")
+#'
+#' # Quantify counts within genes:
+#' quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts")
+#'
+#' # For exceptionally large datasets, the resulting count matrix can be left sparse:
+#' quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts", sparse=TRUE)
 quantifyGenes <- function(object, genes, inputAssay="counts", sparse=FALSE){
 	# Pre-checks
 	assert_that(methods::is(object, "RangedSummarizedExperiment"),
@@ -257,7 +313,7 @@ quantifyGenes <- function(object, genes, inputAssay="counts", sparse=FALSE){
 	assayNames(o) <- inputAssay
 
 	# Calculate some stats
-	rowData(o)[,"nFeatures"] <- elementNROWS(new_gr)
+	rowData(o)[,"nClusters"] <- elementNROWS(new_gr)
 
 	# Return
 	o

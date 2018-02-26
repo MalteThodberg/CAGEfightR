@@ -27,3 +27,21 @@ RangedSummarizedExperiment with merged and sorted ranges (colData and metadata a
 \description{
 This function can safely combine two CAGE experiments, for example TCs and enhancers, for later analysis, by making sure no ranges in the final object are overlapping.
 }
+\examples{
+data(exampleUnidirectional)
+data(exampleBidirectional)
+
+# Clusters must have identical colData to be combined:
+exampleUnidirectional$totalTags <- NULL
+
+# Combine, keeping potential overlaps
+combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional)
+
+# If features overlap, keep only from object1
+combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional,
+   removeIfOverlapping="object2")
+
+# If features overlap, keep only from object2
+combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional,
+   removeIfOverlapping="object1")
+}

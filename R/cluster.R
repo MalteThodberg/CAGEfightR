@@ -1,8 +1,10 @@
 ### Main S4 functions
 
-#' Tag Clustering of pooled CTSSs.
+#' Unidirectional Clustering (Tag Clustering) of pooled CTSSs.
 #'
-#' Finds unidirectional Tag Cluster (TCs) with a pooled TPM above a certain threshold using a slice-reduce approach. Addtionally calculates the sum and peak position of the TCs.
+#' Finds unidirectional Tag Clusters (TCs) with a pooled TPM above a certain
+#' threshold using a slice-reduce approach. Addtionally calculates the sum and
+#' peak position of the TCs.
 #'
 #' @param object GRanges or RangedSummarizedExperiment: Basepair-wise pooled CTSS.
 #' @param pooledCutoff numeric: Minimum pooled value to be considered as TC.
@@ -11,8 +13,20 @@
 #'
 #' @return GRanges with TPM sum as the score column, and TC peak as the thick column.
 #'
-#' @family Tag-clustering functions
+#' @family Clustering functions
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#'
+#' # Calculate pooledTPM, using supplied number of total tags
+#' exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+#' exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+#'
+#' # Cluster using defaults: slice-threshold of 0 and reduce-distance of 20
+#' clusterUnidirectionally(exampleCTSSs)
+#'
+#' # Use custom thresholds:
+#' clusterUnidirectionally(exampleCTSSs, pooledCutoff=1, mergeDist=25)
 setGeneric("clusterUnidirectionally", function(object, ...) {
 	standardGeneric("clusterUnidirectionally")
 })

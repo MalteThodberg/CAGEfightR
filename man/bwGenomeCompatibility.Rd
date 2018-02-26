@@ -17,7 +17,27 @@ bwGenomeCompatibility(plusStrand, minusStrand, genome)
 TRUE, raises an error if the supplied genome is incompabtible.
 }
 \description{
-Given a genome, checks whether a series of BigWig-files are compatible by checking if all common seqlevels have equal seqlengths.
+Given a genome, checks whether a series of BigWig-files are compatible by
+checking if all common seqlevels have equal seqlengths.
+}
+\examples{
+# Use the BigWig-files included with the package:
+data("exampleDesign")
+bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
+bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
+
+# Create two named BigWigFileList-objects:
+bw_plus <- BigWigFileList(bw_plus)
+bw_minus <- BigWigFileList(bw_minus)
+names(bw_plus) <- exampleDesign$Name
+names(bw_minus) <- exampleDesign$Name
+
+# Make a smaller genome:
+si <- seqinfo(bw_plus[[1]])
+si <- si["chr18"]
+
+# Check if it is still compatible:
+bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)
 }
 \seealso{
 Other BigWig functions: \code{\link{bwCommonGenome}},

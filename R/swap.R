@@ -1,16 +1,34 @@
 #' Swap ranges in a GRanges.
 #'
-#' Swap out the range of a GRanges-object with another IRanges-object stored inside the same object. I.e., swapping cluster widths with cluster peaks.
+#' Swap out the range of a GRanges-object with another IRanges-object stored
+#' inside the same object. I.e., swapping cluster widths with cluster peaks.
 #'
-#' @param object GRanges or RangedSummarizedExperiment: Primary ranges to be swapped out.
-#' @param inputColumn character: Name of column holding IRanges to be swapped in.
-#' @param outputColumn character or NULL: Name of column to hold swapped out ranges, if NULL original ranges are not saved.
+#' @param object GRanges or RangedSummarizedExperiment: Primary ranges to be
+#'   swapped out.
+#' @param inputColumn character: Name of column holding IRanges to be swapped
+#'   in.
+#' @param outputColumn character or NULL: Name of column to hold swapped out
+#'   ranges, if NULL original ranges are not saved.
 #' @param ... additional arguments passed to methods.
 #'
 #' @return GRanges with inputColumn swapped in as ranges.
 #'
 #' @family Swapping functions
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#' gr <- rowRanges(exampleUnidirectional)
+#'
+#' # Swap in peaks as main ranges
+#' peaks <- swapRanges(gr)
+#' head(width(gr))
+#' head(width(peaks))
+#'
+#' # swapRanges() can also be directly called on a RangedSummarizedExperiment:
+#' swapRanges(exampleUnidirectional)
+#'
+#' # The original can optionally be saved in the output object
+#' swapRanges(gr, outputColumn = "swapped")
 setGeneric("swapRanges", function(object, ...){
 	standardGeneric("swapRanges")
 })
@@ -63,8 +81,16 @@ setMethod("swapRanges", signature(object="RangedSummarizedExperiment"), function
 #' @param sample character: Name of sample to take scores from.
 #'
 #' @return SummarizedExperiment with sample scores from inputAssay in rowRata.
+#' @family Swapping functions
 #' @import assertthat SummarizedExperiment
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#' sample_names <- colnames(exampleCTSSs)
+#'
+#' # Replace scores with values from the first sample:
+#' x <- swapScores(exampleCTSSs, inputAssay="counts", sample=sample_names[1])
+#' rowRanges(x)
 swapScores <- function(object, outputColumn="score", inputAssay, sample){
 	assert_that(methods::is(object, "SummarizedExperiment"),
 							is.string(outputColumn),

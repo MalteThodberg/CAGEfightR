@@ -2,7 +2,7 @@
 % Please edit documentation in R/quantify.R
 \name{quantifyGenes}
 \alias{quantifyGenes}
-\title{Quantify genes}
+\title{Quantify expression of genes}
 \usage{
 quantifyGenes(object, genes, inputAssay = "counts", sparse = FALSE)
 }
@@ -20,4 +20,22 @@ RangedSummarizedExperiment with rows corresponding to genes. All other informati
 }
 \description{
 Obtain a gene-level EM by summing transcripts within genes. Unannotated transcripts (NAs) are discarded.
+}
+\examples{
+data(exampleUnidirectional)
+
+# Annotate clusters with geneIDs:
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+exampleUnidirectional <- assignGeneID(exampleUnidirectional, geneModels=txdb, outputColumn="geneID")
+
+# Quantify counts within genes:
+quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts")
+
+# For exceptionally large datasets, the resulting count matrix can be left sparse:
+quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts", sparse=TRUE)
+}
+\seealso{
+Other Quantification functions: \code{\link{quantifyCTSSs}},
+  \code{\link{quantifyClusters}}
 }

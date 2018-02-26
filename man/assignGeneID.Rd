@@ -46,6 +46,24 @@ GRanges with geneID added in columns outputColumn (inside rowRanges in case obje
 \description{
 Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Features overlapping multiple genes are resolved by distance to the nearest TSS. Genes are obtained from a TxDb object, or can manually supplied as a GRanges.
 }
+\examples{
+data(exampleUnidirectional)
+
+# Obtain gene models from a TxDb-object:
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+
+# Assign geneIDs
+assignGeneID(exampleUnidirectional,
+             geneModels=txdb,
+             outputColumn="geneID")
+
+# Assign geneIDs using only TC peaks:
+assignGeneID(exampleUnidirectional,
+             geneModels=txdb,
+             outputColumn="geneID",
+             swap="thick")
+}
 \seealso{
 Other Annotation functions: \code{\link{assignMissingID}},
   \code{\link{assignTxID}}, \code{\link{assignTxType}}

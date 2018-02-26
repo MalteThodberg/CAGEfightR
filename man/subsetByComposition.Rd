@@ -27,3 +27,30 @@ RangedSummarizedExperiment with composition values added as a column in rowData 
 \description{
 A convenient wrapper around calcComposition and subset.
 }
+\examples{
+data(exampleUnidirectional)
+
+# Annotate clusters with geneIDs:
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+
+exampleUnidirectional <- assignGeneID(exampleUnidirectional, geneModels=txdb, outputColumn="geneID")
+exampleUnidirectional <- subset(exampleUnidirectional, !is.na(geneID))
+
+# Keep only clusters more than 10\% in more than one sample:
+calcComposition(exampleUnidirectional)
+
+# Keep only clusters more than 5\% in more than 2 samples:
+subsetByComposition(exampleUnidirectional, unexpressed = 0.05, minSamples=2)
+}
+\seealso{
+Other Subsetting functions: \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetBySupport}}
+
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcComposition}}, \code{\link{calcPooled}},
+  \code{\link{calcShape}}, \code{\link{calcSupport}},
+  \code{\link{calcTPM}}, \code{\link{calcTotalTags}},
+  \code{\link{subsetByBidirectionality}},
+  \code{\link{subsetBySupport}}
+}

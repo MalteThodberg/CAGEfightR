@@ -9,6 +9,23 @@
 #'
 #' @return RangedSummarizedExperiment with merged and sorted ranges (colData and metadata are carried over unchanged).
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#' data(exampleBidirectional)
+#'
+#' # Clusters must have identical colData to be combined:
+#' exampleUnidirectional$totalTags <- NULL
+#'
+#' # Combine, keeping potential overlaps
+#' combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional)
+#'
+#' # If features overlap, keep only from object1
+#' combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional,
+#'    removeIfOverlapping="object2")
+#'
+#' # If features overlap, keep only from object2
+#' combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional,
+#'    removeIfOverlapping="object1")
 setGeneric("combineClusters", function(object1, object2, ...) {
 	standardGeneric("combineClusters")
 })

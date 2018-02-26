@@ -22,5 +22,39 @@ quantifyCTSSs(plusStrand, minusStrand, design = NULL, genome = NULL,
 RangedSummarizedExperiment, where assay is a sparse matrix (dgCMatrix) of CTSS counts and rowRanges is GPos-object.
 }
 \description{
-This function reads in CTSS data from a series of BigWig-files and returns a basepair-by-sample count matrix. To save memory, the count matrix is stored as a sparse matrix (dgCMatrix), and basepair positions as GPos-object.
+This function reads in CTSS count data from a series of BigWig-files and returns a
+CTSS-by-library count matrix. To save memory, the count matrix is stored
+as a sparse matrix (dgCMatrix), and CTSS positions as GPos-object.
+}
+\examples{
+\dontrun{
+# Load the example data
+data("exampleDesign")
+# Use the BigWig-files included with the package:
+bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
+bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
+
+# Create two named BigWigFileList-objects:
+bw_plus <- BigWigFileList(bw_plus)
+bw_minus <- BigWigFileList(bw_minus)
+names(bw_plus) <- exampleDesign$Name
+names(bw_minus) <- exampleDesign$Name
+
+# Quantify CTSSs, by default this will use the smallest common genome:
+CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign)
+
+# Alternatively, a genome can be specified:
+si <- seqinfo(bw_plus[[1]])
+si <- si["chr18"]
+CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign, genome=si)
+
+# Quantification can be speed up by using multiple cores:
+library(BiocParallel)
+register(MulticoreParam(workers=3))
+CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign, genome=si)
+}
+}
+\seealso{
+Other Quantification functions: \code{\link{quantifyClusters}},
+  \code{\link{quantifyGenes}}
 }

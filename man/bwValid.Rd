@@ -20,7 +20,23 @@ bwValid(object)
 TRUE, if any tests fails an error is raised.
 }
 \description{
-Checks if a BigWigFile or BigWigFileList is composed of readable files with the proper .bw extension.
+Checks if a BigWigFile or BigWigFileList is composed of readable files with
+the proper .bw extension.
+}
+\examples{
+# Use the BigWig-files included with the package:
+data("exampleDesign")
+bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
+
+# Create a named BigWigFileList-object with names
+bw_plus <- BigWigFileList(bw_plus)
+names(bw_plus) <- exampleDesign$Name
+
+# Check a single BigWigFile:
+bwValid(bw_plus[[1]])
+
+# Check the entire BigWigFileList:
+bwValid(bw_plus)
 }
 \seealso{
 Other BigWig functions: \code{\link{bwCommonGenome}},

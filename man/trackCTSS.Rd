@@ -32,6 +32,27 @@ DataTrack-object.
 \description{
 Create a Gviz-track of CTSSs, where Plus/minus strand signal is shown positive/negative. This representation makes it easy to identify bidirectional peaks.
 }
+\examples{
+library(Gviz)
+data(exampleCTSSs)
+data(exampleUnidirectional)
+data(exampleBidirectional)
+
+# Example uni- and bidirectional clusters
+TC <- rowRanges(subset(exampleUnidirectional, width>=100)[3,])
+BC <- rowRanges(exampleBidirectional[3,])
+
+# Create pooled trakc
+subsetOfCTSSs <- subsetByOverlaps(exampleCTSSs, c(BC, TC, ignore.mcols=TRUE))
+pooledTrack <- trackCTSS(subsetOfCTSSs)
+
+# Plot
+plotTracks(pooledTrack, from=start(TC)-100, to=end(TC)+100, chromosome=seqnames(TC), name="TC")
+plotTracks(pooledTrack, from=start(BC)-100, to=end(BC)+100, chromosome=seqnames(BC), name="BC")
+
+# See vignette for examples on how to combine multiple Gviz tracks
+}
 \seealso{
-Other Genome Browser functions: \code{\link{trackClusters}}
+Other Genome Browser functions: \code{\link{trackBalance}},
+  \code{\link{trackClusters}}
 }

@@ -55,10 +55,28 @@ asymmetricPercentiles <- function(r, prop){
 #' @param ... additional arguments passed to methods.
 #'
 #' @return GRanges with trimmed TCs, including recalculated peaks and scores.
-#' @examples
-#' # ADD_EXAMPLES_HERE
-#' @family TC trimming functions
+#' @family Clustering functions
+#' @family Trimming functions
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#' data(exampleBidirectional)
+#'
+#' # Calculate pooled CTSSs
+#' exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+#' exampleCTSSs <- calcPooled(exampleCTSSs)
+#'
+#' # Choose a few wide clusters:
+#' TCs <- subset(exampleUnidirectional, width >= 100)
+#'
+#' # Symmetric trimming (same percentage from each side):
+#' TCs_sym <- trimToPercentiles(TCs, pooled=exampleCTSSs, symmetric=FALSE)
+#'
+#' # Assymmetric trimming (always trim from lowest side):
+#' TCs_asym <- trimToPercentiles(TCs, pooled=exampleCTSSs, symmetric=TRUE)
+#'
+#' # Compare the two results sets of widths:
+#' summary(width(TCs_sym) - width(TCs_asym))
 setGeneric("trimToPercentiles", function(object, pooled, ...) {
 	standardGeneric("trimToPercentiles")
 })
@@ -166,8 +184,22 @@ setMethod("trimToPercentiles", signature(object="RangedSummarizedExperiment", po
 #' @param ... additional arguments passed to methods.
 #'
 #' @return data.frame with two columns: threshold and nTCs (number of Tag Clusters)
-#' @family Tag-clustering functions
+#' @family Clustering functions
+#' @family Trimming functions
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#' data(exampleBidirectional)
+#'
+#' # Calculate pooled CTSSs
+#' exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+#' exampleCTSSs <- calcPooled(exampleCTSSs)
+#'
+#' # Choose a few wide clusters:
+#' TCs <- subset(exampleUnidirectional, width >= 100)
+#'
+#' # Trim to +/- 10 bp of TC peak
+#' trimToPeak(TCs, pooled=exampleCTSSs, upstream=10, downstream=10)
 setGeneric("trimToPeak", function(object, pooled, ...) {
 	standardGeneric("trimToPeak")
 })

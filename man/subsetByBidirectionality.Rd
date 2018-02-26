@@ -34,3 +34,21 @@ object with bidirectionality values added as a column, and low bidirectionaly re
 \description{
 A convenient wrapper around calcBidirectionality and subset.
 }
+\examples{
+data(exampleCTSSs)
+data(exampleBidirectional)
+
+# Keep only clusters that are bidirectional in at least one sample:
+subsetByBidirectionality(exampleBidirectional, samples=exampleCTSSs)
+}
+\seealso{
+Other Subsetting functions: \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+
+Other Calculation functions: \code{\link{calcBidirectionality}},
+  \code{\link{calcComposition}}, \code{\link{calcPooled}},
+  \code{\link{calcShape}}, \code{\link{calcSupport}},
+  \code{\link{calcTPM}}, \code{\link{calcTotalTags}},
+  \code{\link{subsetByComposition}},
+  \code{\link{subsetBySupport}}
+}

@@ -36,7 +36,25 @@ data.frame with two columns: threshold and nTCs (number of Tag Clusters)
 \description{
 This function counts the number of Tag Clusters (TCs) for an exponentially increasing series of expression cutoffs.
 }
+\examples{
+data(exampleCTSSs)
+
+# Calculate pooledTPM, using supplied number of total tags
+exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+
+# Set backend
+library(BiocParallel)
+register(SerialParam())
+
+# Find optimal slice-threshold for reduce distance of 20:
+tuneTagClustering(object=exampleCTSSs)
+
+# Execution can be speed up by using multiple cores:
+tuneTagClustering(object=exampleCTSSs)
+}
 \seealso{
-Other Tag-clustering functions: \code{\link{clusterUnidirectionally}},
-  \code{\link{trimToPeak}}
+Other Clustering functions: \code{\link{clusterBidirectionally}},
+  \code{\link{clusterUnidirectionally}},
+  \code{\link{trimToPeak}}, \code{\link{trimToPercentiles}}
 }

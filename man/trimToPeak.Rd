@@ -42,7 +42,25 @@ data.frame with two columns: threshold and nTCs (number of Tag Clusters)
 \description{
 Trim the width of TCs by distance from the TC peaks.
 }
+\examples{
+data(exampleCTSSs)
+data(exampleBidirectional)
+
+# Calculate pooled CTSSs
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs)
+
+# Choose a few wide clusters:
+TCs <- subset(exampleUnidirectional, width >= 100)
+
+# Trim to +/- 10 bp of TC peak
+trimToPeak(TCs, pooled=exampleCTSSs, upstream=10, downstream=10)
+}
 \seealso{
-Other Tag-clustering functions: \code{\link{clusterUnidirectionally}},
+Other Clustering functions: \code{\link{clusterBidirectionally}},
+  \code{\link{clusterUnidirectionally}},
+  \code{\link{trimToPercentiles}},
   \code{\link{tuneTagClustering}}
+
+Other Trimming functions: \code{\link{trimToPercentiles}}
 }

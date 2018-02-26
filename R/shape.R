@@ -5,14 +5,31 @@
 #' Apply a shape-function to the pooled CTSS of every TC.
 #'
 #' @param object GenomicRanges or RangedSummarizedExperiment: Tag clusters.
-#' @param pooled GenomicRanges or RangedSummarizedExperiment: Pooled CTSS as the score column.
+#' @param pooled GenomicRanges or RangedSummarizedExperiment: Pooled CTSS as the
+#'   score column.
 #' @param outputColumn character: Name of column to hold shape statistics.
 #' @param shapeFunction function: Function to apply to each TC (See details).
 #' @param ... additional arguments passed to shapeFunction.
 #'
 #' @return Adds a column
+#' @family Calculation functions
 #' @family Shape functions
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#' data(exampleUnidirectional)
+#'
+#' # Calculate pooled CTSSs using pre-calculated number of total tags:
+#' exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+#' exampleCTSSs <- calcPooled(exampleCTSSs)
+#'
+#' # Calculate shape statistics
+#' calcShape(exampleUnidirectional, pooled=exampleCTSSs,
+#'     outputColumn="entropy", shapeFunction=shapeEntropy)
+#' calcShape(exampleUnidirectional, pooled=exampleCTSSs, outputColumn="IQR",
+#'     shapeFunction=shapeIQR, lower=0.2, upper=0.8)
+#'
+#' # See the vignette for how to implement custom shape functions!
 setGeneric("calcShape", function(object, pooled, ...) {
 	standardGeneric("calcShape")
 })
@@ -122,6 +139,16 @@ setMethod("calcShape", signature(object="GRanges", pooled="GPos"), function(obje
 #' @family Shape functions
 #' @import S4Vectors
 #' @export
+#' @examples
+#' # Hypothetical shard/broad clusters:
+#' x_sharp <- Rle(c(1,1,1,4,5,2,1,1))
+#' x_broad <- Rle(c(1,2,3,5,4,3,2,1))
+#'
+#' # Calculate IQR
+#' shapeIQR(x_sharp)
+#' shapeIQR(x_broad)
+#'
+#' # See calcShape for more usage examples
 shapeIQR <- function(x, lower=0.25, upper=0.75){
 	# To normal vector
 	x <- as.vector(x)
@@ -150,6 +177,16 @@ shapeIQR <- function(x, lower=0.25, upper=0.75){
 #' @family Shape functions
 #' @import S4Vectors
 #' @export
+#' @examples
+#' # Hypothetical shard/broad clusters:
+#' x_sharp <- Rle(c(1,1,1,4,5,2,1,1))
+#' x_broad <- Rle(c(1,2,3,5,4,3,2,1))
+#'
+#' # Calculate Entropy
+#' shapeEntropy(x_sharp)
+#' shapeEntropy(x_broad)
+#'
+#' # See calcShape for more usage examples
 shapeEntropy <- function(x){
 	# To normal vector
 	#x <- as.vector(x[x > 0])
@@ -192,7 +229,8 @@ isobreak <- function(i, x){
 #' @return Numeric.
 #' @family Shape functions
 #' @import S4Vectors
-#' @export
+#' @examples
+#' # See calcShape for usage examples
 shapeMultimodality <- function(x){
 	# Convert from Rle
 	x <- as.vector(x)

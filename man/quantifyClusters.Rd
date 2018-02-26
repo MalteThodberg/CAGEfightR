@@ -2,7 +2,7 @@
 % Please edit documentation in R/quantify.R
 \name{quantifyClusters}
 \alias{quantifyClusters}
-\title{Quantify Tag Clusters (TCs)}
+\title{Quantify expression of clusters (TSSs or enhancers)}
 \usage{
 quantifyClusters(object, clusters, inputAssay = "counts", sparse = FALSE)
 }
@@ -19,5 +19,23 @@ quantifyClusters(object, clusters, inputAssay = "counts", sparse = FALSE)
 RangedSummarizedExperiment with quantified CTSSs for each region in cluster, with seqinfo and colData is copied over.
 }
 \description{
-Quantify Tag Clusters (TCs)
+Quantify expression of clusters (TSSs or enhancers)
+}
+\examples{
+# CTSSs stored in a RangedSummarizedExperiment:
+data(exampleCTSS)
+
+# Clusters to be quantified as a GRanges:
+data(exampleUnidirectional)
+clusters <- rowRanges(exampleUnidirectional)
+
+# Quantify clusters:
+quantifyClusters(exampleCTSSs, clusters)
+
+# For exceptionally large datasets, the resulting count matrix can be left sparse:
+quantifyClusters(exampleCTSSs, rowRanges(exampleUnidirectional), sparse=TRUE)
+}
+\seealso{
+Other Quantification functions: \code{\link{quantifyCTSSs}},
+  \code{\link{quantifyGenes}}
 }

@@ -21,3 +21,14 @@ SummarizedExperiment with sample scores from inputAssay in rowRata.
 \description{
 Take scores for a specific sample and a specific assay and put them into rowData.
 }
+\examples{
+data(exampleCTSSs)
+sample_names <- colnames(exampleCTSSs)
+
+# Replace scores with values from the first sample:
+x <- swapScores(exampleCTSSs, inputAssay="counts", sample=sample_names[1])
+rowRanges(x)
+}
+\seealso{
+Other Swapping functions: \code{\link{swapRanges}}
+}

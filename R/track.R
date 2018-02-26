@@ -10,6 +10,25 @@
 #' @return DataTrack-object.
 #' @family Genome Browser functions
 #' @export
+#' @examples
+#' library(Gviz)
+#' data(exampleCTSSs)
+#' data(exampleUnidirectional)
+#' data(exampleBidirectional)
+#'
+#' # Example uni- and bidirectional clusters
+#' TC <- rowRanges(subset(exampleUnidirectional, width>=100)[3,])
+#' BC <- rowRanges(exampleBidirectional[3,])
+#'
+#' # Create pooled trakc
+#' subsetOfCTSSs <- subsetByOverlaps(exampleCTSSs, c(BC, TC, ignore.mcols=TRUE))
+#' pooledTrack <- trackCTSS(subsetOfCTSSs)
+#'
+#' # Plot
+#' plotTracks(pooledTrack, from=start(TC)-100, to=end(TC)+100, chromosome=seqnames(TC), name="TC")
+#' plotTracks(pooledTrack, from=start(BC)-100, to=end(BC)+100, chromosome=seqnames(BC), name="BC")
+#'
+#' # See vignette for examples on how to combine multiple Gviz tracks
 setGeneric("trackCTSS", function(object, ...){
 	standardGeneric("trackCTSS")
 })
@@ -71,11 +90,24 @@ setMethod("trackCTSS", signature(object="GPos"), function(object, ...){
 #' @param ... additional arguments passed on to GeneRegionTrack.
 #'
 #' @return GeneRegionTrack-object.
-#' @examples
-#' # ADD_EXAMPLES_HERE
+#'
 #' @family Genome Browser functions
 #' @import S4Vectors IRanges GenomicRanges Gviz
 #' @export
+#' @examples
+#' library(Gviz)
+#' data(exampleUnidirectional)
+#'
+#' # Find some wide unidirectional clusters:
+#' TCs <- subset(exampleUnidirectional, width >= 100)
+#'
+#' # Create track
+#' clusters_track <- trackClusters(TCs[1:2,], name="Tag clusters", col=NULL)
+#'
+#' # Plot
+#' plotTracks(clusters_track)
+#'
+#' # See vignette for examples on how to combine multiple Gviz tracks
 setGeneric("trackClusters", function(object, ...){
 	standardGeneric("trackClusters")
 })
@@ -158,7 +190,28 @@ setMethod("trackClusters", signature(object="RangedSummarizedExperiment"), funct
 #'
 #' @note Potentially consumes a large amount of memory!
 #' @return list of 3 DataTracks for upstream, downstream and balance.
+#' @family Genome Browser functions
 #' @export
+#' @examples
+#' library(Gviz)
+#' data(exampleCTSSs)
+#' data(exampleBidirectional)
+#'
+#' # Calculate pooled CTSSs
+#' exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+#' exampleCTSSs <- calcPooled(exampleCTSSs)
+#'
+#' # Find a bidirectional cluster to plot:
+#' BC <- rowRanges(exampleBidirectional[10,])
+#' start(BC) <- start(BC) - 250
+#' end(BC) <- end(BC) + 250
+#' subsetOfCTSSs <- subsetByOverlaps(exampleCTSSs, BC)
+#'
+#' # Build balance track
+#' balance_track <- trackBalance(subsetOfCTSSs)
+#'
+#' # Plot
+#' plotTracks(balance_track, from=start(BC), to=end(BC), chromosome=seqnames(BC))
 setGeneric("trackBalance", function(object, ...){
 	standardGeneric("trackBalance")
 })
@@ -178,7 +231,7 @@ setMethod("trackBalance", signature(object="GenomicRanges"), function(object, wi
 							is.string(balanceColor))
 
 	# Get windows
-	cw <- CAGEtestR:::coverageWindows(pooled=object, window=window, balanceFun=BC)
+	cw <- CAGEfightR:::coverageWindows(pooled=object, window=window, balanceFun=BC)
 
 	# Assemble tracks
 	message("Building tracks...")

@@ -6,7 +6,7 @@
 \alias{clusterUnidirectionally,GenomicRanges-method}
 \alias{clusterUnidirectionally,RangedSummarizedExperiment-method}
 \alias{clusterUnidirectionally,GPos-method}
-\title{Tag Clustering of pooled CTSSs.}
+\title{Unidirectional Clustering (Tag Clustering) of pooled CTSSs.}
 \usage{
 clusterUnidirectionally(object, ...)
 
@@ -30,9 +30,26 @@ clusterUnidirectionally(object, ...)
 GRanges with TPM sum as the score column, and TC peak as the thick column.
 }
 \description{
-Finds unidirectional Tag Cluster (TCs) with a pooled TPM above a certain threshold using a slice-reduce approach. Addtionally calculates the sum and peak position of the TCs.
+Finds unidirectional Tag Clusters (TCs) with a pooled TPM above a certain
+threshold using a slice-reduce approach. Addtionally calculates the sum and
+peak position of the TCs.
+}
+\examples{
+data(exampleCTSSs)
+
+# Calculate pooledTPM, using supplied number of total tags
+exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+
+# Cluster using defaults: slice-threshold of 0 and reduce-distance of 20
+clusterUnidirectionally(exampleCTSSs)
+
+# Use custom thresholds:
+clusterUnidirectionally(exampleCTSSs, pooledCutoff=1, mergeDist=25)
 }
 \seealso{
-Other Tag-clustering functions: \code{\link{trimToPeak}},
+Other Clustering functions: \code{\link{clusterBidirectionally}},
+  \code{\link{trimToPeak}},
+  \code{\link{trimToPercentiles}},
   \code{\link{tuneTagClustering}}
 }

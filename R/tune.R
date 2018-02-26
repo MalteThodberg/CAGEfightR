@@ -12,8 +12,24 @@
 #' @param ... additional arguments passed to methods.
 #'
 #' @return data.frame with two columns: threshold and nTCs (number of Tag Clusters)
-#' @family Tag-clustering functions
+#' @family Clustering functions
 #' @export
+#' @examples
+#' data(exampleCTSSs)
+#'
+#' # Calculate pooledTPM, using supplied number of total tags
+#' exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+#' exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+#'
+#' # Set backend
+#' library(BiocParallel)
+#' register(SerialParam())
+#'
+#' # Find optimal slice-threshold for reduce distance of 20:
+#' tuneTagClustering(object=exampleCTSSs)
+#'
+#' # Execution can be speed up by using multiple cores:
+#' tuneTagClustering(object=exampleCTSSs)
 setGeneric("tuneTagClustering", function(object, ...) {
 	standardGeneric("tuneTagClustering")
 })

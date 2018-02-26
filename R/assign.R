@@ -19,6 +19,51 @@
 #'
 #' @family Annotation functions
 #' @export
+#' @examples
+#' \dontrun{
+#' data(exampleUnidirectional)
+#'
+#' # Obtain transcript models from a TxDb-object:
+#' library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+#' txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+#'
+#' # Assign txIDs
+#' assignTxType(exampleUnidirectional,
+#'              txModels=txdb)
+#'
+#' # Assign txIDs using only TC peaks:
+#' exampleUnidirectional <- assignTxType(exampleUnidirectional,
+#'                                       txModels=txdb,
+#'                                       swap="thick")
+#'
+#' # The "promoter" and "proximal" category boundaries can be changed:
+#' assignTxType(exampleUnidirectional,
+#'              txModels=txdb,
+#'              swap="thick",
+#'              tssUpstream=50,
+#'              tssDownstream=50,
+#'              proximalUpstream=100)
+#'
+#' # Annotation using complete antisense categories:
+#' exampleUnidirectional <- assignTxType(exampleUnidirectional,
+#'                                     txModels=txdb,
+#'                                     outputColumn="txTypeExtended",
+#'                                     swap="thick",
+#'                                     detailedAntisense=TRUE)
+#'
+#' # The output is always a factor added as a column:
+#' summary(rowRanges(exampleUnidirectional)$txType)
+#' summary(rowRanges(exampleUnidirectional)$txTypeExtended)
+#'
+#' # To avoid using a TxDb-object, a GRangesList can be supplied:
+#' custom_hierarchy <- GRangesList(promoters=granges(promoters(txdb)),
+#'                                 exons=granges(exons(txdb)))
+#' assignTxType(exampleUnidirectional,
+#'              txModels=custom_hierarchy,
+#'              outputColumn="customType",
+#'              swap="thick",
+#'              noOverlap = "intergenic")
+#' }
 setGeneric("assignTxType", function(object, txModels, ...) {
 	standardGeneric("assignTxType")
 })
@@ -156,6 +201,23 @@ setMethod("assignTxType", signature(object="RangedSummarizedExperiment", txModel
 #'
 #' @family Annotation functions
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#'
+#' # Obtain gene models from a TxDb-object:
+#' library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+#' txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+#'
+#' # Assign geneIDs
+#' assignGeneID(exampleUnidirectional,
+#'              geneModels=txdb,
+#'              outputColumn="geneID")
+#'
+#' # Assign geneIDs using only TC peaks:
+#' assignGeneID(exampleUnidirectional,
+#'              geneModels=txdb,
+#'              outputColumn="geneID",
+#'              swap="thick")
 setGeneric("assignGeneID", function(object, geneModels, ...) {
 	standardGeneric("assignGeneID")
 })
@@ -271,6 +333,23 @@ setMethod("assignGeneID", signature(object="RangedSummarizedExperiment", geneMod
 #'
 #' @family Annotation functions
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#'
+#' # Obtain transcript models from a TxDb-object:
+#' library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+#' txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+#'
+#' # Assign txIDs
+#' assignTxID(exampleUnidirectional,
+#'            txModels=txdb,
+#'            outputColumn="geneID")
+#'
+#' # Assign txIDs using only TC peaks:
+#' assignTxID(exampleUnidirectional,
+#'              txModels=txdb,
+#'              outputColumn="geneID",
+#'              swap="thick")
 setGeneric("assignTxID", function(object, txModels, ...) {
 	standardGeneric("assignTxID")
 })
@@ -380,6 +459,24 @@ setMethod("assignTxID", signature(object="RangedSummarizedExperiment", txModels=
 #'
 #' @family Annotation functions
 #' @export
+#' @examples
+#' data(exampleUnidirectional)
+#'
+#' # Obtain gene models from a TxDb-object:
+#' library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+#' txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+#'
+#' # Assign geneIDs using only TC peaks:
+#' exampleUnidirectional <- assignGeneID(exampleUnidirectional,
+#'                                       geneModels=txdb,
+#'                                       outputColumn="geneID",
+#'                                       swap="thick")
+#'
+#' # Replace NAs with "Novel"
+#' assignMissingID(exampleUnidirectional)
+#'
+#' # Replace NAs with "NovelTSS"
+#' assignMissingID(exampleUnidirectional, prefix = "NovelTSS")
 setGeneric("assignMissingID", function(object, ...) {
 	standardGeneric("assignMissingID")
 })

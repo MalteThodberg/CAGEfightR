@@ -33,6 +33,25 @@ GRanges with NAs replaced in outputColumn (inside rowRanges in case object is a 
 \description{
 This function can relabel ranges with missing IDs (i.e. returned by assignTxID and assignGeneID), in case they need to be retained for further analysis.
 }
+\examples{
+data(exampleUnidirectional)
+
+# Obtain gene models from a TxDb-object:
+library(TxDb.Mmusculus.UCSC.mm9.knownGene)
+txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
+
+# Assign geneIDs using only TC peaks:
+exampleUnidirectional <- assignGeneID(exampleUnidirectional,
+                                      geneModels=txdb,
+                                      outputColumn="geneID",
+                                      swap="thick")
+
+# Replace NAs with "Novel"
+assignMissingID(exampleUnidirectional)
+
+# Replace NAs with "NovelTSS"
+assignMissingID(exampleUnidirectional, prefix = "NovelTSS")
+}
 \seealso{
 Other Annotation functions: \code{\link{assignGeneID}},
   \code{\link{assignTxID}}, \code{\link{assignTxType}}

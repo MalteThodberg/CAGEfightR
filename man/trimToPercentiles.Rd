@@ -42,5 +42,29 @@ GRanges with trimmed TCs, including recalculated peaks and scores.
 Given a set of TCs and genome-wide CTSS coverage, reduce the width of TC until a certain amount of expression has been removed.
 }
 \examples{
-# ADD_EXAMPLES_HERE
+data(exampleCTSSs)
+data(exampleBidirectional)
+
+# Calculate pooled CTSSs
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcPooled(exampleCTSSs)
+
+# Choose a few wide clusters:
+TCs <- subset(exampleUnidirectional, width >= 100)
+
+# Symmetric trimming (same percentage from each side):
+TCs_sym <- trimToPercentiles(TCs, pooled=exampleCTSSs, symmetric=FALSE)
+
+# Assymmetric trimming (always trim from lowest side):
+TCs_asym <- trimToPercentiles(TCs, pooled=exampleCTSSs, symmetric=TRUE)
+
+# Compare the two results sets of widths:
+summary(width(TCs_sym) - width(TCs_asym))
+}
+\seealso{
+Other Clustering functions: \code{\link{clusterBidirectionally}},
+  \code{\link{clusterUnidirectionally}},
+  \code{\link{trimToPeak}}, \code{\link{tuneTagClustering}}
+
+Other Trimming functions: \code{\link{trimToPeak}}
 }

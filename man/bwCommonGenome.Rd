@@ -17,7 +17,26 @@ bwCommonGenome(plusStrand, minusStrand, method = "intersect")
 Sorted Seqinfo-object.
 }
 \description{
-Finds a common genome for a series of BigWig-files, either using only levels present in all files (intersect) or in any file (union).
+Finds a common genome for a series of BigWig-files, either using only levels
+present in all files (intersect) or in any file (union).
+}
+\examples{
+# Use the BigWig-files included with the package:
+data("exampleDesign")
+bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
+bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
+
+# Create two named BigWigFileList-objects:
+bw_plus <- BigWigFileList(bw_plus)
+bw_minus <- BigWigFileList(bw_minus)
+names(bw_plus) <- exampleDesign$Name
+names(bw_minus) <- exampleDesign$Name
+
+# Find the smallest common genome (intersect) across the BigWigList-objects:
+bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method="intersect")
+
+# Find the most inclusive genome (union) across the BigWigList-objects:
+bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method="union")
 }
 \seealso{
 Other BigWig functions: \code{\link{bwGenomeCompatibility}},

@@ -2,19 +2,23 @@
 #'
 #' A convienient wrapper around calcSupport and subset.
 #'
-#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.
+#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
+#'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
-#' @param outputColumn character: Name of column in rowRanges to hold support values.
-#' @param unexpressed numeric: Support will be calculated based on features larger than this cutoff.
-#' @param minSamples numeric: Only features with support in more than this number of samples will be kept.
+#' @param outputColumn character: Name of column in rowRanges to hold support
+#'   values.
+#' @param unexpressed numeric: Support will be calculated based on features
+#'   larger than this cutoff.
+#' @param minSamples numeric: Only features with support in more than this
+#'   number of samples will be kept.
 #'
-#' @return RangedSummarizedExperiment with support added as a column in rowRanges and features with less support than minSamples removed.
+#' @return RangedSummarizedExperiment with support added as a column in
+#'   rowRanges and features with less support than minSamples removed.
 #'
 #' @family Subsetting functions
 #' @family Calculation functions
 #'
 #' @importClassesFrom Matrix dgCMatrix
-#' @import assertthat SummarizedExperiment
 #' @export
 #' @examples
 #' data(exampleBidirectional)
@@ -50,18 +54,23 @@ subsetBySupport <- function(object, inputAssay="counts", outputColumn="support",
 #'
 #' A convenient wrapper around calcComposition and subset.
 #'
-#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.
+#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
+#'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
-#' @param outputColumn character: Name of column in rowRanges to hold composition values.
-#' @param unexpressed numeric: Composition will be calculated based on features larger than this cutoff.
-#' @param genes character: Name of column in rowData holding genes (NAs are not allowed.)
-#' @param minSamples numeric: Only features with composition in more than this number of samples will be kept.
+#' @param outputColumn character: Name of column in rowRanges to hold
+#'   composition values.
+#' @param unexpressed numeric: Composition will be calculated based on features
+#'   larger than this cutoff.
+#' @param genes character: Name of column in rowData holding genes (NAs are not
+#'   allowed.)
+#' @param minSamples numeric: Only features with composition in more than this
+#'   number of samples will be kept.
 #'
-#' @return RangedSummarizedExperiment with composition values added as a column in rowData and features with less composition than minSamples removed.
+#' @return RangedSummarizedExperiment with composition values added as a column
+#'   in rowData and features with less composition than minSamples removed.
 #' @family Subsetting functions
 #' @family Calculation functions
 #'
-#' @import assertthat SummarizedExperiment
 #' @export
 #' @examples
 #' data(exampleUnidirectional)
@@ -70,7 +79,9 @@ subsetBySupport <- function(object, inputAssay="counts", outputColumn="support",
 #' library(TxDb.Mmusculus.UCSC.mm9.knownGene)
 #' txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 #'
-#' exampleUnidirectional <- assignGeneID(exampleUnidirectional, geneModels=txdb, outputColumn="geneID")
+#' exampleUnidirectional <- assignGeneID(exampleUnidirectional,
+#'                                       geneModels=txdb,
+#'                                       outputColumn="geneID")
 #' exampleUnidirectional <- subset(exampleUnidirectional, !is.na(geneID))
 #'
 #' # Keep only clusters more than 10% in more than one sample:

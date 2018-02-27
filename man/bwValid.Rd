@@ -26,7 +26,8 @@ the proper .bw extension.
 \examples{
 # Use the BigWig-files included with the package:
 data("exampleDesign")
-bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
+bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
+                       package = "CAGEfightR")
 
 # Create a named BigWigFileList-object with names
 bw_plus <- BigWigFileList(bw_plus)

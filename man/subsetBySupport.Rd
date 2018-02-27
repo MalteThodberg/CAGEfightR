@@ -8,18 +8,23 @@ subsetBySupport(object, inputAssay = "counts", outputColumn = "support",
   unexpressed = 0, minSamples = 1)
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.}
+\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
+cluster or gene-level.}
 
 \item{inputAssay}{character: Name of assay holding input expression values.}
 
-\item{outputColumn}{character: Name of column in rowRanges to hold support values.}
+\item{outputColumn}{character: Name of column in rowRanges to hold support
+values.}
 
-\item{unexpressed}{numeric: Support will be calculated based on features larger than this cutoff.}
+\item{unexpressed}{numeric: Support will be calculated based on features
+larger than this cutoff.}
 
-\item{minSamples}{numeric: Only features with support in more than this number of samples will be kept.}
+\item{minSamples}{numeric: Only features with support in more than this
+number of samples will be kept.}
 }
 \value{
-RangedSummarizedExperiment with support added as a column in rowRanges and features with less support than minSamples removed.
+RangedSummarizedExperiment with support added as a column in
+  rowRanges and features with less support than minSamples removed.
 }
 \description{
 A convienient wrapper around calcSupport and subset.

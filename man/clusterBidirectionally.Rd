@@ -18,26 +18,37 @@ clusterBidirectionally(object, ...)
 \S4method{clusterBidirectionally}{GPos}(object, ...)
 }
 \arguments{
-\item{object}{GenomicRanges or RangedSummarizedExperiment: Pooled CTSSs stored in the score column.}
+\item{object}{GenomicRanges or RangedSummarizedExperiment: Pooled CTSSs
+stored in the score column.}
 
 \item{...}{additional arguments passed to methods.}
 
-\item{window}{integer: Width of sliding window used for calculating window sums.}
+\item{window}{integer: Width of sliding window used for calculating window
+sums.}
 
-\item{balanceThreshold}{numeric: Minimum value of the BC to use for slice-reduce, a value of 1 corresponds to perfectly balanced sites.}
+\item{balanceThreshold}{numeric: Minimum value of the BC to use for
+slice-reduce, a value of 1 corresponds to perfectly balanced sites.}
 }
 \value{
-GRanges with bidirectional sites: Minimum width is 1 + 2*window, TPM sum (on both strands) in the score column, maximal bidirectional site in the thick column and maximum balance in the balance column.
+GRanges with bidirectional sites: Minimum width is 1 + 2*window, TPM
+  sum (on both strands) in the score column, maximal bidirectional site in
+  the thick column and maximum balance in the balance column.
 }
 \description{
-Finds sites with (balanced and divergent) bidirectional transcription using sliding windows of summed coverage: The Bhattacharyya coefficient (BC) is used to quantify depature from a perfectly balanced site, and a slice-reduce is used to identify sites.
+Finds sites with (balanced and divergent) bidirectional transcription using
+sliding windows of summed coverage: The Bhattacharyya coefficient (BC) is
+used to quantify depature from a perfectly balanced site, and a slice-reduce
+is used to identify sites.
 }
 \examples{
 \dontrun{
 data(exampleCTSSs)
 
 # Calculate pooledTPM, using supplied number of total tags
-exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+exampleCTSSs <- calcTPM(exampleCTSSs,
+                        inputAssay="counts",
+                        outputAssay="TPM",
+                        totalTags="totalTags")
 exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
 
 # Cluster using defaults: balance-treshold of 199 and window of 199 bp:

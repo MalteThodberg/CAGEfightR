@@ -1,13 +1,18 @@
 #' Combine two CAGE experiments.
 #'
-#' This function can safely combine two CAGE experiments, for example TCs and enhancers, for later analysis, by making sure no ranges in the final object are overlapping.
+#' This function can safely combine two CAGE experiments, for example TCs and
+#' enhancers, for later analysis, by making sure no ranges in the final object
+#' are overlapping.
 #'
 #' @param object1 RangedSummarizedExperiment: First experiment to be combined.
 #' @param object2 RangedSummarizedExperiment: First experiment to be combined.
-#' @param removeIfOverlapping character: Whether to keep overlapping ranges ("none") or discard from either the first ("object1") or second ("object2") experiment.
+#' @param removeIfOverlapping character: Whether to keep overlapping ranges
+#'   ("none") or discard from either the first ("object1") or second ("object2")
+#'   experiment.
 #' @param ... arguments passed to methods.
 #'
-#' @return RangedSummarizedExperiment with merged and sorted ranges (colData and metadata are carried over unchanged).
+#' @return RangedSummarizedExperiment with merged and sorted ranges (colData and
+#'   metadata are carried over unchanged).
 #' @export
 #' @examples
 #' data(exampleUnidirectional)
@@ -31,7 +36,6 @@ setGeneric("combineClusters", function(object1, object2, ...) {
 })
 
 #' @rdname combineClusters
-#' @import S4Vectors IRanges GenomicRanges SummarizedExperiment
 #' @export
 setMethod("combineClusters", signature(object1="RangedSummarizedExperiment", "RangedSummarizedExperiment"), function(object1, object2, removeIfOverlapping="none"){
 	# Pre-checks

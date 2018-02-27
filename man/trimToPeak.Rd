@@ -26,7 +26,8 @@ trimToPeak(object, pooled, ...)
 \arguments{
 \item{object}{GenomicRanges or RangedSummarizedExperiment: Tag clusters.}
 
-\item{pooled}{GenomicRanges or RangedSummarizedExperiment: Basepair-wise pooled CTSS (stored in the score column).}
+\item{pooled}{GenomicRanges or RangedSummarizedExperiment: Basepair-wise
+pooled CTSS (stored in the score column).}
 
 \item{...}{additional arguments passed to methods.}
 
@@ -37,7 +38,8 @@ trimToPeak(object, pooled, ...)
 \item{peaks}{character: Name of column in TCs holding TC peaks as an IRanges.}
 }
 \value{
-data.frame with two columns: threshold and nTCs (number of Tag Clusters)
+data.frame with two columns: threshold and nTCs (number of Tag
+  Clusters)
 }
 \description{
 Trim the width of TCs by distance from the TC peaks.

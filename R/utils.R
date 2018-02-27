@@ -1,9 +1,7 @@
-#' @import GenomicRanges SummarizedExperiment
 splitByStrand <- function(object){
 	split(object, strand(object))
 }
 
-#' @import GenomicRanges SummarizedExperiment
 extendRanges <- function(object, upstream, downstream){
 	U <- flank(object, width=upstream, start=TRUE)
 	D <- flank(object, width=downstream, start=FALSE)
@@ -12,7 +10,6 @@ extendRanges <- function(object, upstream, downstream){
 	object
 }
 
-#' @import S4Vectors IRanges GenomicRanges
 countScoredOverlaps <- function(query, subject){
 	# Solution from bioconductor by M Morgan
 	hits <- methods::as(findOverlaps(query=query, subject=subject), "List")

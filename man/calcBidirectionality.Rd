@@ -15,21 +15,26 @@ calcBidirectionality(object, ...)
 \S4method{calcBidirectionality}{RangedSummarizedExperiment}(object, ...)
 }
 \arguments{
-\item{object}{GenomicRanges or RangedSummarizedExperiment: Ranges with pooled CTSSs stored in the score column.}
+\item{object}{GenomicRanges or RangedSummarizedExperiment: Ranges with pooled
+CTSSs stored in the score column.}
 
 \item{...}{additional arguments passed to methods.}
 
-\item{samples}{RangedSummarizedExperiment: Sample-wise CTSSs stored as an assay.}
+\item{samples}{RangedSummarizedExperiment: Sample-wise CTSSs stored as an
+assay.}
 
-\item{inputAssay}{character: Name of assay in samples holding input CTSS values.}
+\item{inputAssay}{character: Name of assay in samples holding input CTSS
+values.}
 
-\item{outputColumn}{character: Name of column in object to hold bidirectionality values.}
+\item{outputColumn}{character: Name of column in object to hold
+bidirectionality values.}
 }
 \value{
 object returned with bidirectionality scores added in mcols.
 }
 \description{
-For each bidirectional site, calculates how many individual samples shows transcription in both directions.
+For each bidirectional site, calculates how many individual samples shows
+transcription in both directions.
 }
 \examples{
 data(exampleCTSSs)

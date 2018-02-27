@@ -2,23 +2,30 @@
 
 #' Determine the optimal pooled threshold for unidirectional tag clustering.
 #'
-#' This function counts the number of Tag Clusters (TCs) for an exponentially increasing series of expression cutoffs.
+#' This function counts the number of Tag Clusters (TCs) for an exponentially
+#' increasing series of expression cutoffs.
 #'
 #' @param object GenomicRanges or RangedSummarizedExperiment: Pooled CTSS.
-#' @param steps integer: Number of thresholds to analyze (in addition to treshold=0).
+#' @param steps integer: Number of thresholds to analyze (in addition to
+#'   treshold=0).
 #' @param mergeDist integer: Merge TCs within this distance.
 #' @param searchMethod character: For advanced user only, see details.
-#' @param maxExponent numeric: The maximal threshold to analyse is obtained as min(score)*2^maxExponent (only used if searchMethod="exponential").
+#' @param maxExponent numeric: The maximal threshold to analyse is obtained as
+#'   min(score)*2^maxExponent (only used if searchMethod="exponential").
 #' @param ... additional arguments passed to methods.
 #'
-#' @return data.frame with two columns: threshold and nTCs (number of Tag Clusters)
+#' @return data.frame with two columns: threshold and nTCs (number of Tag
+#'   Clusters)
 #' @family Clustering functions
 #' @export
 #' @examples
 #' data(exampleCTSSs)
 #'
 #' # Calculate pooledTPM, using supplied number of total tags
-#' exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+#' exampleCTSSs <- calcTPM(exampleCTSSs,
+#'                         inputAssay="counts",
+#'                         outputAssay="TPM",
+#'                         totalTags="totalTags")
 #' exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
 #'
 #' # Set backend
@@ -27,14 +34,10 @@
 #'
 #' # Find optimal slice-threshold for reduce distance of 20:
 #' tuneTagClustering(object=exampleCTSSs)
-#'
-#' # Execution can be speed up by using multiple cores:
-#' tuneTagClustering(object=exampleCTSSs)
 setGeneric("tuneTagClustering", function(object, ...) {
 	standardGeneric("tuneTagClustering")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname tuneTagClustering
 setMethod("tuneTagClustering", signature(object="GenomicRanges"), function(object, steps=10L, mergeDist=20L, searchMethod="minUnique", maxExponent=1){
 	# Pre-checks
@@ -85,13 +88,11 @@ setMethod("tuneTagClustering", signature(object="GenomicRanges"), function(objec
 	o
 })
 
-#' @import SummarizedExperiment
 #' @rdname tuneTagClustering
 setMethod("tuneTagClustering", signature(object="RangedSummarizedExperiment"), function(object, ...){
 	tuneTagClustering(rowRanges(object), ...)
 })
 
-#' @import SummarizedExperiment
 #' @rdname tuneTagClustering
 setMethod("tuneTagClustering", signature(object="GPos"), function(object, ...){
 	warning("Using temporary GPos-method in tuneTagClustering!")
@@ -100,7 +101,6 @@ setMethod("tuneTagClustering", signature(object="GPos"), function(object, ...){
 
 #### Helpers ####
 
-#' @import S4Vectors IRanges GenomicRanges
 countClusters <- function(thresholds, cv, mergeDist=20){
 	# Slice
 	o <- lapply(thresholds, slice, x=cv, includeLower=FALSE, upper=Inf, rangesOnly=TRUE)

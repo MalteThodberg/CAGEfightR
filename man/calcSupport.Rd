@@ -8,16 +8,20 @@ calcSupport(object, inputAssay = "counts", outputColumn = "support",
   unexpressed = 0)
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.}
+\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
+cluster or gene-level.}
 
 \item{inputAssay}{character: Name of assay holding input expression values.}
 
-\item{outputColumn}{character: Name of column in rowRanges to hold support values.}
+\item{outputColumn}{character: Name of column in rowRanges to hold support
+values.}
 
-\item{unexpressed}{numeric: Support will be calculated based on features larger than this cutoff.}
+\item{unexpressed}{numeric: Support will be calculated based on features
+larger than this cutoff.}
 }
 \value{
-RangedSummarizedExperiment with support added as a column in rowRanges.
+RangedSummarizedExperiment with support added as a column in
+  rowRanges.
 }
 \description{
 Calculate support of CAGE data.
@@ -26,12 +30,17 @@ Calculate support of CAGE data.
 data(exampleUnidirectional)
 
 # Count samples with at at least a single tags
-exampleUnidirectional <- calcSupport(exampleUnidirectional, inputAssay="counts", unexpressed=0)
+exampleUnidirectional <- calcSupport(exampleUnidirectional,
+                                     inputAssay="counts",
+                                     unexpressed=0)
 
 # Count number of samples with more than 1 TPM and save as a new column.
-exampleUnidirectional <- calcTPM(exampleUnidirectional, totalTags = "totalTags")
-exampleUnidirectional <- calcSupport(exampleUnidirectional, inputAssay="TPM",
-    unexpressed=1, outputColumn="TPMsupport")
+exampleUnidirectional <- calcTPM(exampleUnidirectional,
+                                 totalTags = "totalTags")
+exampleUnidirectional <- calcSupport(exampleUnidirectional,
+                                     inputAssay="TPM",
+                                     unexpressed=1,
+                                     outputColumn="TPMsupport")
 }
 \seealso{
 Other Calculation functions: \code{\link{calcBidirectionality}},

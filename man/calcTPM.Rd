@@ -8,18 +8,23 @@ calcTPM(object, inputAssay = "counts", outputAssay = "TPM",
   totalTags = NULL, outputColumn = "totalTags")
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.}
+\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
+cluster or gene-level.}
 
 \item{inputAssay}{character: Name of assay holding input expression values.}
 
 \item{outputAssay}{character: Name of assay to hold TPM values.}
 
-\item{totalTags}{character or NULL: Column in colData holding the total number of tags for each samples. If NULL, this will be calculated using calcTotalTags.}
+\item{totalTags}{character or NULL: Column in colData holding the total
+number of tags for each samples. If NULL, this will be calculated using
+calcTotalTags.}
 
-\item{outputColumn}{character: Name of column in colData to hold number of total tags, only used if totalTags is NULL.}
+\item{outputColumn}{character: Name of column in colData to hold number of
+total tags, only used if totalTags is NULL.}
 }
 \value{
-RangedSummarizedExperiment with TPM-values as a new assay. If totalTags is NULL, total tags added as a column in colData.
+RangedSummarizedExperiment with TPM-values as a new assay. If
+  totalTags is NULL, total tags added as a column in colData.
 }
 \description{
 Calculate CAGE Tags-Per-Million (TPM)

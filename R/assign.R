@@ -2,20 +2,30 @@
 
 #' Annotate ranges with transcript type.
 #'
-#' Annotate a set of ranges in a GRanges object with transcript type (TxType) based on their genic context. Transcripts are obtained from a TxDb object, but can alternatively be specified manually as a GRangesList.
+#' Annotate a set of ranges in a GRanges object with transcript type (TxType)
+#' based on their genic context. Transcripts are obtained from a TxDb object,
+#' but can alternatively be specified manually as a GRangesList.
 #'
 #' @param object GRanges or RangedSummarizedExperiment: Ranges to be annotated.
-#' @param txModels TxDb or GRangesList: Transcript models via a TxDb, or manually specified as a GRangesList.
+#' @param txModels TxDb or GRangesList: Transcript models via a TxDb, or
+#'   manually specified as a GRangesList.
 #' @param outputColumn character: Name of column to hold txType values.
-#' @param swap character or NULL: If not NULL, use another set of ranges contained in object to calculate overlaps, for example peaks in the thick column.
+#' @param swap character or NULL: If not NULL, use another set of ranges
+#'   contained in object to calculate overlaps, for example peaks in the thick
+#'   column.
 #' @param tssUpstream integer: Distance to extend annotated promoter upstream.
-#' @param tssDownstream integer: Distance to extend annotated promoter downstream.
-#' @param proximalUpstream integer: Maximum distance upstream of promoter to be considered proximal.
-#' @param detailedAntisense logical: Wether to mirror all txType categories in the antisense direction (TRUE) or lump them all together (FALSE).
-#' @param noOverlap character: In case categories are manually supplied with as a GRangesList, what to call regions with no overlap.
+#' @param tssDownstream integer: Distance to extend annotated promoter
+#'   downstream.
+#' @param proximalUpstream integer: Maximum distance upstream of promoter to be
+#'   considered proximal.
+#' @param detailedAntisense logical: Wether to mirror all txType categories in
+#'   the antisense direction (TRUE) or lump them all together (FALSE).
+#' @param noOverlap character: In case categories are manually supplied with as
+#'   a GRangesList, what to call regions with no overlap.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with txType added as factor in metadata columns (inside rowRanges in case object is a RangedSummarizedExperiment)
+#' @return GRanges with txType added as factor in metadata columns (inside
+#'   rowRanges in case object is a RangedSummarizedExperiment)
 #'
 #' @family Annotation functions
 #' @export
@@ -68,7 +78,6 @@ setGeneric("assignTxType", function(object, txModels, ...) {
 	standardGeneric("assignTxType")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname assignTxType
 setMethod("assignTxType", signature(object="GenomicRanges", txModels="GenomicRangesList"), function(object, txModels, outputColumn="txType", swap=NULL, noOverlap="intergenic"){
 	# Pre-checks
@@ -118,7 +127,6 @@ setMethod("assignTxType", signature(object="GenomicRanges", txModels="GenomicRan
 	object
 })
 
-#' @import GenomicRanges SummarizedExperiment
 #' @rdname assignTxType
 setMethod("assignTxType", signature(object="RangedSummarizedExperiment", txModels="GenomicRangesList"), function(object, txModels, ...){
 	rowRanges(object) <- assignTxType(rowRanges(object), txModels=txModels, ...)
@@ -127,7 +135,6 @@ setMethod("assignTxType", signature(object="RangedSummarizedExperiment", txModel
 	object
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges GenomicFeatures
 #' @rdname assignTxType
 setMethod("assignTxType", signature(object="GenomicRanges", txModels="TxDb"), function(object, txModels, outputColumn="txType", swap=NULL, tssUpstream=100, tssDownstream=100, proximalUpstream=1000, detailedAntisense=FALSE){
 	# Pre-checks
@@ -174,7 +181,6 @@ setMethod("assignTxType", signature(object="GenomicRanges", txModels="TxDb"), fu
 	object
 })
 
-#' @import GenomicRanges SummarizedExperiment
 #' @rdname assignTxType
 setMethod("assignTxType", signature(object="RangedSummarizedExperiment", txModels="TxDb"), function(object, txModels, ...){
 	rowRanges(object) <- assignTxType(rowRanges(object), txModels=txModels, ...)
@@ -187,17 +193,24 @@ setMethod("assignTxType", signature(object="RangedSummarizedExperiment", txModel
 
 #' Annotate ranges with gene ID.
 #'
-#' Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Features overlapping multiple genes are resolved by distance to the nearest TSS. Genes are obtained from a TxDb object, or can manually supplied as a GRanges.
+#' Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene
+#' Identifiers) based on their genic context. Features overlapping multiple
+#' genes are resolved by distance to the nearest TSS. Genes are obtained from a
+#' TxDb object, or can manually supplied as a GRanges.
 #'
 #' @param object GRanges or RangedSummarizedExperiment: Ranges to be annotated.
-#' @param geneModels TxDb or GRanges: Gene models via a TxDb, or manually specified as a GRangesList.
+#' @param geneModels TxDb or GRanges: Gene models via a TxDb, or manually
+#'   specified as a GRangesList.
 #' @param outputColumn character: Name of column to hold geneID values.
-#' @param swap character or NULL: If not NULL, use another set of ranges contained in object to calculate overlaps, for example peaks in the thick column.
+#' @param swap character or NULL: If not NULL, use another set of ranges
+#'   contained in object to calculate overlaps, for example peaks in the thick
+#'   column.
 #' @param upstream integer: Distance to extend annotated promoter upstream.
 #' @param downstream integer: Distance to extend annotated promoter downstream.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with geneID added in columns outputColumn (inside rowRanges in case object is a RangedSummarizedExperiment)
+#' @return GRanges with geneID added in columns outputColumn (inside rowRanges
+#'   in case object is a RangedSummarizedExperiment)
 #'
 #' @family Annotation functions
 #' @export
@@ -222,7 +235,6 @@ setGeneric("assignGeneID", function(object, geneModels, ...) {
 	standardGeneric("assignGeneID")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname assignGeneID
 setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="GenomicRanges"), function(object, geneModels, outputColumn="geneID", swap=NULL, upstream=1000, downstream=100){
 	# Pre-checks
@@ -277,7 +289,6 @@ setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="GenomicR
 	object
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges SummarizedExperiment
 #' @rdname assignGeneID
 setMethod("assignGeneID", signature(object="RangedSummarizedExperiment", geneModels="GenomicRanges"), function(object, geneModels, ...){
 	rowRanges(object) <- assignGeneID(rowRanges(object), geneModels=geneModels, ...)
@@ -286,7 +297,6 @@ setMethod("assignGeneID", signature(object="RangedSummarizedExperiment", geneMod
 	object
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges GenomicFeatures
 #' @rdname assignGeneID
 setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="TxDb"), function(object, geneModels, outputColumn="geneID", swap=NULL, upstream=1000, downstream=100){
 	# Pre-checks
@@ -306,7 +316,6 @@ setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="TxDb"), 
 	object
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges SummarizedExperiment GenomicFeatures
 #' @rdname assignGeneID
 setMethod("assignGeneID", signature(object="RangedSummarizedExperiment", geneModels="TxDb"), function(object, geneModels, ...){
 	rowRanges(object) <- assignGeneID(rowRanges(object), geneModels=geneModels, ...)
@@ -319,17 +328,23 @@ setMethod("assignGeneID", signature(object="RangedSummarizedExperiment", geneMod
 
 #' Annotate ranges with transcript ID.
 #'
-#' Annotate a set of ranges in a GRanges object with transcript IDs based on their genic context. All overlapping transcripts are returned. Transcripts are obtained from a TxDb object, or can manually supplied as a GRanges.
+#' Annotate a set of ranges in a GRanges object with transcript IDs based on
+#' their genic context. All overlapping transcripts are returned. Transcripts
+#' are obtained from a TxDb object, or can manually supplied as a GRanges.
 #'
 #' @param object GRanges or RangedSummarizedExperiment: Ranges to be annotated.
-#' @param txModels TxDb or GRanges: Transcript models via a TxDb, or manually specified as a GRanges.
+#' @param txModels TxDb or GRanges: Transcript models via a TxDb, or manually
+#'   specified as a GRanges.
 #' @param outputColumn character: Name of column to hold txID values.
-#' @param swap character or NULL: If not NULL, use another set of ranges contained in object to calculate overlaps, for example peaks in the thick column.
+#' @param swap character or NULL: If not NULL, use another set of ranges
+#'   contained in object to calculate overlaps, for example peaks in the thick
+#'   column.
 #' @param upstream integer: Distance to extend annotated promoter upstream.
 #' @param downstream integer: Distance to extend annotated promoter downstream.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with txID added in column outputColumn (inside rowRanges in case object is a RangedSummarizedExperiment)
+#' @return GRanges with txID added in column outputColumn (inside rowRanges in
+#'   case object is a RangedSummarizedExperiment)
 #'
 #' @family Annotation functions
 #' @export
@@ -354,7 +369,6 @@ setGeneric("assignTxID", function(object, txModels, ...) {
 	standardGeneric("assignTxID")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname assignTxID
 setMethod("assignTxID", signature(object="GenomicRanges", txModels="GenomicRanges"), function(object, txModels, outputColumn="txID", swap=NULL){
 	# Pre-checks
@@ -401,7 +415,6 @@ setMethod("assignTxID", signature(object="GenomicRanges", txModels="GenomicRange
 	object
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges SummarizedExperiment
 #' @rdname assignTxID
 setMethod("assignTxID", signature(object="RangedSummarizedExperiment", txModels="GenomicRanges"), function(object, txModels, ...){
 	rowRanges(object) <- assignTxID(rowRanges(object), txModels=txModels, ...)
@@ -410,7 +423,6 @@ setMethod("assignTxID", signature(object="RangedSummarizedExperiment", txModels=
 	object
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges GenomicFeatures
 #' @rdname assignTxID
 setMethod("assignTxID", signature(object="GenomicRanges", txModels="TxDb"), function(object, txModels, outputColumn="txID", swap=NULL, upstream=1000, downstream=0){
 	# Pre-checks
@@ -435,7 +447,6 @@ setMethod("assignTxID", signature(object="GenomicRanges", txModels="TxDb"), func
 	object
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges SummarizedExperiment GenomicFeatures
 #' @rdname assignTxID
 setMethod("assignTxID", signature(object="RangedSummarizedExperiment", txModels="TxDb"), function(object, txModels, ...){
 	rowRanges(object) <- assignTxID(rowRanges(object), txModels=txModels, ...)
@@ -448,14 +459,19 @@ setMethod("assignTxID", signature(object="RangedSummarizedExperiment", txModels=
 
 #' Annotate ranges with missing IDs.
 #'
-#' This function can relabel ranges with missing IDs (i.e. returned by assignTxID and assignGeneID), in case they need to be retained for further analysis.
+#' This function can relabel ranges with missing IDs (i.e. returned by
+#' assignTxID and assignGeneID), in case they need to be retained for further
+#' analysis.
 #'
-#' @param object character, GRanges or RangedSummarizedExperiment: IDs to have NAs replaces with new IDs.
+#' @param object character, GRanges or RangedSummarizedExperiment: IDs to have
+#'   NAs replaces with new IDs.
 #' @param outputColumn character: Name of column to hold txID values.
-#' @param prefix character: New name to assign to ranges with missing IDs, in the style prefix1, prefix2, etc.
+#' @param prefix character: New name to assign to ranges with missing IDs, in
+#'   the style prefix1, prefix2, etc.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with NAs replaced in outputColumn (inside rowRanges in case object is a RangedSummarizedExperiment)
+#' @return GRanges with NAs replaced in outputColumn (inside rowRanges in case
+#'   object is a RangedSummarizedExperiment)
 #'
 #' @family Annotation functions
 #' @export
@@ -482,7 +498,6 @@ setGeneric("assignMissingID", function(object, ...) {
 })
 
 #' @rdname assignMissingID
-#' @import assertthat
 setMethod("assignMissingID", signature(object="character"), function(object, prefix="Novel"){
 	# Pre-checks
 	assert_that(is.string(prefix))
@@ -496,7 +511,6 @@ setMethod("assignMissingID", signature(object="character"), function(object, pre
 })
 
 #' @rdname assignMissingID
-#' @import assertthat S4Vectors IRanges GenomicRanges
 setMethod("assignMissingID", signature(object="GenomicRanges"), function(object, outputColumn="geneID", prefix="Novel"){
 	# Pre-checks
 	assert_that(is.string(outputColumn),
@@ -509,7 +523,6 @@ setMethod("assignMissingID", signature(object="GenomicRanges"), function(object,
 	object
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges SummarizedExperiment
 #' @rdname assignMissingID
 setMethod("assignMissingID", signature(object="RangedSummarizedExperiment"), function(object, outputColumn="geneID", prefix="Novel"){
 	rowRanges(object) <- assignMissingID(rowRanges(object), outputColumn=outputColumn, prefix=prefix)

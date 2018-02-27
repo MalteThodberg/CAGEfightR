@@ -6,12 +6,14 @@
 #' threshold using a slice-reduce approach. Addtionally calculates the sum and
 #' peak position of the TCs.
 #'
-#' @param object GRanges or RangedSummarizedExperiment: Basepair-wise pooled CTSS.
+#' @param object GRanges or RangedSummarizedExperiment: Basepair-wise pooled
+#'   CTSS.
 #' @param pooledCutoff numeric: Minimum pooled value to be considered as TC.
 #' @param mergeDist integer: Merge TCs within this distance.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with TPM sum as the score column, and TC peak as the thick column.
+#' @return GRanges with TPM sum as the score column, and TC peak as the thick
+#'   column.
 #'
 #' @family Clustering functions
 #' @export
@@ -19,7 +21,10 @@
 #' data(exampleCTSSs)
 #'
 #' # Calculate pooledTPM, using supplied number of total tags
-#' exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+#' exampleCTSSs <- calcTPM(exampleCTSSs,
+#'                         inputAssay="counts",
+#'                         outputAssay="TPM",
+#'                         totalTags="totalTags")
 #' exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
 #'
 #' # Cluster using defaults: slice-threshold of 0 and reduce-distance of 20
@@ -31,7 +36,6 @@ setGeneric("clusterUnidirectionally", function(object, ...) {
 	standardGeneric("clusterUnidirectionally")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname clusterUnidirectionally
 setMethod("clusterUnidirectionally", signature(object="GenomicRanges"), function(object, pooledCutoff=0, mergeDist=20){
 	# Pre-checks
@@ -76,13 +80,11 @@ setMethod("clusterUnidirectionally", signature(object="GenomicRanges"), function
 	TCs
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname clusterUnidirectionally
 setMethod("clusterUnidirectionally", signature(object="RangedSummarizedExperiment"), function(object, ...){
 	clusterUnidirectionally(rowRanges(object), ...)
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname clusterUnidirectionally
 setMethod("clusterUnidirectionally", signature(object="GPos"), function(object, ...){
 	warning("Using temporary GPos-method in clusterUnidirectionally!")
@@ -91,7 +93,6 @@ setMethod("clusterUnidirectionally", signature(object="GPos"), function(object, 
 
 ### Helper functions
 
-#' @import S4Vectors IRanges GenomicRanges
 TCstats <- function(coverage_plus, coverage_minus, tcs_plus, tcs_minus){
 	# Check classes
 	stopifnot(class(coverage_plus)=="SimpleRleList",
@@ -132,7 +133,6 @@ TCstats <- function(coverage_plus, coverage_minus, tcs_plus, tcs_minus){
 	TCs
 }
 
-#' @import S4Vectors IRanges GenomicRanges
 summarizeWidths <- function(gr){
 	# Checks
 	stopifnot(class(gr) == "GRanges")

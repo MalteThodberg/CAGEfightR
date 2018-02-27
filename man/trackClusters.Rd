@@ -29,7 +29,8 @@ trackClusters(object, ...)
 GeneRegionTrack-object.
 }
 \description{
-Create a Gviz-track of clusters (unidirectional TCs or bidirectional enhancers), where cluster strand and peak is indicated.
+Create a Gviz-track of clusters (unidirectional TCs or bidirectional
+enhancers), where cluster strand and peak is indicated.
 }
 \examples{
 library(Gviz)

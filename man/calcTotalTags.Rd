@@ -7,14 +7,17 @@
 calcTotalTags(object, inputAssay = "counts", outputColumn = "totalTags")
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.}
+\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
+cluster or gene-level.}
 
 \item{inputAssay}{character: Name of assay holding input expression values.}
 
-\item{outputColumn}{character: Name of column in colData to hold number of total tags.}
+\item{outputColumn}{character: Name of column in colData to hold number of
+total tags.}
 }
 \value{
-RangedSummarizedExperiment with total tags added as a column in colData.
+RangedSummarizedExperiment with total tags added as a column in
+  colData.
 }
 \description{
 Calculate the total number of CAGE tags across samples.

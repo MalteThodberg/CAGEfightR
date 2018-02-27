@@ -34,7 +34,6 @@ setGeneric("calcShape", function(object, pooled, ...) {
 	standardGeneric("calcShape")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname calcShape
 setMethod("calcShape", signature(object="GRanges", pooled="GenomicRanges"), function(object, pooled, outputColumn="IQR", shapeFunction=shapeIQR, ...){
 	# Pre-checks
@@ -97,27 +96,23 @@ setMethod("calcShape", signature(object="GRanges", pooled="GenomicRanges"), func
 	object
 })
 
-#' @import SummarizedExperiment
 #' @rdname calcShape
 setMethod("calcShape", signature(object="RangedSummarizedExperiment", pooled="GenomicRanges"), function(object, pooled, ...){
 	rowRanges(object) <- calcShape(rowRanges(object), pooled, ...)
 	object
 })
 
-#' @import SummarizedExperiment
 #' @rdname calcShape
 setMethod("calcShape", signature(object="GRanges", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
 	calcShape(object, rowRanges(pooled), ...)
 })
 
-#' @import SummarizedExperiment
 #' @rdname calcShape
 setMethod("calcShape", signature(object="RangedSummarizedExperiment", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
 	rowRanges(object) <- calcShape(rowRanges(object), rowRanges(pooled), ...)
 	object
 })
 
-#' @import SummarizedExperiment
 #' @rdname calcShape
 setMethod("calcShape", signature(object="GRanges", pooled="GPos"), function(object, pooled, ...){
 	warning("Using temporary GPos-method in calcShape!")
@@ -137,7 +132,6 @@ setMethod("calcShape", signature(object="GRanges", pooled="GPos"), function(obje
 #'
 #' @return Numeric
 #' @family Shape functions
-#' @import S4Vectors
 #' @export
 #' @examples
 #' # Hypothetical shard/broad clusters:
@@ -169,13 +163,13 @@ shapeIQR <- function(x, lower=0.25, upper=0.75){
 
 #' Shape statistic: Shannon Entropy
 #'
-#' Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed before calculation.
+#' Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed
+#' before calculation.
 #'
 #' @param x numeric Rle vector: Coverage series.
 #'
 #' @return Numeric.
 #' @family Shape functions
-#' @import S4Vectors
 #' @export
 #' @examples
 #' # Hypothetical shard/broad clusters:
@@ -228,7 +222,6 @@ isobreak <- function(i, x){
 #'
 #' @return Numeric.
 #' @family Shape functions
-#' @import S4Vectors
 #' @examples
 #' # See calcShape for usage examples
 shapeMultimodality <- function(x){

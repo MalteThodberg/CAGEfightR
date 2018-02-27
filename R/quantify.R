@@ -1,6 +1,5 @@
-### CTSS
+#### CTSSs ####
 
-#' @import rtracklayer GenomeInfoDb GenomicRanges
 gf_mapper <- function(range, file, seqinfo, strand="*"){
 	# Load and force seqlevels
 	o <- import(file, which=range)
@@ -19,7 +18,6 @@ gf_mapper <- function(range, file, seqinfo, strand="*"){
 }
 
 #' @importClassesFrom Matrix dgCMatrix
-#' @import GenomicRanges SummarizedExperiment
 gf_reducer <- function(mapped){
 	# Save names
 	j_names <- names(mapped)
@@ -56,7 +54,6 @@ gf_reducer <- function(mapped){
 	mapped
 }
 
-#' @import GenomeInfoDb GenomicRanges SummarizedExperiment
 gf_wrapper <- function(files, ranges, seqinfo, strand){
 	# Run GenomicFiles
 	o <- GenomicFiles::reduceByRange(ranges=ranges, files=files,
@@ -73,28 +70,31 @@ gf_wrapper <- function(files, ranges, seqinfo, strand){
 
 #' Quantify CAGE Transcriptions Start Sites (CTSSs)
 #'
-#' This function reads in CTSS count data from a series of BigWig-files and returns a
-#' CTSS-by-library count matrix. To save memory, the count matrix is stored
-#' as a sparse matrix (dgCMatrix), and CTSS positions as GPos-object.
+#' This function reads in CTSS count data from a series of BigWig-files and
+#' returns a CTSS-by-library count matrix. To save memory, the count matrix is
+#' stored as a sparse matrix (dgCMatrix), and CTSS positions as GPos-object.
 #'
 #' @param plusStrand BigWigFileList: BigWig files with plus-strand CTSS data.
 #' @param minusStrand BigWigFileList: BigWig files with minus-strand CTSS data.
 #' @param design DataFrame or data.frame: Additional information on samples.
-#' @param genome Seqinfo: Genome information. If NULL the smallest common genome will be found using bwCommonGenome.
+#' @param genome Seqinfo: Genome information. If NULL the smallest common genome
+#'   will be found using bwCommonGenome.
 #' @param tileWidth integer: Size of tiles to parallelize over.
 #'
-#' @return RangedSummarizedExperiment, where assay is a sparse matrix (dgCMatrix) of CTSS counts and rowRanges is GPos-object.
+#' @return RangedSummarizedExperiment, where assay is a sparse matrix
+#'   (dgCMatrix) of CTSS counts and rowRanges is GPos-object.
 #' @family Quantification functions
 #' @importClassesFrom Matrix dgCMatrix
-#' @import S4Vectors rtracklayer SummarizedExperiment assertthat
 #' @export
 #' @examples
 #' \dontrun{
 #' # Load the example data
 #' data("exampleDesign")
 #' # Use the BigWig-files included with the package:
-#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
-#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
+#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
+#'                        package = "CAGEfightR")
+#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus,
+#'                         package = "CAGEfightR")
 #'
 #' # Create two named BigWigFileList-objects:
 #' bw_plus <- BigWigFileList(bw_plus)
@@ -103,17 +103,25 @@ gf_wrapper <- function(files, ranges, seqinfo, strand){
 #' names(bw_minus) <- exampleDesign$Name
 #'
 #' # Quantify CTSSs, by default this will use the smallest common genome:
-#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign)
+#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
+#'                        minusStrand=bw_minus,
+#'                        design=exampleDesign)
 #'
 #' # Alternatively, a genome can be specified:
 #' si <- seqinfo(bw_plus[[1]])
 #' si <- si["chr18"]
-#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign, genome=si)
+#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
+#'                        minusStrand=bw_minus,
+#'                        design=exampleDesign,
+#'                        genome=si)
 #'
 #' # Quantification can be speed up by using multiple cores:
 #' library(BiocParallel)
 #' register(MulticoreParam(workers=3))
-#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus, minusStrand=bw_minus, design=exampleDesign, genome=si)
+#' CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
+#'                        minusStrand=bw_minus,
+#'                        design=exampleDesign,
+#'                        genome=si)
 #' }
 quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, tileWidth=1e8L){
 	# Pre-checks
@@ -183,20 +191,21 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 	o
 }
 
-### TCs and Genes
+#### TCs and Genes ####
 
 #' Quantify expression of clusters (TSSs or enhancers)
 #'
 #' @param object RangedSummarizedExperiment: CTSSs.
 #' @param clusters GRanges: Clusters ro be quantified.
 #' @param inputAssay character: Name of holding values to be quantified
-#' @param sparse logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.
+#' @param sparse logical: If the input is a sparse matrix, TRUE will keep the
+#'   output matrix sparse while FALSE will coerce it into a normal matrix.
 #'
-#' @return RangedSummarizedExperiment with quantified CTSSs for each region in cluster, with seqinfo and colData is copied over.
+#' @return RangedSummarizedExperiment with quantified CTSSs for each region in
+#'   cluster, with seqinfo and colData is copied over.
 #'
 #' @family Quantification functions
 #' @importClassesFrom Matrix dgCMatrix
-#' @import S4Vectors GenomicRanges rtracklayer SummarizedExperiment assertthat
 #' @export
 #' @examples
 #' # CTSSs stored in a RangedSummarizedExperiment:
@@ -209,7 +218,8 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 #' # Quantify clusters:
 #' quantifyClusters(exampleCTSSs, clusters)
 #'
-#' # For exceptionally large datasets, the resulting count matrix can be left sparse:
+#' # For exceptionally large datasets,
+#' # the resulting count matrix can be left sparse:
 #' quantifyClusters(exampleCTSSs, rowRanges(exampleUnidirectional), sparse=TRUE)
 quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE){
 	# Pre-checks
@@ -255,16 +265,20 @@ quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE
 
 #' Quantify expression of genes
 #'
-#' Obtain a gene-level EM by summing transcripts within genes. Unannotated transcripts (NAs) are discarded.
+#' Obtain a gene-level EM by summing transcripts within genes. Unannotated
+#' transcripts (NAs) are discarded.
 #'
 #' @param object RangedSummarizedExperiment: Transcript-level counts.
-#' @param genes character: Name of column in rowData holding genes (NAs will be discarded).
-#' @param inputAssay character: Name of assay holding values to be quantified, usually raw counts.
-#' @param sparse logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.
+#' @param genes character: Name of column in rowData holding genes (NAs will be
+#'   discarded).
+#' @param inputAssay character: Name of assay holding values to be quantified,
+#'   usually raw counts.
+#' @param sparse logical: If the input is a sparse matrix, TRUE will keep the
+#'   output matrix sparse while FALSE will coerce it into a normal matrix.
 #'
-#' @return RangedSummarizedExperiment with rows corresponding to genes. All other information is copied over from object.
+#' @return RangedSummarizedExperiment with rows corresponding to genes. All
+#'   other information is copied over from object.
 #' @family Quantification functions
-#' @import assertthat S4Vectors GenomicRanges SummarizedExperiment
 #' @export
 #' @examples
 #' data(exampleUnidirectional)
@@ -272,13 +286,19 @@ quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE
 #' # Annotate clusters with geneIDs:
 #' library(TxDb.Mmusculus.UCSC.mm9.knownGene)
 #' txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
-#' exampleUnidirectional <- assignGeneID(exampleUnidirectional, geneModels=txdb, outputColumn="geneID")
+#' exampleUnidirectional <- assignGeneID(exampleUnidirectional,
+#'                                       geneModels=txdb,
+#'                                       outputColumn="geneID")
 #'
 #' # Quantify counts within genes:
 #' quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts")
 #'
-#' # For exceptionally large datasets, the resulting count matrix can be left sparse:
-#' quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts", sparse=TRUE)
+#' # For exceptionally large datasets,
+#' # the resulting count matrix can be left sparse:
+#' quantifyGenes(exampleUnidirectional,
+#'               genes="geneID",
+#'               inputAssay="counts",
+#'               sparse=TRUE)
 quantifyGenes <- function(object, genes, inputAssay="counts", sparse=FALSE){
 	# Pre-checks
 	assert_that(methods::is(object, "RangedSummarizedExperiment"),

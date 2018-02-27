@@ -13,10 +13,12 @@ quantifyClusters(object, clusters, inputAssay = "counts", sparse = FALSE)
 
 \item{inputAssay}{character: Name of holding values to be quantified}
 
-\item{sparse}{logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.}
+\item{sparse}{logical: If the input is a sparse matrix, TRUE will keep the
+output matrix sparse while FALSE will coerce it into a normal matrix.}
 }
 \value{
-RangedSummarizedExperiment with quantified CTSSs for each region in cluster, with seqinfo and colData is copied over.
+RangedSummarizedExperiment with quantified CTSSs for each region in
+  cluster, with seqinfo and colData is copied over.
 }
 \description{
 Quantify expression of clusters (TSSs or enhancers)
@@ -32,7 +34,8 @@ clusters <- rowRanges(exampleUnidirectional)
 # Quantify clusters:
 quantifyClusters(exampleCTSSs, clusters)
 
-# For exceptionally large datasets, the resulting count matrix can be left sparse:
+# For exceptionally large datasets,
+# the resulting count matrix can be left sparse:
 quantifyClusters(exampleCTSSs, rowRanges(exampleUnidirectional), sparse=TRUE)
 }
 \seealso{

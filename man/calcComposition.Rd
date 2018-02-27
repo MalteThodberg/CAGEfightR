@@ -8,21 +8,28 @@ calcComposition(object, inputAssay = "counts", outputColumn = "composition",
   unexpressed = 0.1, genes = "geneID")
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.}
+\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
+cluster or gene-level.}
 
 \item{inputAssay}{character: Name of assay holding input expression values.}
 
-\item{outputColumn}{character: Name of column in rowRanges to hold composition values.}
+\item{outputColumn}{character: Name of column in rowRanges to hold
+composition values.}
 
-\item{unexpressed}{numeric: Composition will be calculated based on features larger than this cutoff.}
+\item{unexpressed}{numeric: Composition will be calculated based on features
+larger than this cutoff.}
 
-\item{genes}{character: Name of column in rowData holding genes (NAs are not allowed.)}
+\item{genes}{character: Name of column in rowData holding genes (NAs are not
+allowed.)}
 }
 \value{
-RangedSummarizedExperiment with composition added as a column in rowData.
+RangedSummarizedExperiment with composition added as a column in
+  rowData.
 }
 \description{
-For every feature (e.g. TSSs) count in how many samples it is expressed above a certain fraction (e.g. 10 percent) within a grouping, usually genes. This counts is refered to as a composition value.
+For every feature (e.g. TSSs) count in how many samples it is expressed above
+a certain fraction (e.g. 10 percent) within a grouping, usually genes. This
+counts is refered to as a composition value.
 }
 \examples{
 data(exampleUnidirectional)

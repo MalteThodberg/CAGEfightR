@@ -22,25 +22,32 @@ tuneTagClustering(object, ...)
 
 \item{...}{additional arguments passed to methods.}
 
-\item{steps}{integer: Number of thresholds to analyze (in addition to treshold=0).}
+\item{steps}{integer: Number of thresholds to analyze (in addition to
+treshold=0).}
 
 \item{mergeDist}{integer: Merge TCs within this distance.}
 
 \item{searchMethod}{character: For advanced user only, see details.}
 
-\item{maxExponent}{numeric: The maximal threshold to analyse is obtained as min(score)*2^maxExponent (only used if searchMethod="exponential").}
+\item{maxExponent}{numeric: The maximal threshold to analyse is obtained as
+min(score)*2^maxExponent (only used if searchMethod="exponential").}
 }
 \value{
-data.frame with two columns: threshold and nTCs (number of Tag Clusters)
+data.frame with two columns: threshold and nTCs (number of Tag
+  Clusters)
 }
 \description{
-This function counts the number of Tag Clusters (TCs) for an exponentially increasing series of expression cutoffs.
+This function counts the number of Tag Clusters (TCs) for an exponentially
+increasing series of expression cutoffs.
 }
 \examples{
 data(exampleCTSSs)
 
 # Calculate pooledTPM, using supplied number of total tags
-exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+exampleCTSSs <- calcTPM(exampleCTSSs,
+                        inputAssay="counts",
+                        outputAssay="TPM",
+                        totalTags="totalTags")
 exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
 
 # Set backend
@@ -48,9 +55,6 @@ library(BiocParallel)
 register(SerialParam())
 
 # Find optimal slice-threshold for reduce distance of 20:
-tuneTagClustering(object=exampleCTSSs)
-
-# Execution can be speed up by using multiple cores:
 tuneTagClustering(object=exampleCTSSs)
 }
 \seealso{

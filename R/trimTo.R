@@ -1,4 +1,4 @@
-#' @import S4Vectors
+
 symmetricPercentiles <- function(r, prop){
 	# Convert to normal vector
 	r <- as.vector(r)
@@ -20,7 +20,6 @@ symmetricPercentiles <- function(r, prop){
 	c(left, right)
 }
 
-#' @import S4Vectors
 asymmetricPercentiles <- function(r, prop){
 	# Convert to normal vector
 	r <- as.vector(r)
@@ -46,12 +45,14 @@ asymmetricPercentiles <- function(r, prop){
 
 #' Trim width of TCs to expression percentiles
 #'
-#' Given a set of TCs and genome-wide CTSS coverage, reduce the width of TC until a certain amount of expression has been removed.
+#' Given a set of TCs and genome-wide CTSS coverage, reduce the width of TC
+#' until a certain amount of expression has been removed.
 #'
 #' @param object GenomicRanges or RangedSummarizedExperiment: TCs to be trimmed.
 #' @param pooled GenomicRanges or RangedSummarizedExperiment: CTSS coverage.
 #' @param percentile numeric: Fraction of expression to remove from TCs.
-#' @param symmetric logical: Whether to trim the same amount from both edges of the TC (TRUE) or always trim from the least expressed end (FALSE).
+#' @param symmetric logical: Whether to trim the same amount from both edges of
+#'   the TC (TRUE) or always trim from the least expressed end (FALSE).
 #' @param ... additional arguments passed to methods.
 #'
 #' @return GRanges with trimmed TCs, including recalculated peaks and scores.
@@ -81,7 +82,6 @@ setGeneric("trimToPercentiles", function(object, pooled, ...) {
 	standardGeneric("trimToPercentiles")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname trimToPercentiles
 setMethod("trimToPercentiles", signature(object="GRanges", pooled="GenomicRanges"), function(object, pooled, percentile=0.1, symmetric=FALSE){
 	# Pre-checks
@@ -154,19 +154,16 @@ setMethod("trimToPercentiles", signature(object="GRanges", pooled="GenomicRanges
 	trimmedTCs
 })
 
-#' @import SummarizedExperiment
 #' @rdname trimToPercentiles
 setMethod("trimToPercentiles", signature(object="RangedSummarizedExperiment", pooled="GenomicRanges"), function(object, pooled, ...){
 	trimToPercentiles(rowRanges(object), pooled, ...)
 })
 
-#' @import SummarizedExperiment
 #' @rdname trimToPercentiles
 setMethod("trimToPercentiles", signature(object="GRanges", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
 	trimToPercentiles(object, rowRanges(pooled), ...)
 })
 
-#' @import SummarizedExperiment
 #' @rdname trimToPercentiles
 setMethod("trimToPercentiles", signature(object="RangedSummarizedExperiment", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
 	trimToPercentiles(rowRanges(object), rowRanges(pooled), ...)
@@ -177,13 +174,15 @@ setMethod("trimToPercentiles", signature(object="RangedSummarizedExperiment", po
 #' Trim the width of TCs by distance from the TC peaks.
 #'
 #' @param object GenomicRanges or RangedSummarizedExperiment: Tag clusters.
-#' @param pooled GenomicRanges or RangedSummarizedExperiment: Basepair-wise pooled CTSS (stored in the score column).
+#' @param pooled GenomicRanges or RangedSummarizedExperiment: Basepair-wise
+#'   pooled CTSS (stored in the score column).
 #' @param upstream integer: Maximum upstream distance from TC peak.
 #' @param downstream integer: Maximum downstream distance from TC peak.
 #' @param peaks character: Name of column in TCs holding TC peaks as an IRanges.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return data.frame with two columns: threshold and nTCs (number of Tag Clusters)
+#' @return data.frame with two columns: threshold and nTCs (number of Tag
+#'   Clusters)
 #' @family Clustering functions
 #' @family Trimming functions
 #' @export
@@ -204,7 +203,6 @@ setGeneric("trimToPeak", function(object, pooled, ...) {
 	standardGeneric("trimToPeak")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname trimToPeak
 setMethod("trimToPeak", signature(object="GRanges", pooled="GenomicRanges"), function(object, pooled, upstream, downstream, peaks="thick"){
 	# Pre-Checks
@@ -254,19 +252,16 @@ setMethod("trimToPeak", signature(object="GRanges", pooled="GenomicRanges"), fun
 	trimmedTCs
 })
 
-#' @import SummarizedExperiment
 #' @rdname trimToPeak
 setMethod("trimToPeak", signature(object="RangedSummarizedExperiment", pooled="GenomicRanges"), function(object, pooled, ...){
 	trimToPeak(rowRanges(object), pooled, ...)
 })
 
-#' @import SummarizedExperiment
 #' @rdname trimToPeak
 setMethod("trimToPeak", signature(object="GRanges", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
 	trimToPeak(object, rowRanges(pooled), ...)
 })
 
-#' @import SummarizedExperiment
 #' @rdname trimToPeak
 setMethod("trimToPeak", signature(object="RangedSummarizedExperiment", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
 	trimToPeak(rowRanges(object), rowRanges(pooled), ...)

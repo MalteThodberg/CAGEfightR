@@ -9,17 +9,22 @@ quantifyGenes(object, genes, inputAssay = "counts", sparse = FALSE)
 \arguments{
 \item{object}{RangedSummarizedExperiment: Transcript-level counts.}
 
-\item{genes}{character: Name of column in rowData holding genes (NAs will be discarded).}
+\item{genes}{character: Name of column in rowData holding genes (NAs will be
+discarded).}
 
-\item{inputAssay}{character: Name of assay holding values to be quantified, usually raw counts.}
+\item{inputAssay}{character: Name of assay holding values to be quantified,
+usually raw counts.}
 
-\item{sparse}{logical: If the input is a sparse matrix, TRUE will keep the output matrix sparse while FALSE will coerce it into a normal matrix.}
+\item{sparse}{logical: If the input is a sparse matrix, TRUE will keep the
+output matrix sparse while FALSE will coerce it into a normal matrix.}
 }
 \value{
-RangedSummarizedExperiment with rows corresponding to genes. All other information is copied over from object.
+RangedSummarizedExperiment with rows corresponding to genes. All
+  other information is copied over from object.
 }
 \description{
-Obtain a gene-level EM by summing transcripts within genes. Unannotated transcripts (NAs) are discarded.
+Obtain a gene-level EM by summing transcripts within genes. Unannotated
+transcripts (NAs) are discarded.
 }
 \examples{
 data(exampleUnidirectional)
@@ -27,13 +32,19 @@ data(exampleUnidirectional)
 # Annotate clusters with geneIDs:
 library(TxDb.Mmusculus.UCSC.mm9.knownGene)
 txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
-exampleUnidirectional <- assignGeneID(exampleUnidirectional, geneModels=txdb, outputColumn="geneID")
+exampleUnidirectional <- assignGeneID(exampleUnidirectional,
+                                      geneModels=txdb,
+                                      outputColumn="geneID")
 
 # Quantify counts within genes:
 quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts")
 
-# For exceptionally large datasets, the resulting count matrix can be left sparse:
-quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts", sparse=TRUE)
+# For exceptionally large datasets,
+# the resulting count matrix can be left sparse:
+quantifyGenes(exampleUnidirectional,
+              genes="geneID",
+              inputAssay="counts",
+              sparse=TRUE)
 }
 \seealso{
 Other Quantification functions: \code{\link{quantifyCTSSs}},

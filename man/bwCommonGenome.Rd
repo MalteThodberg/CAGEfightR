@@ -23,8 +23,10 @@ present in all files (intersect) or in any file (union).
 \examples{
 # Use the BigWig-files included with the package:
 data("exampleDesign")
-bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
-bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
+bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
+                       package = "CAGEfightR")
+bw_minus <- system.file("extdata", exampleDesign$BigWigMinus,
+                        package = "CAGEfightR")
 
 # Create two named BigWigFileList-objects:
 bw_plus <- BigWigFileList(bw_plus)

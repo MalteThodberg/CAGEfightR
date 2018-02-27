@@ -1,6 +1,5 @@
 #### Helper functions ####
 
-#' @import S4Vectors
 padlag <- function(r, k=0){
 	stopifnot(class(r) == "Rle")
 	stopifnot(k <= length(r))
@@ -17,7 +16,6 @@ padlag <- function(r, k=0){
 	o
 }
 
-#' @import S4Vectors IRanges GenomicRanges
 coverageWindows <- function(pooled, window, balanceFun, ...){
 	# Obtain shift
 	shift_val <- ceiling(window / 2)
@@ -56,7 +54,6 @@ coverageWindows <- function(pooled, window, balanceFun, ...){
 	o
 }
 
-#' @import S4Vectors
 BC <- function(plusUpstream, plusDownstream, minusUpstream, minusDownstream){
 	# Check all input have the same class
 	input_classes <- c(class(plusUpstream), class(plusDownstream), class(minusUpstream), class(minusDownstream))
@@ -80,14 +77,22 @@ BC <- function(plusUpstream, plusDownstream, minusUpstream, minusDownstream){
 
 #' Bidirectional clustering of pooled CTSSs.
 #'
-#' Finds sites with (balanced and divergent) bidirectional transcription using sliding windows of summed coverage: The Bhattacharyya coefficient (BC) is used to quantify depature from a perfectly balanced site, and a slice-reduce is used to identify sites.
+#' Finds sites with (balanced and divergent) bidirectional transcription using
+#' sliding windows of summed coverage: The Bhattacharyya coefficient (BC) is
+#' used to quantify depature from a perfectly balanced site, and a slice-reduce
+#' is used to identify sites.
 #'
-#' @param object GenomicRanges or RangedSummarizedExperiment: Pooled CTSSs stored in the score column.
-#' @param window integer: Width of sliding window used for calculating window sums.
-#' @param balanceThreshold numeric: Minimum value of the BC to use for slice-reduce, a value of 1 corresponds to perfectly balanced sites.
+#' @param object GenomicRanges or RangedSummarizedExperiment: Pooled CTSSs
+#'   stored in the score column.
+#' @param window integer: Width of sliding window used for calculating window
+#'   sums.
+#' @param balanceThreshold numeric: Minimum value of the BC to use for
+#'   slice-reduce, a value of 1 corresponds to perfectly balanced sites.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with bidirectional sites: Minimum width is 1 + 2*window, TPM sum (on both strands) in the score column, maximal bidirectional site in the thick column and maximum balance in the balance column.
+#' @return GRanges with bidirectional sites: Minimum width is 1 + 2*window, TPM
+#'   sum (on both strands) in the score column, maximal bidirectional site in
+#'   the thick column and maximum balance in the balance column.
 #' @family Clustering functions
 #'
 #' @import assertthat S4Vectors IRanges GenomicRanges
@@ -97,7 +102,10 @@ BC <- function(plusUpstream, plusDownstream, minusUpstream, minusDownstream){
 #' data(exampleCTSSs)
 #'
 #' # Calculate pooledTPM, using supplied number of total tags
-#' exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+#' exampleCTSSs <- calcTPM(exampleCTSSs,
+#'                         inputAssay="counts",
+#'                         outputAssay="TPM",
+#'                         totalTags="totalTags")
 #' exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
 #'
 #' # Cluster using defaults: balance-treshold of 199 and window of 199 bp:
@@ -110,7 +118,6 @@ setGeneric("clusterBidirectionally", function(object, ...) {
 	standardGeneric("clusterBidirectionally")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname clusterBidirectionally
 setMethod("clusterBidirectionally", signature(object="GenomicRanges"), function(object, window=199, balanceThreshold=0.95){
 	# Pre-checks
@@ -190,13 +197,11 @@ setMethod("clusterBidirectionally", signature(object="GenomicRanges"), function(
 	o
 })
 
-#' @import SummarizedExperiment
 #' @rdname clusterBidirectionally
 setMethod("clusterBidirectionally", signature(object="RangedSummarizedExperiment"), function(object, ...){
 	clusterBidirectionally(rowRanges(object), ...)
 })
 
-#' @import SummarizedExperiment
 #' @rdname clusterBidirectionally
 setMethod("clusterBidirectionally", signature(object="GPos"), function(object, ...){
 	warning("Using temporary GPos-method in clusterBidirectionaly!")
@@ -205,12 +210,17 @@ setMethod("clusterBidirectionally", signature(object="GPos"), function(object, .
 
 #' Calculate sample-wise bidirectionally of clusters.
 #'
-#' For each bidirectional site, calculates how many individual samples shows transcription in both directions.
+#' For each bidirectional site, calculates how many individual samples shows
+#' transcription in both directions.
 #'
-#' @param object GenomicRanges or RangedSummarizedExperiment: Ranges with pooled CTSSs stored in the score column.
-#' @param samples RangedSummarizedExperiment: Sample-wise CTSSs stored as an assay.
-#' @param inputAssay character: Name of assay in samples holding input CTSS values.
-#' @param outputColumn character: Name of column in object to hold bidirectionality values.
+#' @param object GenomicRanges or RangedSummarizedExperiment: Ranges with pooled
+#'   CTSSs stored in the score column.
+#' @param samples RangedSummarizedExperiment: Sample-wise CTSSs stored as an
+#'   assay.
+#' @param inputAssay character: Name of assay in samples holding input CTSS
+#'   values.
+#' @param outputColumn character: Name of column in object to hold
+#'   bidirectionality values.
 #' @param ... additional arguments passed to methods.
 #'
 #' @return object returned with bidirectionality scores added in mcols.
@@ -225,7 +235,6 @@ setGeneric("calcBidirectionality", function(object, ...) {
 	standardGeneric("calcBidirectionality")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname calcBidirectionality
 #' @export
 setMethod("calcBidirectionality", signature(object="GRanges"), function(object, samples, inputAssay="counts", outputColumn="bidirectionality"){
@@ -280,7 +289,6 @@ setMethod("calcBidirectionality", signature(object="GRanges"), function(object, 
 	object
 })
 
-#' @import SummarizedExperiment
 #' @rdname calcBidirectionality
 #' @export
 setMethod("calcBidirectionality", signature(object="RangedSummarizedExperiment"), function(object, ...){
@@ -292,14 +300,20 @@ setMethod("calcBidirectionality", signature(object="RangedSummarizedExperiment")
 #'
 #' A convenient wrapper around calcBidirectionality and subset.
 #'
-#' @param object GRanges or RangedSummarizedExperiment: Unstranded clusters with peaks stored in the "thick" column.
-#' @param samples RangedSummarizedExperiment: Sample-wise CTSSs stored as an assay.
-#' @param inputAssay character: Name of assay in samples holding input CTSS values.
-#' @param outputColumn character: Name of column in object to hold bidirectionality values.
-#' @param minSamples integer: Only regions with bidirectionality above this value are retained.
+#' @param object GRanges or RangedSummarizedExperiment: Unstranded clusters with
+#'   peaks stored in the "thick" column.
+#' @param samples RangedSummarizedExperiment: Sample-wise CTSSs stored as an
+#'   assay.
+#' @param inputAssay character: Name of assay in samples holding input CTSS
+#'   values.
+#' @param outputColumn character: Name of column in object to hold
+#'   bidirectionality values.
+#' @param minSamples integer: Only regions with bidirectionality above this
+#'   value are retained.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return object with bidirectionality values added as a column, and low bidirectionaly regions removed.
+#' @return object with bidirectionality values added as a column, and low
+#'   bidirectionaly regions removed.
 #'
 #' @family Subsetting functions
 #' @family Calculation functions
@@ -315,7 +329,6 @@ setGeneric("subsetByBidirectionality", function(object, ...) {
 	standardGeneric("subsetByBidirectionality")
 })
 
-#' @import assertthat SummarizedExperiment
 #' @rdname subsetByBidirectionality
 #' @export
 setMethod("subsetByBidirectionality", signature(object="GRanges"), function(object, samples, inputAssay="counts", outputColumn="bidirectionality", minSamples=0){
@@ -339,7 +352,6 @@ setMethod("subsetByBidirectionality", signature(object="GRanges"), function(obje
 	object
 })
 
-#' @import assertthat SummarizedExperiment
 #' @rdname subsetByBidirectionality
 #' @export
 setMethod("subsetByBidirectionality", signature(object="RangedSummarizedExperiment"), function(object, ...){

@@ -1,11 +1,13 @@
 #' Identify and quantify Transcription Start Sites (TSSs).
 #'
-#' A convienient wrapper around calcTPM, calcPooled, tuneTagClustering, clusterUnidirectionally and quantifyClusters.
+#' A convienient wrapper around calcTPM, calcPooled, tuneTagClustering,
+#' clusterUnidirectionally and quantifyClusters.
 #'
-#' @param object RangedSummarizedExperiment: Location and counts of CTSSs, usually found by calling quantifyCTSSs.
+#' @param object RangedSummarizedExperiment: Location and counts of CTSSs,
+#'   usually found by calling quantifyCTSSs.
 #'
 #' @return RangedSummarizedExperiment containing location and counts of TSSs
-#' @import GenomicRanges SummarizedExperiment
+#' @family Wrapper functions
 #' @export
 #' @examples
 #' # See the CAGEfightR vignette for an overview!
@@ -43,12 +45,15 @@ quickTSSs <- function(object){
 
 #' Identify and quantify enhancers.
 #'
-#' A convienient wrapper around clusterBidirectionally, subsetByBidirectionality and quantifyClusters.
+#' A convienient wrapper around clusterBidirectionally, subsetByBidirectionality
+#' and quantifyClusters.
 #'
-#' @param object RangedSummarizedExperiment: Location and counts of CTSSs, usually found by calling quantifyCTSSs.
+#' @param object RangedSummarizedExperiment: Location and counts of CTSSs,
+#'   usually found by calling quantifyCTSSs.
 #'
-#' @return RangedSummarizedExperiment containing location and counts of enhancers.
-#' @import GenomicRanges SummarizedExperiment
+#' @return RangedSummarizedExperiment containing location and counts of
+#'   enhancers.
+#' @family Wrapper functions
 #' @export
 #' @examples
 #' # See the CAGEfightR vignette for an overview!

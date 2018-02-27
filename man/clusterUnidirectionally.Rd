@@ -18,7 +18,8 @@ clusterUnidirectionally(object, ...)
 \S4method{clusterUnidirectionally}{GPos}(object, ...)
 }
 \arguments{
-\item{object}{GRanges or RangedSummarizedExperiment: Basepair-wise pooled CTSS.}
+\item{object}{GRanges or RangedSummarizedExperiment: Basepair-wise pooled
+CTSS.}
 
 \item{...}{additional arguments passed to methods.}
 
@@ -27,7 +28,8 @@ clusterUnidirectionally(object, ...)
 \item{mergeDist}{integer: Merge TCs within this distance.}
 }
 \value{
-GRanges with TPM sum as the score column, and TC peak as the thick column.
+GRanges with TPM sum as the score column, and TC peak as the thick
+  column.
 }
 \description{
 Finds unidirectional Tag Clusters (TCs) with a pooled TPM above a certain
@@ -38,7 +40,10 @@ peak position of the TCs.
 data(exampleCTSSs)
 
 # Calculate pooledTPM, using supplied number of total tags
-exampleCTSSs <- calcTPM(exampleCTSSs, inputAssay="counts", outputAssay="TPM", totalTags="totalTags")
+exampleCTSSs <- calcTPM(exampleCTSSs,
+                        inputAssay="counts",
+                        outputAssay="TPM",
+                        totalTags="totalTags")
 exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
 
 # Cluster using defaults: slice-threshold of 0 and reduce-distance of 20

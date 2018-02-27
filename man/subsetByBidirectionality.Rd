@@ -16,20 +16,26 @@ subsetByBidirectionality(object, ...)
 \S4method{subsetByBidirectionality}{RangedSummarizedExperiment}(object, ...)
 }
 \arguments{
-\item{object}{GRanges or RangedSummarizedExperiment: Unstranded clusters with peaks stored in the "thick" column.}
+\item{object}{GRanges or RangedSummarizedExperiment: Unstranded clusters with
+peaks stored in the "thick" column.}
 
 \item{...}{additional arguments passed to methods.}
 
-\item{samples}{RangedSummarizedExperiment: Sample-wise CTSSs stored as an assay.}
+\item{samples}{RangedSummarizedExperiment: Sample-wise CTSSs stored as an
+assay.}
 
-\item{inputAssay}{character: Name of assay in samples holding input CTSS values.}
+\item{inputAssay}{character: Name of assay in samples holding input CTSS
+values.}
 
-\item{outputColumn}{character: Name of column in object to hold bidirectionality values.}
+\item{outputColumn}{character: Name of column in object to hold
+bidirectionality values.}
 
-\item{minSamples}{integer: Only regions with bidirectionality above this value are retained.}
+\item{minSamples}{integer: Only regions with bidirectionality above this
+value are retained.}
 }
 \value{
-object with bidirectionality values added as a column, and low bidirectionaly regions removed.
+object with bidirectionality values added as a column, and low
+  bidirectionaly regions removed.
 }
 \description{
 A convenient wrapper around calcBidirectionality and subset.

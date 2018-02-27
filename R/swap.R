@@ -33,7 +33,6 @@ setGeneric("swapRanges", function(object, ...){
 	standardGeneric("swapRanges")
 })
 
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @rdname swapRanges
 setMethod("swapRanges", signature(object="GenomicRanges"), function(object, inputColumn="thick", outputColumn=NULL){
 	# Pre-checks
@@ -64,7 +63,6 @@ setMethod("swapRanges", signature(object="GenomicRanges"), function(object, inpu
 	object
 })
 
-#' @import SummarizedExperiment
 #' @rdname swapRanges
 setMethod("swapRanges", signature(object="RangedSummarizedExperiment"), function(object, ...){
 	rowRanges(object) <- swapRanges(rowRanges(object), ...)
@@ -73,16 +71,17 @@ setMethod("swapRanges", signature(object="RangedSummarizedExperiment"), function
 
 #' Swap scores in SummarizedExperiment
 #'
-#' Take scores for a specific sample and a specific assay and put them into rowData.
+#' Take scores for a specific sample and a specific assay and put them into
+#' rowData.
 #'
 #' @param object SummarizedExperiment: CAGE-data
-#' @param outputColumn character: Column in rowData to to hold swapped in scores.
+#' @param outputColumn character: Column in rowData to to hold swapped in
+#'   scores.
 #' @param inputAssay character: Name of assay to take scores from.
 #' @param sample character: Name of sample to take scores from.
 #'
 #' @return SummarizedExperiment with sample scores from inputAssay in rowRata.
 #' @family Swapping functions
-#' @import assertthat SummarizedExperiment
 #' @export
 #' @examples
 #' data(exampleCTSSs)

@@ -7,14 +7,17 @@
 calcPooled(object, inputAssay = "TPM", outputColumn = "score")
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.}
+\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
+cluster or gene-level.}
 
 \item{inputAssay}{character: Name of assay holding input expression values.}
 
-\item{outputColumn}{character: Name of column in rowRanges to hold pooled expression.}
+\item{outputColumn}{character: Name of column in rowRanges to hold pooled
+expression.}
 }
 \value{
-RangedSummarizedExperiment with pooled expression added as a column in rowRanges.
+RangedSummarizedExperiment with pooled expression added as a column
+  in rowRanges.
 }
 \description{
 Calculate pooled expression across all samples.

@@ -26,29 +26,39 @@ assignTxType(object, txModels, ...)
 \arguments{
 \item{object}{GRanges or RangedSummarizedExperiment: Ranges to be annotated.}
 
-\item{txModels}{TxDb or GRangesList: Transcript models via a TxDb, or manually specified as a GRangesList.}
+\item{txModels}{TxDb or GRangesList: Transcript models via a TxDb, or
+manually specified as a GRangesList.}
 
 \item{...}{additional arguments passed to methods.}
 
 \item{outputColumn}{character: Name of column to hold txType values.}
 
-\item{swap}{character or NULL: If not NULL, use another set of ranges contained in object to calculate overlaps, for example peaks in the thick column.}
+\item{swap}{character or NULL: If not NULL, use another set of ranges
+contained in object to calculate overlaps, for example peaks in the thick
+column.}
 
-\item{noOverlap}{character: In case categories are manually supplied with as a GRangesList, what to call regions with no overlap.}
+\item{noOverlap}{character: In case categories are manually supplied with as
+a GRangesList, what to call regions with no overlap.}
 
 \item{tssUpstream}{integer: Distance to extend annotated promoter upstream.}
 
-\item{tssDownstream}{integer: Distance to extend annotated promoter downstream.}
+\item{tssDownstream}{integer: Distance to extend annotated promoter
+downstream.}
 
-\item{proximalUpstream}{integer: Maximum distance upstream of promoter to be considered proximal.}
+\item{proximalUpstream}{integer: Maximum distance upstream of promoter to be
+considered proximal.}
 
-\item{detailedAntisense}{logical: Wether to mirror all txType categories in the antisense direction (TRUE) or lump them all together (FALSE).}
+\item{detailedAntisense}{logical: Wether to mirror all txType categories in
+the antisense direction (TRUE) or lump them all together (FALSE).}
 }
 \value{
-GRanges with txType added as factor in metadata columns (inside rowRanges in case object is a RangedSummarizedExperiment)
+GRanges with txType added as factor in metadata columns (inside
+  rowRanges in case object is a RangedSummarizedExperiment)
 }
 \description{
-Annotate a set of ranges in a GRanges object with transcript type (TxType) based on their genic context. Transcripts are obtained from a TxDb object, but can alternatively be specified manually as a GRangesList.
+Annotate a set of ranges in a GRanges object with transcript type (TxType)
+based on their genic context. Transcripts are obtained from a TxDb object,
+but can alternatively be specified manually as a GRangesList.
 }
 \examples{
 \dontrun{

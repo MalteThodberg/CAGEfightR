@@ -9,7 +9,8 @@ swapScores(object, outputColumn = "score", inputAssay, sample)
 \arguments{
 \item{object}{SummarizedExperiment: CAGE-data}
 
-\item{outputColumn}{character: Column in rowData to to hold swapped in scores.}
+\item{outputColumn}{character: Column in rowData to to hold swapped in
+scores.}
 
 \item{inputAssay}{character: Name of assay to take scores from.}
 
@@ -19,7 +20,8 @@ swapScores(object, outputColumn = "score", inputAssay, sample)
 SummarizedExperiment with sample scores from inputAssay in rowRata.
 }
 \description{
-Take scores for a specific sample and a specific assay and put them into rowData.
+Take scores for a specific sample and a specific assay and put them into
+rowData.
 }
 \examples{
 data(exampleCTSSs)

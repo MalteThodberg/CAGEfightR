@@ -13,7 +13,8 @@ shapeEntropy(x)
 Numeric.
 }
 \description{
-Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed before calculation.
+Calculates the Shannon Entropy (base log2) for a vector. Zeros are removed
+before calculation.
 }
 \examples{
 # Hypothetical shard/broad clusters:

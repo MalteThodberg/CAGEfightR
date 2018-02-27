@@ -16,11 +16,13 @@ trackBalance(object, ...)
 \S4method{trackBalance}{RangedSummarizedExperiment}(object, ...)
 }
 \arguments{
-\item{object}{GenomicRanges or RangedSummarizedExperiment: Ranges with CTSSs in the score column.}
+\item{object}{GenomicRanges or RangedSummarizedExperiment: Ranges with CTSSs
+in the score column.}
 
 \item{...}{additional arguments passed to DataTrack.}
 
-\item{window}{integer: Width of sliding window used for calculating windowed sums.}
+\item{window}{integer: Width of sliding window used for calculating windowed
+sums.}
 
 \item{plusColor}{character: Color for plus-strand coverage.}
 
@@ -32,7 +34,8 @@ trackBalance(object, ...)
 list of 3 DataTracks for upstream, downstream and balance.
 }
 \description{
-Visualize balance scores used for detectiong of bidirectional sites. Mainly intended as diagnostic tools for expert user.
+Visualize balance scores used for detectiong of bidirectional sites. Mainly
+intended as diagnostic tools for expert user.
 }
 \note{
 Potentially consumes a large amount of memory!
@@ -56,7 +59,8 @@ subsetOfCTSSs <- subsetByOverlaps(exampleCTSSs, BC)
 balance_track <- trackBalance(subsetOfCTSSs)
 
 # Plot
-plotTracks(balance_track, from=start(BC), to=end(BC), chromosome=seqnames(BC))
+plotTracks(balance_track, from=start(BC), to=end(BC),
+           chromosome=seqnames(BC))
 }
 \seealso{
 Other Genome Browser functions: \code{\link{trackCTSS}},

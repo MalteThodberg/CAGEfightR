@@ -9,20 +9,26 @@ subsetByComposition(object, inputAssay = "counts",
   minSamples = 1)
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.}
+\item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
+cluster or gene-level.}
 
 \item{inputAssay}{character: Name of assay holding input expression values.}
 
-\item{outputColumn}{character: Name of column in rowRanges to hold composition values.}
+\item{outputColumn}{character: Name of column in rowRanges to hold
+composition values.}
 
-\item{unexpressed}{numeric: Composition will be calculated based on features larger than this cutoff.}
+\item{unexpressed}{numeric: Composition will be calculated based on features
+larger than this cutoff.}
 
-\item{genes}{character: Name of column in rowData holding genes (NAs are not allowed.)}
+\item{genes}{character: Name of column in rowData holding genes (NAs are not
+allowed.)}
 
-\item{minSamples}{numeric: Only features with composition in more than this number of samples will be kept.}
+\item{minSamples}{numeric: Only features with composition in more than this
+number of samples will be kept.}
 }
 \value{
-RangedSummarizedExperiment with composition values added as a column in rowData and features with less composition than minSamples removed.
+RangedSummarizedExperiment with composition values added as a column
+  in rowData and features with less composition than minSamples removed.
 }
 \description{
 A convenient wrapper around calcComposition and subset.
@@ -34,7 +40,9 @@ data(exampleUnidirectional)
 library(TxDb.Mmusculus.UCSC.mm9.knownGene)
 txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 
-exampleUnidirectional <- assignGeneID(exampleUnidirectional, geneModels=txdb, outputColumn="geneID")
+exampleUnidirectional <- assignGeneID(exampleUnidirectional,
+                                      geneModels=txdb,
+                                      outputColumn="geneID")
 exampleUnidirectional <- subset(exampleUnidirectional, !is.na(geneID))
 
 # Keep only clusters more than 10\% in more than one sample:

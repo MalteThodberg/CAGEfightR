@@ -18,7 +18,8 @@ trackCTSS(object, ...)
 \S4method{trackCTSS}{GPos}(object, ...)
 }
 \arguments{
-\item{object}{GenomicRanges or RangedSummarizedExperiment: Ranges with CTSSs in the score column.}
+\item{object}{GenomicRanges or RangedSummarizedExperiment: Ranges with CTSSs
+in the score column.}
 
 \item{...}{additional arguments passed on to DataTrack.}
 
@@ -30,7 +31,9 @@ trackCTSS(object, ...)
 DataTrack-object.
 }
 \description{
-Create a Gviz-track of CTSSs, where Plus/minus strand signal is shown positive/negative. This representation makes it easy to identify bidirectional peaks.
+Create a Gviz-track of CTSSs, where Plus/minus strand signal is shown
+positive/negative. This representation makes it easy to identify
+bidirectional peaks.
 }
 \examples{
 library(Gviz)
@@ -47,8 +50,10 @@ subsetOfCTSSs <- subsetByOverlaps(exampleCTSSs, c(BC, TC, ignore.mcols=TRUE))
 pooledTrack <- trackCTSS(subsetOfCTSSs)
 
 # Plot
-plotTracks(pooledTrack, from=start(TC)-100, to=end(TC)+100, chromosome=seqnames(TC), name="TC")
-plotTracks(pooledTrack, from=start(BC)-100, to=end(BC)+100, chromosome=seqnames(BC), name="BC")
+plotTracks(pooledTrack, from=start(TC)-100, to=end(TC)+100,
+           chromosome=seqnames(TC), name="TC")
+plotTracks(pooledTrack, from=start(BC)-100, to=end(BC)+100,
+           chromosome=seqnames(BC), name="BC")
 
 # See vignette for examples on how to combine multiple Gviz tracks
 }

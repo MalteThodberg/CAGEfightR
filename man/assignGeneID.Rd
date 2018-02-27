@@ -28,23 +28,30 @@ assignGeneID(object, geneModels, ...)
 \arguments{
 \item{object}{GRanges or RangedSummarizedExperiment: Ranges to be annotated.}
 
-\item{geneModels}{TxDb or GRanges: Gene models via a TxDb, or manually specified as a GRangesList.}
+\item{geneModels}{TxDb or GRanges: Gene models via a TxDb, or manually
+specified as a GRangesList.}
 
 \item{...}{additional arguments passed to methods.}
 
 \item{outputColumn}{character: Name of column to hold geneID values.}
 
-\item{swap}{character or NULL: If not NULL, use another set of ranges contained in object to calculate overlaps, for example peaks in the thick column.}
+\item{swap}{character or NULL: If not NULL, use another set of ranges
+contained in object to calculate overlaps, for example peaks in the thick
+column.}
 
 \item{upstream}{integer: Distance to extend annotated promoter upstream.}
 
 \item{downstream}{integer: Distance to extend annotated promoter downstream.}
 }
 \value{
-GRanges with geneID added in columns outputColumn (inside rowRanges in case object is a RangedSummarizedExperiment)
+GRanges with geneID added in columns outputColumn (inside rowRanges
+  in case object is a RangedSummarizedExperiment)
 }
 \description{
-Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene Identifiers) based on their genic context. Features overlapping multiple genes are resolved by distance to the nearest TSS. Genes are obtained from a TxDb object, or can manually supplied as a GRanges.
+Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene
+Identifiers) based on their genic context. Features overlapping multiple
+genes are resolved by distance to the nearest TSS. Genes are obtained from a
+TxDb object, or can manually supplied as a GRanges.
 }
 \examples{
 data(exampleUnidirectional)

@@ -19,13 +19,18 @@ combineClusters(object1, object2, ...)
 
 \item{...}{arguments passed to methods.}
 
-\item{removeIfOverlapping}{character: Whether to keep overlapping ranges ("none") or discard from either the first ("object1") or second ("object2") experiment.}
+\item{removeIfOverlapping}{character: Whether to keep overlapping ranges
+("none") or discard from either the first ("object1") or second ("object2")
+experiment.}
 }
 \value{
-RangedSummarizedExperiment with merged and sorted ranges (colData and metadata are carried over unchanged).
+RangedSummarizedExperiment with merged and sorted ranges (colData and
+  metadata are carried over unchanged).
 }
 \description{
-This function can safely combine two CAGE experiments, for example TCs and enhancers, for later analysis, by making sure no ranges in the final object are overlapping.
+This function can safely combine two CAGE experiments, for example TCs and
+enhancers, for later analysis, by making sure no ranges in the final object
+are overlapping.
 }
 \examples{
 data(exampleUnidirectional)

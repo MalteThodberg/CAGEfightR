@@ -7,14 +7,19 @@
 quickTSSs(object)
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: Location and counts of CTSSs, usually found by calling quantifyCTSSs.}
+\item{object}{RangedSummarizedExperiment: Location and counts of CTSSs,
+usually found by calling quantifyCTSSs.}
 }
 \value{
 RangedSummarizedExperiment containing location and counts of TSSs
 }
 \description{
-A convienient wrapper around calcTPM, calcPooled, tuneTagClustering, clusterUnidirectionally and quantifyClusters.
+A convienient wrapper around calcTPM, calcPooled, tuneTagClustering,
+clusterUnidirectionally and quantifyClusters.
 }
 \examples{
 # See the CAGEfightR vignette for an overview!
+}
+\seealso{
+Other Wrapper functions: \code{\link{quickEnhancers}}
 }

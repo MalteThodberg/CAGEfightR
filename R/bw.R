@@ -8,12 +8,12 @@
 #' @return TRUE, if any tests fails an error is raised.
 #'
 #' @family BigWig functions
-#' @import rtracklayer assertthat
 #' @export
 #' @examples
 #' # Use the BigWig-files included with the package:
 #' data("exampleDesign")
-#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
+#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
+#'                        package = "CAGEfightR")
 #'
 #' # Create a named BigWigFileList-object with names
 #' bw_plus <- BigWigFileList(bw_plus)
@@ -28,7 +28,6 @@ setGeneric("bwValid", function(object) {
 	standardGeneric("bwValid")
 })
 
-#' @import rtracklayer assertthat
 #' @rdname bwValid
 setMethod("bwValid", signature(object="BigWigFile"), function(object){
 	# Checks, maybe wrap all of this in it's own function
@@ -40,7 +39,6 @@ setMethod("bwValid", signature(object="BigWigFile"), function(object){
 	TRUE
 })
 
-#' @import rtracklayer assertthat
 #' @rdname bwValid
 setMethod("bwValid", signature(object="BigWigFileList"), function(object){
 	# Checks, maybe wrap all of this in it's own function
@@ -62,13 +60,14 @@ setMethod("bwValid", signature(object="BigWigFileList"), function(object){
 #'
 #' @return Sorted Seqinfo-object.
 #' @family BigWig functions
-#' @import rtracklayer GenomeInfoDb assertthat
 #' @export
 #' @examples
 #' # Use the BigWig-files included with the package:
 #' data("exampleDesign")
-#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
-#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
+#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
+#'                        package = "CAGEfightR")
+#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus,
+#'                         package = "CAGEfightR")
 #'
 #' # Create two named BigWigFileList-objects:
 #' bw_plus <- BigWigFileList(bw_plus)
@@ -121,14 +120,15 @@ bwCommonGenome <- function(plusStrand, minusStrand, method="intersect"){
 #' @param genome Seqinfo: Genome information.
 #'
 #' @return TRUE, raises an error if the supplied genome is incompabtible.
-#' @import rtracklayer GenomeInfoDb assertthat
 #' @family BigWig functions
 #' @export
 #' @examples
 #' # Use the BigWig-files included with the package:
 #' data("exampleDesign")
-#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus, package = "CAGEfightR")
-#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus, package = "CAGEfightR")
+#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
+#'                        package = "CAGEfightR")
+#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus,
+#'                         package = "CAGEfightR")
 #'
 #' # Create two named BigWigFileList-objects:
 #' bw_plus <- BigWigFileList(bw_plus)

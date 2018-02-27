@@ -1,25 +1,33 @@
 #' Calculate support of CAGE data.
 #'
-#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.
+#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
+#'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
-#' @param outputColumn character: Name of column in rowRanges to hold support values.
-#' @param unexpressed numeric: Support will be calculated based on features larger than this cutoff.
+#' @param outputColumn character: Name of column in rowRanges to hold support
+#'   values.
+#' @param unexpressed numeric: Support will be calculated based on features
+#'   larger than this cutoff.
 #'
 #' @importClassesFrom Matrix dgCMatrix
-#' @import assertthat SummarizedExperiment
-#' @return RangedSummarizedExperiment with support added as a column in rowRanges.
+#' @return RangedSummarizedExperiment with support added as a column in
+#'   rowRanges.
 #' @family Calculation functions
 #' @export
 #' @examples
 #' data(exampleUnidirectional)
 #'
 #' # Count samples with at at least a single tags
-#' exampleUnidirectional <- calcSupport(exampleUnidirectional, inputAssay="counts", unexpressed=0)
+#' exampleUnidirectional <- calcSupport(exampleUnidirectional,
+#'                                      inputAssay="counts",
+#'                                      unexpressed=0)
 #'
 #' # Count number of samples with more than 1 TPM and save as a new column.
-#' exampleUnidirectional <- calcTPM(exampleUnidirectional, totalTags = "totalTags")
-#' exampleUnidirectional <- calcSupport(exampleUnidirectional, inputAssay="TPM",
-#'     unexpressed=1, outputColumn="TPMsupport")
+#' exampleUnidirectional <- calcTPM(exampleUnidirectional,
+#'                                  totalTags = "totalTags")
+#' exampleUnidirectional <- calcSupport(exampleUnidirectional,
+#'                                      inputAssay="TPM",
+#'                                      unexpressed=1,
+#'                                      outputColumn="TPMsupport")
 calcSupport <- function(object, inputAssay="counts", outputColumn="support", unexpressed=0){
 	# Prechecks
 	assert_that(methods::is(object, "SummarizedExperiment"),
@@ -41,13 +49,15 @@ calcSupport <- function(object, inputAssay="counts", outputColumn="support", une
 
 #' Calculate the total number of CAGE tags across samples.
 #'
-#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.
+#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
+#'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
-#' @param outputColumn character: Name of column in colData to hold number of total tags.
+#' @param outputColumn character: Name of column in colData to hold number of
+#'   total tags.
 #'
 #' @importClassesFrom Matrix dgCMatrix
-#' @import assertthat SummarizedExperiment
-#' @return RangedSummarizedExperiment with total tags added as a column in colData.
+#' @return RangedSummarizedExperiment with total tags added as a column in
+#'   colData.
 #' @family Calculation functions
 #' @export
 #' @examples
@@ -74,17 +84,21 @@ calcTotalTags <- function(object, inputAssay="counts", outputColumn="totalTags")
 
 #' Calculate CAGE Tags-Per-Million (TPM)
 #'
-#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.
+#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
+#'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
 #' @param outputAssay character: Name of assay to hold TPM values.
-#' @param totalTags character or NULL: Column in colData holding the total number of tags for each samples. If NULL, this will be calculated using calcTotalTags.
-#' @param outputColumn character: Name of column in colData to hold number of total tags, only used if totalTags is NULL.
+#' @param totalTags character or NULL: Column in colData holding the total
+#'   number of tags for each samples. If NULL, this will be calculated using
+#'   calcTotalTags.
+#' @param outputColumn character: Name of column in colData to hold number of
+#'   total tags, only used if totalTags is NULL.
 #'
-#' @return RangedSummarizedExperiment with TPM-values as a new assay. If totalTags is NULL, total tags added as a column in colData.
+#' @return RangedSummarizedExperiment with TPM-values as a new assay. If
+#'   totalTags is NULL, total tags added as a column in colData.
 #' @family Calculation functions
 #'
 #' @importClassesFrom Matrix dgCMatrix
-#' @import assertthat SummarizedExperiment
 #' @export
 #' @examples
 #' data(exampleUnidirectional)
@@ -129,13 +143,15 @@ calcTPM <- function(object, inputAssay="counts", outputAssay="TPM", totalTags=NU
 
 #' Calculate pooled expression across all samples.
 #'
-#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.
+#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
+#'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
-#' @param outputColumn character: Name of column in rowRanges to hold pooled expression.
+#' @param outputColumn character: Name of column in rowRanges to hold pooled
+#'   expression.
 #'
 #' @importClassesFrom Matrix dgCMatrix
-#' @import assertthat SummarizedExperiment
-#' @return RangedSummarizedExperiment with pooled expression added as a column in rowRanges.
+#' @return RangedSummarizedExperiment with pooled expression added as a column
+#'   in rowRanges.
 #' @family Calculation functions
 #' @export
 #' @examples
@@ -167,16 +183,22 @@ calcPooled <- function(object, inputAssay="TPM", outputColumn="score"){
 
 #' Calculate composition of CAGE data.
 #'
-#' For every feature (e.g. TSSs) count in how many samples it is expressed above a certain fraction (e.g. 10 percent) within a grouping, usually genes. This counts is refered to as a composition value.
+#' For every feature (e.g. TSSs) count in how many samples it is expressed above
+#' a certain fraction (e.g. 10 percent) within a grouping, usually genes. This
+#' counts is refered to as a composition value.
 #'
-#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS, cluster or gene-level.
+#' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
+#'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
-#' @param outputColumn character: Name of column in rowRanges to hold composition values.
-#' @param unexpressed numeric: Composition will be calculated based on features larger than this cutoff.
-#' @param genes character: Name of column in rowData holding genes (NAs are not allowed.)
+#' @param outputColumn character: Name of column in rowRanges to hold
+#'   composition values.
+#' @param unexpressed numeric: Composition will be calculated based on features
+#'   larger than this cutoff.
+#' @param genes character: Name of column in rowData holding genes (NAs are not
+#'   allowed.)
 #'
-#' @import assertthat S4Vectors SummarizedExperiment
-#' @return RangedSummarizedExperiment with composition added as a column in rowData.
+#' @return RangedSummarizedExperiment with composition added as a column in
+#'   rowData.
 #' @family Calculation functions
 #' @export
 #' @examples

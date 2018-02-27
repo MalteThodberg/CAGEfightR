@@ -33,13 +33,15 @@ trimToPercentiles(object, pooled, ...)
 
 \item{percentile}{numeric: Fraction of expression to remove from TCs.}
 
-\item{symmetric}{logical: Whether to trim the same amount from both edges of the TC (TRUE) or always trim from the least expressed end (FALSE).}
+\item{symmetric}{logical: Whether to trim the same amount from both edges of
+the TC (TRUE) or always trim from the least expressed end (FALSE).}
 }
 \value{
 GRanges with trimmed TCs, including recalculated peaks and scores.
 }
 \description{
-Given a set of TCs and genome-wide CTSS coverage, reduce the width of TC until a certain amount of expression has been removed.
+Given a set of TCs and genome-wide CTSS coverage, reduce the width of TC
+until a certain amount of expression has been removed.
 }
 \examples{
 data(exampleCTSSs)

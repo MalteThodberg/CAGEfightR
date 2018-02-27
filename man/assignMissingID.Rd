@@ -19,19 +19,24 @@ assignMissingID(object, ...)
   outputColumn = "geneID", prefix = "Novel")
 }
 \arguments{
-\item{object}{character, GRanges or RangedSummarizedExperiment: IDs to have NAs replaces with new IDs.}
+\item{object}{character, GRanges or RangedSummarizedExperiment: IDs to have
+NAs replaces with new IDs.}
 
 \item{...}{additional arguments passed to methods.}
 
-\item{prefix}{character: New name to assign to ranges with missing IDs, in the style prefix1, prefix2, etc.}
+\item{prefix}{character: New name to assign to ranges with missing IDs, in
+the style prefix1, prefix2, etc.}
 
 \item{outputColumn}{character: Name of column to hold txID values.}
 }
 \value{
-GRanges with NAs replaced in outputColumn (inside rowRanges in case object is a RangedSummarizedExperiment)
+GRanges with NAs replaced in outputColumn (inside rowRanges in case
+  object is a RangedSummarizedExperiment)
 }
 \description{
-This function can relabel ranges with missing IDs (i.e. returned by assignTxID and assignGeneID), in case they need to be retained for further analysis.
+This function can relabel ranges with missing IDs (i.e. returned by
+assignTxID and assignGeneID), in case they need to be retained for further
+analysis.
 }
 \examples{
 data(exampleUnidirectional)

@@ -7,14 +7,20 @@
 quickEnhancers(object)
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: Location and counts of CTSSs, usually found by calling quantifyCTSSs.}
+\item{object}{RangedSummarizedExperiment: Location and counts of CTSSs,
+usually found by calling quantifyCTSSs.}
 }
 \value{
-RangedSummarizedExperiment containing location and counts of enhancers.
+RangedSummarizedExperiment containing location and counts of
+  enhancers.
 }
 \description{
-A convienient wrapper around clusterBidirectionally, subsetByBidirectionality and quantifyClusters.
+A convienient wrapper around clusterBidirectionally, subsetByBidirectionality
+and quantifyClusters.
 }
 \examples{
 # See the CAGEfightR vignette for an overview!
+}
+\seealso{
+Other Wrapper functions: \code{\link{quickTSSs}}
 }

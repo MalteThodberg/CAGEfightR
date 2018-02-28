@@ -101,8 +101,10 @@ setMethod("trimToPercentiles", signature(object="GRanges", pooled="GenomicRanges
 	rm(coverage_stranded)
 
 	# Convert to IRangesList
-	irl_plus <- methods::as(tcs_stranded$`+`,"RangesList")
-	irl_minus <- methods::as(tcs_stranded$`-`,"RangesList")
+	# irl_plus <- methods::as(tcs_stranded$`+`,"RangesList")
+	# irl_minus <- methods::as(tcs_stranded$`-`,"RangesList")
+	irl_plus <- split(ranges(tcs_stranded$`+`), seqnames(tcs_stranded$`+`))
+	irl_minus <- split(ranges(tcs_stranded$`-`), seqnames(tcs_stranded$`-`))
 	rm(tcs_stranded)
 
 	# Obtain views
@@ -229,8 +231,10 @@ setMethod("trimToPeak", signature(object="GRanges", pooled="GenomicRanges"), fun
 	rm(coverage_stranded, peaks)
 
 	# Convert to IRangesList
-	irl_plus <- methods::as(tcs_stranded$`+`,"RangesList")
-	irl_minus <- methods::as(tcs_stranded$`-`,"RangesList")
+	# irl_plus <- methods::as(tcs_stranded$`+`,"RangesList")
+	# irl_minus <- methods::as(tcs_stranded$`-`,"RangesList")
+	irl_plus <- split(ranges(tcs_stranded$`+`), seqnames(tcs_stranded$`+`))
+	irl_minus <- split(ranges(tcs_stranded$`-`), seqnames(tcs_stranded$`-`))
 	rm(tcs_stranded)
 
 	# Calculate new stats

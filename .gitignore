@@ -9,3 +9,5 @@ snippet1.R
 flowchart.mmd
 inst/doc
 R1
+vignettes/Introduction_to_CAGEfightR.html
+vignettes/Introduction_to_CAGEfightR.R

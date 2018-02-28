@@ -151,11 +151,11 @@ Some background biology...
 
 There are two key S4-classes to understand when using CAGEfightR:
 
-The `GRanges`-class: Genomic locations or ranges are stored as `GRanges`-objects from the `r Biocpkg("GenomicRanges")` package. `GRanges` contain chromosome (`seqnames`), start (`start`) and end (`end`) positions of ranges, along with chromosome lengths (`seqinfo`). An important additional features is added information for each range via metadata columns (`mcols`). These can be anything almost anything, as long as they can be put into a `DataFrame`. Some metadata columns have special meanings: the score column (accesible via the `score` function) and thick column, as these columns can be exported to a standard BED-format file via the `export` function from the `r Biocpkg("rtracklayer")` package. An important variant of the `GRanges` class is the `GPos` class, which store single basepair width ranges. In almost all cases it works exactly like a `GRanges`, but is much more memory efficient.
+The `GRanges`-class: Genomic locations or ranges are stored as `GRanges`-objects from the `r BiocStyle::Biocpkg("GenomicRanges")` package. `GRanges` contain chromosome (`seqnames`), start (`start`) and end (`end`) positions of ranges, along with chromosome lengths (`seqinfo`). An important additional features is added information for each range via metadata columns (`mcols`). These can be anything almost anything, as long as they can be put into a `DataFrame`. Some metadata columns have special meanings: the score column (accesible via the `score` function) and thick column, as these columns can be exported to a standard BED-format file via the `export` function from the `r BiocStyle::Biocpkg("rtracklayer")` package. An important variant of the `GRanges` class is the `GPos` class, which store single basepair width ranges. In almost all cases it works exactly like a `GRanges`, but is much more memory efficient.
 
-The `RangedSummarizedExperiment`-class: Complete CAGE experiments can be stored as `RangedSummarizedExperiment`-objects from the `r Biocpkg("SummarizedExperiment")`, which implements the idea of the "three tables of genomics". A `RangedSummarizedExperiment` can store several matrices of the same shape, e.g. counts and normalized expression values (accesible via `assay` and `assays`), along with information about each sample as a `DataFrame`-object (accesible via `colData`) and about each feature as a `GRanges`-object like above (accesible via `rowRanges`). Many `GRanges` methods will also work on`RangedSummarizedExperiment`-objects, like `sort`, `findOverlaps`, etc., will naturally work on `RangedSummarizedExperiments`.  Storing all information as a single `RangedSummarizedExperiment` helps keeping data organized, for example when extracting subsets of the data, where `subset` can be used to simultaneously extract requested data from all three tables at once.
+The `RangedSummarizedExperiment`-class: Complete CAGE experiments can be stored as `RangedSummarizedExperiment`-objects from the `r BiocStyle::Biocpkg("SummarizedExperiment")`, which implements the idea of the "three tables of genomics". A `RangedSummarizedExperiment` can store several matrices of the same shape, e.g. counts and normalized expression values (accesible via `assay` and `assays`), along with information about each sample as a `DataFrame`-object (accesible via `colData`) and about each feature as a `GRanges`-object like above (accesible via `rowRanges`). Many `GRanges` methods will also work on`RangedSummarizedExperiment`-objects, like `sort`, `findOverlaps`, etc., will naturally work on `RangedSummarizedExperiments`.  Storing all information as a single `RangedSummarizedExperiment` helps keeping data organized, for example when extracting subsets of the data, where `subset` can be used to simultaneously extract requested data from all three tables at once.
 
-Other S4-classes includes `TxDb`-objects from `r Biocpkg("GenomicFeatures")` and various track-objects from `r Biocpkg("Gviz")`. See [Annotation with transcript models] and [Plotting CAGE data in a genome browser] for more details.
+Other S4-classes includes `TxDb`-objects from `r BiocStyle::Biocpkg("GenomicFeatures")` and various track-objects from `r BiocStyle::Biocpkg("Gviz")`. See [Annotation with transcript models] and [Plotting CAGE data in a genome browser] for more details.
 
 ## Overview of functions
 
@@ -265,7 +265,7 @@ Note, we no longer have any very long TCs (For a real dataset it's not uncommon 
 ```{r TCanatomy, tidy=TRUE}
 TCs
 ```
-The `GRanges` includes the chromosome, start and end positions of each TCs, as well as two other key values: The TC peak in the thick column: This the single position within the TC with the highest pooled TPM, and the sum of pooled TPM within the TC in the score column. In case you want to save TCs to a bed file, you can use the `export` function from the `r Biocpkg("rtracklayer")` package.
+The `GRanges` includes the chromosome, start and end positions of each TCs, as well as two other key values: The TC peak in the thick column: This the single position within the TC with the highest pooled TPM, and the sum of pooled TPM within the TC in the score column. In case you want to save TCs to a bed file, you can use the `export` function from the `r BiocStyle::Biocpkg("rtracklayer")` package.
 
 ### Bidirectional clustering: Finding Enhancers
 
@@ -283,7 +283,7 @@ Let's look closer at the returned `GRanges`:
 enhancers
 ```
 
-The `GRanges` includes the chromosome, start and end positions of each enhancer (enhancers are unstranded), as well as two other key values: the score column holds the sum of pooled CTSSs of the enhancer (on both strands) and the enhancer midpoint in the thick column: This is the maximally balanced site in the enhancers. Again, the `export` function from the `r Biocpkg("rtracklayer")` package can be used to export enhancers to a BED-file.
+The `GRanges` includes the chromosome, start and end positions of each enhancer (enhancers are unstranded), as well as two other key values: the score column holds the sum of pooled CTSSs of the enhancer (on both strands) and the enhancer midpoint in the thick column: This is the maximally balanced site in the enhancers. Again, the `export` function from the `r BiocStyle::Biocpkg("rtracklayer")` package can be used to export enhancers to a BED-file.
 
 As balance here is solely defined on the pooled CTSSs, a useful filter is to make sure the bidirectional site is also bidirectional in at least a single sample. Similarly to how we calculated support, we can calculate the sample-wise _bidirectionality_ of enhancers:
 
@@ -355,12 +355,12 @@ exampleUnidirectional <- subsetBySupport(exampleUnidirectional,
 
 ### Annotation with transcript models
 
-While CAGE can identify TSSs and enhancers completely independent of annotation, it is often useful to compare these to existing annotations. Bioconductor stores transcript models using the `TxDb` class from the `r Biocpkg("GenomicFeatures")` package. There are multiple ways to obtain a `TxDb` object:
+While CAGE can identify TSSs and enhancers completely independent of annotation, it is often useful to compare these to existing annotations. Bioconductor stores transcript models using the `TxDb` class from the `r BiocStyle::Biocpkg("GenomicFeatures")` package. There are multiple ways to obtain a `TxDb` object:
 
-- Use the `TxDb`-objects included as Bioconductor packages: For this vignette we use the `r Biocpkg("TxDb.Mmusculus.UCSC.mm9.knownGene")` package.
-- Import a GTF or GFF3 file using the `makeTxDbFromGFF` function from `r Biocpkg("GenomicFeatures")`.
-- Use the `r Biocpkg("AnnotationHub")` package to directly download `TxDb` objects for a wide range of organisms.
-- Use `makeTxDbFromBiomart`,  `makeTxDbFromUCSC` or `makeTxDbFromEnsembl` from from `r Biocpkg("GenomicFeatures")` to create `TxDb` objects from various online sources.
+- Use the `TxDb`-objects included as Bioconductor packages: For this vignette we use the `r BiocStyle::Biocpkg("TxDb.Mmusculus.UCSC.mm9.knownGene")` package.
+- Import a GTF or GFF3 file using the `makeTxDbFromGFF` function from `r BiocStyle::Biocpkg("GenomicFeatures")`.
+- Use the `r BiocStyle::Biocpkg("AnnotationHub")` package to directly download `TxDb` objects for a wide range of organisms.
+- Use `makeTxDbFromBiomart`,  `makeTxDbFromUCSC` or `makeTxDbFromEnsembl` from from `r BiocStyle::Biocpkg("GenomicFeatures")` to create `TxDb` objects from various online sources.
 
 In case you really do not want to use a `TxDb` object, all annotation functions in `CAGEfightR` also accepts `GRanges` or `GRangesList` as input.
 
@@ -598,7 +598,7 @@ The `subsetByComposition` function wraps the common task of calling `calcComposi
 
 [Zenbu](http://fantom.gsc.riken.jp/zenbu/) is an excellent online genome browser for visualizing CAGE data in relation to annotation in an interative manner. For producing figures (or possibly a very large number of figures) of specific genomic regions, it can be useful to use R to generate genome browser-like plots.
 
-`CAGEfightR` can produce genome browser plots via the popular and extensive `r Biocpkg("Gviz")` package. `CAGEfightR` provides functions for generating genome browser tracks for both CTSSs and clusters. For general generation and customization of GViz plots we refer to the extensive `r Biocpkg("Gviz")` manual. Below we include some basic examples of visualizing CAGE data.
+`CAGEfightR` can produce genome browser plots via the popular and extensive `r BiocStyle::Biocpkg("Gviz")` package. `CAGEfightR` provides functions for generating genome browser tracks for both CTSSs and clusters. For general generation and customization of GViz plots we refer to the extensive `r BiocStyle::Biocpkg("Gviz")` manual. Below we include some basic examples of visualizing CAGE data.
 
 First we load use the built-in datasets:
 
@@ -674,7 +674,7 @@ plotTracks(all_tracks, from=53499000, to=53499600, chromosome="chr19")
 
 ## Parallel execution
 
-Currently, two functions can utilize multiple cores for computation, `quantifyCTSSs` and `tuneTagClustering`. The central one is `quantifyCTSSs`, which is usually the slowest and most memory consuming step of a `CAGEfightR` analysis. `quantifyCTSSs` automatically uses the default backend registered with the `r Biocpkg("BiocParallel")` package. This can be changed in the following way:
+Currently, two functions can utilize multiple cores for computation, `quantifyCTSSs` and `tuneTagClustering`. The central one is `quantifyCTSSs`, which is usually the slowest and most memory consuming step of a `CAGEfightR` analysis. `quantifyCTSSs` automatically uses the default backend registered with the `r BiocStyle::Biocpkg("BiocParallel")` package. This can be changed in the following way:
 
 ```{r parallel, tidy=TRUE, eval=FALSE}
 library(BiocParallel)

@@ -145,20 +145,29 @@ setMethod("assignTxType", signature(object="GenomicRanges", txModels="TxDb"), fu
 							identical(seqlengths(object), seqlengths(txModels)))
 
 	# Build sense hierachy
-	message("Extracting txType categories...")
-	hierachy <- List(promoter=trim(promoters(txModels, upstream=tssUpstream, downstream=tssDownstream)),
-									 proximal=trim(promoters(txModels, upstream=proximalUpstream, downstream=0)),
-									 fiveUTR=fiveUTRsByTranscript(txModels),
-									 threeUTR=threeUTRsByTranscript(txModels),
-									 CDS=cds(txModels),
-									 exon=exons(txModels),
-									 intron=intronsByTranscript(txModels))
+	hierachy <- GRangesList(promoter=granges(trim(promoters(txModels, upstream=tssUpstream, downstream=tssDownstream))),
+									 proximal=granges(trim(promoters(txModels, upstream=proximalUpstream, downstream=0))),
+									 fiveUTR=granges(unlist(fiveUTRsByTranscript(txModels))),
+									 threeUTR=granges(unlist(threeUTRsByTranscript(txModels))),
+									 CDS=granges(cds(txModels)),
+									 exon=granges(exons(txModels)),
+									 intron=granges(unlist(intronsByTranscript(txModels))))
 
-	# Coerce to GRangesList
-	#message("Coercing to GRangesList...")
-	hierachy <- lapply(hierachy, unlist)
-	hierachy <- lapply(hierachy, granges)
-	hierachy <- GRangesList(hierachy)
+	# Build sense hierachy
+	# message("Extracting txType categories...")
+	# hierachy <- List(promoter=trim(promoters(txModels, upstream=tssUpstream, downstream=tssDownstream)),
+	# 								 proximal=trim(promoters(txModels, upstream=proximalUpstream, downstream=0)),
+	# 								 fiveUTR=fiveUTRsByTranscript(txModels),
+	# 								 threeUTR=threeUTRsByTranscript(txModels),
+	# 								 CDS=cds(txModels),
+	# 								 exon=exons(txModels),
+	# 								 intron=intronsByTranscript(txModels))
+	#
+	# # Coerce to GRangesList
+	# #message("Coercing to GRangesList...")
+	# hierachy <- lapply(hierachy, unlist)
+	# hierachy <- lapply(hierachy, granges)
+	# hierachy <- GRangesList(hierachy)
 
 	# Build antisense hierachy
 	#message("Adding antisense categories...")

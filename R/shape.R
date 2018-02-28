@@ -67,9 +67,13 @@ setMethod("calcShape", signature(object="GRanges", pooled="GenomicRanges"), func
 
 	# Views
 	message("Applying function to each TC...")
-	views_plus <- Views(coverage_plus, methods::as(TCsByStrand$`+`, "RangesList"))
-	views_minus <- Views(coverage_minus, methods::as(TCsByStrand$`-`, "RangesList"))
-	rm(coverage_plus, coverage_minus)
+	# views_plus <- Views(coverage_plus, methods::as(TCsByStrand$`+`, "RangesList"))
+	# views_minus <- Views(coverage_minus, methods::as(TCsByStrand$`-`, "RangesList"))
+	# rm(coverage_plus, coverage_minus)
+
+	# Tmp solution circumventing direct use of RangesList
+	views_plus <- Views(coverage_plus, split(ranges(TCsByStrand$`+`), seqnames(TCsByStrand$`+`)))
+	views_minus <- Views(coverage_minus, split(ranges(TCsByStrand$`-`), seqnames(TCsByStrand$`-`)))
 
 	# Applying functions to views
 	stat_plus <- viewApply(views_plus, shapeFunction, ...)
@@ -117,7 +121,6 @@ setMethod("calcShape", signature(object="RangedSummarizedExperiment", pooled="Ra
 setMethod("calcShape", signature(object="GRanges", pooled="GPos"), function(object, pooled, ...){
 	warning("Using temporary GPos-method in calcShape!")
 	calcShape(object, methods::as(pooled, "GRanges"), ...)
-
 })
 
 #### Individual shape functions ####

@@ -80,7 +80,7 @@ The first step is to quantify CTSSs across all samples using `quantifyCTSSs`, wh
 
 ```{r quickCTSSs, tidy=TRUE}
 # Get genome information
-genomeInfo <- SeqinfoForBSGenome("mm9")
+genomeInfo <- SeqinfoForUCSCGenome("mm9")
 
 # Quantify CTSSs
 CTSSs <- quantifyCTSSs(plusStrand=bw_plus, 

@@ -56,7 +56,8 @@ coverageWindows <- function(pooled, window, balanceFun, ...){
 
 BC <- function(plusUpstream, plusDownstream, minusUpstream, minusDownstream){
 	# Check all input have the same class
-	input_classes <- c(class(plusUpstream), class(plusDownstream), class(minusUpstream), class(minusDownstream))
+	input_classes <- c(class(plusUpstream), class(plusDownstream),
+										 class(minusUpstream), class(minusDownstream))
 	single_class <- unique(input_classes)
 	stopifnot(length(single_class) == 1)
 
@@ -119,7 +120,8 @@ setGeneric("clusterBidirectionally", function(object, ...) {
 })
 
 #' @rdname clusterBidirectionally
-setMethod("clusterBidirectionally", signature(object="GenomicRanges"), function(object, window=199, balanceThreshold=0.95){
+setMethod("clusterBidirectionally", signature(object="GenomicRanges"),
+					function(object, window=199, balanceThreshold=0.95){
 	# Pre-checks
 	assert_that(isDisjoint(object),
 							noNA(seqlengths(object)),
@@ -138,14 +140,16 @@ setMethod("clusterBidirectionally", signature(object="GenomicRanges"), function(
 
 	# Prepare for slicing
 	if(any(any(B < 0, na.rm=TRUE))){
-		stop("Balance function produced values below 0! Output values must be in range [0-Inf) to allow for slicing...")
+		stop("Balance function produced values below 0!",
+				 "Output values must be in range [0-Inf) to allow for slicing...")
 	}else{
 		B[is.na(B)] <- 0
 	}
 
 	message("Slice-reduce to find bidirectional clusters...")
 	# Slice
-	bidirLoci <- slice(B, lower=balanceThreshold, upper=Inf, includeLower=FALSE, rangesOnly=TRUE)
+	bidirLoci <- slice(B, lower=balanceThreshold, upper=Inf,
+										 includeLower=FALSE, rangesOnly=TRUE)
 
 	# Merge
 	mergeDist <- window * 2
@@ -179,7 +183,10 @@ setMethod("clusterBidirectionally", signature(object="GenomicRanges"), function(
 	balance <- viewMaxs(viewsB)
 
 	# Assemble output
-	o <- GRanges(bidirLoci, score=unlist(scores), thick=unlist(peaks), balance=unlist(balance))
+	o <- GRanges(bidirLoci,
+							 score=unlist(scores),
+							 thick=unlist(peaks),
+							 balance=unlist(balance))
 	rm(scores, peaks, balance, viewsA, viewsB)
 
 	# Carry over seqinfo
@@ -198,12 +205,15 @@ setMethod("clusterBidirectionally", signature(object="GenomicRanges"), function(
 })
 
 #' @rdname clusterBidirectionally
-setMethod("clusterBidirectionally", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("clusterBidirectionally",
+					signature(object="RangedSummarizedExperiment"),
+					function(object, ...){
 	clusterBidirectionally(rowRanges(object), ...)
 })
 
 #' @rdname clusterBidirectionally
-setMethod("clusterBidirectionally", signature(object="GPos"), function(object, ...){
+setMethod("clusterBidirectionally", signature(object="GPos"),
+					function(object, ...){
 	warning("Using temporary GPos-method in clusterBidirectionaly!")
 	clusterBidirectionally(methods::as(object, "GRanges"), ...)
 })
@@ -237,11 +247,15 @@ setGeneric("calcBidirectionality", function(object, ...) {
 
 #' @rdname calcBidirectionality
 #' @export
-setMethod("calcBidirectionality", signature(object="GRanges"), function(object, samples, inputAssay="counts", outputColumn="bidirectionality"){
+setMethod("calcBidirectionality", signature(object="GRanges"),
+					function(object, samples, inputAssay="counts",
+									 outputColumn="bidirectionality"){
 	# Pre-checks
 	assert_that("thick" %in% colnames(mcols(object)),
 							methods::is(mcols(object)[,"thick"], "IRanges"),
-							all(poverlaps(mcols(object)$thick, ranges(object), type = "within")),
+							all(poverlaps(mcols(object)$thick,
+														ranges(object),
+														type = "within")),
 							all(strand(object) == "*"),
 							methods::is(samples, "RangedSummarizedExperiment"),
 							isDisjoint(samples),
@@ -255,7 +269,8 @@ setMethod("calcBidirectionality", signature(object="GRanges"), function(object, 
 
 	# Warnings
 	if(outputColumn %in% colnames(mcols(object))){
-		warning("object already has a column named ", outputColumn," in mcols: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in mcols: It will be overwritten!")
 	}
 
 	# Extract arms
@@ -268,9 +283,11 @@ setMethod("calcBidirectionality", signature(object="GRanges"), function(object, 
 	strand(arms_minus) <- "-"
 
 	# Quantify
-	mat_plus <- suppressMessages(quantifyClusters(samples, arms_plus, inputAssay=inputAssay))
+	mat_plus <- suppressMessages(quantifyClusters(samples, arms_plus,
+																								inputAssay=inputAssay))
 	mat_plus <- assay(mat_plus, inputAssay) > 0
-	mat_minus <- suppressMessages(quantifyClusters(samples, arms_minus, inputAssay=inputAssay))
+	mat_minus <- suppressMessages(quantifyClusters(samples, arms_minus,
+																								 inputAssay=inputAssay))
 	mat_minus <- assay(mat_minus, inputAssay) > 0
 
 	# Compare and count
@@ -291,7 +308,8 @@ setMethod("calcBidirectionality", signature(object="GRanges"), function(object, 
 
 #' @rdname calcBidirectionality
 #' @export
-setMethod("calcBidirectionality", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("calcBidirectionality",
+					signature(object="RangedSummarizedExperiment"), function(object, ...){
 	rowRanges(object) <- calcBidirectionality(rowRanges(object), ...)
 	object
 })
@@ -331,12 +349,17 @@ setGeneric("subsetByBidirectionality", function(object, ...) {
 
 #' @rdname subsetByBidirectionality
 #' @export
-setMethod("subsetByBidirectionality", signature(object="GRanges"), function(object, samples, inputAssay="counts", outputColumn="bidirectionality", minSamples=0){
+setMethod("subsetByBidirectionality", signature(object="GRanges"),
+					function(object, samples, inputAssay="counts",
+									 outputColumn="bidirectionality", minSamples=0){
 	assert_that(is.number(minSamples))
 
 	# Call function
 	message("Calculating bidirectionality...")
-	object <- calcBidirectionality(object=object, samples=samples, inputAssay=inputAssay, outputColumn=outputColumn)
+	object <- calcBidirectionality(object=object,
+																 samples=samples,
+																 inputAssay=inputAssay,
+																 outputColumn=outputColumn)
 	before <- length(object)
 
 	# Subset
@@ -346,7 +369,8 @@ setMethod("subsetByBidirectionality", signature(object="GRanges"), function(obje
 	removed <- before-after
 
 	# Print some info
-	message("Removed ", removed, " out of ", before, " regions (", round(removed/before*100, digits=1), "%)")
+	message("Removed ", removed, " out of ", before,
+					" regions (", round(removed/before*100, digits=1), "%)")
 
 	# Return
 	object
@@ -354,7 +378,9 @@ setMethod("subsetByBidirectionality", signature(object="GRanges"), function(obje
 
 #' @rdname subsetByBidirectionality
 #' @export
-setMethod("subsetByBidirectionality", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("subsetByBidirectionality",
+					signature(object="RangedSummarizedExperiment"), function(object, ...){
 	# Force call of GRanges generic
-	methods::selectMethod("subsetByBidirectionality", "GRanges")@.Data(object=object, ...)
+	methods::selectMethod("subsetByBidirectionality",
+												"GRanges")@.Data(object=object, ...)
 })

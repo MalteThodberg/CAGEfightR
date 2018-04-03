@@ -39,7 +39,9 @@ setGeneric("tuneTagClustering", function(object, ...) {
 })
 
 #' @rdname tuneTagClustering
-setMethod("tuneTagClustering", signature(object="GenomicRanges"), function(object, steps=10L, mergeDist=20L, searchMethod="minUnique", maxExponent=1){
+setMethod("tuneTagClustering", signature(object="GenomicRanges"),
+					function(object, steps=10L, mergeDist=20L,
+									 searchMethod="minUnique", maxExponent=1){
 	# Pre-checks
 	assert_that(isDisjoint(object),
 							!is.null(score(object)),
@@ -52,10 +54,13 @@ setMethod("tuneTagClustering", signature(object="GenomicRanges"), function(objec
 	# Setup series
 	message("Finding thresholds to be tested...")
 	if(searchMethod == "exponential"){
-		exp_series <- min(score(object)) * 2^seq(from=0, to=maxExponent, length.out=steps)
+		exp_series <- min(score(object)) * 2^seq(from=0,
+																						 to=maxExponent,
+																						 length.out=steps)
 	}else if(searchMethod == "minUnique"){
 		steps_series <- seq_len(steps)
-		exp_series <- sort(unique(score(object)), partial=steps_series)[steps_series]
+		exp_series <- sort(unique(score(object)),
+											 partial=steps_series)[steps_series]
 		rm(steps_series)
 	}else{
 		stop("searchMethod must be either exponential or minUnique")
@@ -72,13 +77,16 @@ setMethod("tuneTagClustering", signature(object="GenomicRanges"), function(objec
 	rm(by_strand)
 
 	# Print some info
-	message("Iterating over ", length(exp_series), " thresholds using ", BiocParallel::bpworkers(), " worker(s)...")
+	message("Iterating over ", length(exp_series), " thresholds using ",
+					BiocParallel::bpworkers(), " worker(s)...")
 
 	# Count
 	message("Analyzing plus strand...")
-	n_plus <- BiocParallel::bpvec(exp_series, countClusters, cv=coverage_plus, mergeDist=mergeDist)
+	n_plus <- BiocParallel::bpvec(exp_series, countClusters,
+																cv=coverage_plus, mergeDist=mergeDist)
 	message("Analyzing minus strand...")
-	n_minus <- BiocParallel::bpvec(exp_series, countClusters, cv=coverage_minus, mergeDist=mergeDist)
+	n_minus <- BiocParallel::bpvec(exp_series, countClusters,
+																 cv=coverage_minus, mergeDist=mergeDist)
 
 	# Assemble results
 	message("Preparing output...")
@@ -89,7 +97,8 @@ setMethod("tuneTagClustering", signature(object="GenomicRanges"), function(objec
 })
 
 #' @rdname tuneTagClustering
-setMethod("tuneTagClustering", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("tuneTagClustering", signature(object="RangedSummarizedExperiment"),
+					function(object, ...){
 	tuneTagClustering(rowRanges(object), ...)
 })
 
@@ -103,7 +112,8 @@ setMethod("tuneTagClustering", signature(object="GPos"), function(object, ...){
 
 countClusters <- function(thresholds, cv, mergeDist=20){
 	# Slice
-	o <- lapply(thresholds, slice, x=cv, includeLower=FALSE, upper=Inf, rangesOnly=TRUE)
+	o <- lapply(thresholds, slice,
+							x=cv, includeLower=FALSE, upper=Inf, rangesOnly=TRUE)
 
 	# Reduce
 	o <- lapply(o, reduce, min.gapwidth=mergeDist)

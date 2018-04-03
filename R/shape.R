@@ -35,18 +35,21 @@ setGeneric("calcShape", function(object, pooled, ...) {
 })
 
 #' @rdname calcShape
-setMethod("calcShape", signature(object="GRanges", pooled="GenomicRanges"), function(object, pooled, outputColumn="IQR", shapeFunction=shapeIQR, ...){
+setMethod("calcShape", signature(object="GRanges", pooled="GenomicRanges"),
+					function(object, pooled, outputColumn="IQR",
+									 shapeFunction=shapeIQR, ...){
 	# Pre-checks
 	assert_that(!is.null(score(pooled)),
 							is.numeric(score(pooled)),
 							isDisjoint(pooled),
 							is.character(outputColumn),
 							is.function(shapeFunction),
-							identical(seqlengths(object), seqlengths(pooled)))
+						  identical(seqlengths(object), seqlengths(pooled)))
 
 	# Warnings
 	if(outputColumn %in% colnames(mcols(object))){
-		warning("object already has a column named ", outputColumn," in mcols: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in mcols: It will be overwritten!")
 	}
 
 	# Names need to be set for sorting later
@@ -67,13 +70,17 @@ setMethod("calcShape", signature(object="GRanges", pooled="GenomicRanges"), func
 
 	# Views
 	message("Applying function to each TC...")
-	# views_plus <- Views(coverage_plus, methods::as(TCsByStrand$`+`, "RangesList"))
-	# views_minus <- Views(coverage_minus, methods::as(TCsByStrand$`-`, "RangesList"))
+	# views_plus <- Views(coverage_plus,
+	# methods::as(TCsByStrand$`+`, "RangesList"))
+	# views_minus <- Views(coverage_minus,
+	# methods::as(TCsByStrand$`-`, "RangesList"))
 	# rm(coverage_plus, coverage_minus)
 
 	# Tmp solution circumventing direct use of RangesList
-	views_plus <- Views(coverage_plus, split(ranges(TCsByStrand$`+`), seqnames(TCsByStrand$`+`)))
-	views_minus <- Views(coverage_minus, split(ranges(TCsByStrand$`-`), seqnames(TCsByStrand$`-`)))
+	views_plus <- Views(coverage_plus, split(ranges(TCsByStrand$`+`),
+																					 seqnames(TCsByStrand$`+`)))
+	views_minus <- Views(coverage_minus, split(ranges(TCsByStrand$`-`),
+																						 seqnames(TCsByStrand$`-`)))
 
 	# Applying functions to views
 	stat_plus <- viewApply(views_plus, shapeFunction, ...)
@@ -101,24 +108,31 @@ setMethod("calcShape", signature(object="GRanges", pooled="GenomicRanges"), func
 })
 
 #' @rdname calcShape
-setMethod("calcShape", signature(object="RangedSummarizedExperiment", pooled="GenomicRanges"), function(object, pooled, ...){
+setMethod("calcShape", signature(object="RangedSummarizedExperiment",
+																 pooled="GenomicRanges"),
+					function(object, pooled, ...){
 	rowRanges(object) <- calcShape(rowRanges(object), pooled, ...)
 	object
 })
 
 #' @rdname calcShape
-setMethod("calcShape", signature(object="GRanges", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
+setMethod("calcShape", signature(object="GRanges",
+																 pooled="RangedSummarizedExperiment"),
+					function(object, pooled, ...){
 	calcShape(object, rowRanges(pooled), ...)
 })
 
 #' @rdname calcShape
-setMethod("calcShape", signature(object="RangedSummarizedExperiment", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
+setMethod("calcShape", signature(object="RangedSummarizedExperiment",
+																 pooled="RangedSummarizedExperiment"),
+					function(object, pooled, ...){
 	rowRanges(object) <- calcShape(rowRanges(object), rowRanges(pooled), ...)
 	object
 })
 
 #' @rdname calcShape
-setMethod("calcShape", signature(object="GRanges", pooled="GPos"), function(object, pooled, ...){
+setMethod("calcShape", signature(object="GRanges", pooled="GPos"),
+					function(object, pooled, ...){
 	warning("Using temporary GPos-method in calcShape!")
 	calcShape(object, methods::as(pooled, "GRanges"), ...)
 })
@@ -201,7 +215,8 @@ shapeEntropy <- function(x){
 
 isobreak <- function(i, x){
 	# Split into segments
-	x1 <- x[1:i]
+	#x1 <- x[1:i]
+	x1 <- x[seq_len(i)]
 	x2 <- x[i:length(x)]
 
 	# Reverse second

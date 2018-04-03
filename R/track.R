@@ -40,7 +40,9 @@ setGeneric("trackCTSS", function(object, ...){
 
 #' @rdname trackCTSS
 #' @export
-setMethod("trackCTSS", signature(object="GenomicRanges"), function(object, plusColor="cornflowerblue", minusColor="tomato", ...){
+setMethod("trackCTSS", signature(object="GenomicRanges"),
+					function(object, plusColor="cornflowerblue",
+									 minusColor="tomato", ...){
 	# Pre-checks
 	assert_that(isDisjoint(object),
 							!is.null(score(object)),
@@ -63,7 +65,8 @@ setMethod("trackCTSS", signature(object="GenomicRanges"), function(object, plusC
 	o <- bindAsGRanges(plus=plus_coverage, minus=minus_coverage)
 
 	# Build track
-	o <- Gviz::DataTrack(o, type="histogram", groups=c("plus", "minus"), col=c(minusColor, plusColor), ...)
+	o <- Gviz::DataTrack(o, type="histogram", groups=c("plus", "minus"),
+											 col=c(minusColor, plusColor), ...)
 
 	# Return
 	o
@@ -71,7 +74,8 @@ setMethod("trackCTSS", signature(object="GenomicRanges"), function(object, plusC
 
 #' @rdname trackCTSS
 #' @export
-setMethod("trackCTSS", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("trackCTSS", signature(object="RangedSummarizedExperiment"),
+					function(object, ...){
 	trackCTSS(rowRanges(object), ...)
 })
 
@@ -116,11 +120,14 @@ setGeneric("trackClusters", function(object, ...){
 
 #' @rdname trackClusters
 #' @export
-setMethod("trackClusters", signature(object="GenomicRanges"), function(object, plusColor="cornflowerblue", minusColor="tomato", unstrandedColor="hotpink", ...){
+setMethod("trackClusters", signature(object="GenomicRanges"),
+					function(object, plusColor="cornflowerblue", minusColor="tomato",
+									 unstrandedColor="hotpink", ...){
 	# Pre-checks
 	assert_that("thick" %in% colnames(mcols(object)),
 							methods::is(mcols(object)[,"thick"], "IRanges"),
-							all(poverlaps(mcols(object)$thick, ranges(object), type = "within")),
+							all(poverlaps(mcols(object)$thick, ranges(object),
+														type="within")),
 							is.string(plusColor),
 							is.string(minusColor),
 							is.string(unstrandedColor))
@@ -132,16 +139,20 @@ setMethod("trackClusters", signature(object="GenomicRanges"), function(object, p
 	# Remove mcols and add features for thin feature
 	names(insideThick) <- NULL
 	mcols(insideThick) <- NULL
-	insideThick$feature <- ifelse(strand(insideThick) == "+", "thickPlus", "thickMinus")
-	insideThick$feature <- ifelse(strand(insideThick) == "*", "thickUnstranded", insideThick$feature)
+	insideThick$feature <- ifelse(strand(insideThick) == "+",
+																"thickPlus", "thickMinus")
+	insideThick$feature <- ifelse(strand(insideThick) == "*",
+																"thickUnstranded", insideThick$feature)
 
 	# Remove peaks from TCs
 	outsideThick <- setdiff(object, insideThick)
 
 	# Remove mcols and add features
 	mcols(outsideThick) <- NULL
-	outsideThick$feature <- ifelse(strand(outsideThick) == "+", "thinPlus", "thinMinus")
-	outsideThick$feature <- ifelse(strand(outsideThick) == "*", "thinUnstranded", outsideThick$feature)
+	outsideThick$feature <- ifelse(strand(outsideThick) == "+",
+																 "thinPlus", "thinMinus")
+	outsideThick$feature <- ifelse(strand(outsideThick) == "*",
+																 "thinUnstranded", outsideThick$feature)
 
 	# Temporary to GRangesList for easy sorting
 	message("Merging and sorting...")
@@ -160,11 +171,15 @@ setMethod("trackClusters", signature(object="GenomicRanges"), function(object, p
 
 	# Build track
 	message("Preparing track...")
-	o <- Gviz::GeneRegionTrack(o, thinBoxFeature=c("thinPlus", "thinMinus", "thinUnstranded"),
+	o <- Gviz::GeneRegionTrack(o,
+														 thinBoxFeature=c("thinPlus",
+														 								 "thinMinus",
+														 								 "thinUnstranded"),
 											 min.distance=0, collapse=FALSE,
 											 thinPlus=plusColor, thickPlus=plusColor,
 											 thinMinus=minusColor, thickMinus=minusColor,
-											 thinUnstranded=unstrandedColor, thickUnstranded=unstrandedColor,
+											 thinUnstranded=unstrandedColor,
+											 thickUnstranded=unstrandedColor,
 											 ...)
 
 	# Return
@@ -173,7 +188,9 @@ setMethod("trackClusters", signature(object="GenomicRanges"), function(object, p
 
 #' @rdname trackClusters
 #' @export
-setMethod("trackClusters", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("trackClusters",
+					signature(object="RangedSummarizedExperiment"),
+					function(object, ...){
 	trackClusters(rowRanges(object), ...)
 })
 
@@ -222,7 +239,9 @@ setGeneric("trackBalance", function(object, ...){
 
 #' @rdname trackBalance
 #' @export
-setMethod("trackBalance", signature(object="GenomicRanges"), function(object, window=199, plusColor="cornflowerblue", minusColor="tomato", balanceColor="forestgreen", ...){
+setMethod("trackBalance", signature(object="GenomicRanges"),
+					function(object, window=199, plusColor="cornflowerblue",
+									 minusColor="tomato", balanceColor="forestgreen", ...){
 	# Pre-checks
 	assert_that(isDisjoint(object),
 							!is.null(score(object)),
@@ -234,17 +253,24 @@ setMethod("trackBalance", signature(object="GenomicRanges"), function(object, wi
 							is.string(balanceColor))
 
 	# Get windows
-	cw <- CAGEfightR:::coverageWindows(pooled=object, window=window, balanceFun=BC)
+	cw <- CAGEfightR:::coverageWindows(pooled=object,
+																		 window=window,
+																		 balanceFun=BC)
 
 	# Assemble tracks
 	message("Building tracks...")
-	o <- list(downstream=Gviz::DataTrack(bindAsGRanges(plus=cw$PD, minus=cw$MD), name="Downstream",
-																 type="l", groups=c("plus", "minus"), col=c(minusColor, plusColor)),
-						upstream=Gviz::DataTrack(bindAsGRanges(plus=cw$PU, minus=cw$MU), name="Upstream",
-															 type="l", groups=c("plus", "minus"), col=c(minusColor, plusColor)))
+	o <- list(downstream=Gviz::DataTrack(bindAsGRanges(plus=cw$PD, minus=cw$MD),
+																			 name="Downstream",
+																 type="l", groups=c("plus", "minus"),
+																 col=c(minusColor, plusColor)),
+						upstream=Gviz::DataTrack(bindAsGRanges(plus=cw$PU, minus=cw$MU),
+																		 name="Upstream",
+															 type="l", groups=c("plus", "minus"),
+															 col=c(minusColor, plusColor)))
 
 	if(!is.null(cw$B)){
-		o$balance <- Gviz::DataTrack(GRanges(cw$B), name="Balance", type="l", col=balanceColor)
+		o$balance <- Gviz::DataTrack(GRanges(cw$B), name="Balance", type="l",
+																 col=balanceColor)
 	}
 
 	# Return
@@ -253,6 +279,7 @@ setMethod("trackBalance", signature(object="GenomicRanges"), function(object, wi
 
 #' @rdname trackBalance
 #' @export
-setMethod("trackBalance", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("trackBalance", signature(object="RangedSummarizedExperiment"),
+					function(object, ...){
 	trackBalance(rowRanges(object), ...)
 })

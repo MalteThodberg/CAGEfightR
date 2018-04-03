@@ -28,13 +28,17 @@
 #'
 #' # Keep clusters with at least two tags in four samples
 #' subsetBySupport(exampleBidirectional, unexpressed=1, minSamples=2)
-subsetBySupport <- function(object, inputAssay="counts", outputColumn="support", unexpressed=0, minSamples=1){
+subsetBySupport <- function(object, inputAssay="counts", outputColumn="support",
+														unexpressed=0, minSamples=1){
 	# Pre-checks
 	assert_that(is.numeric(minSamples))
 
 	# Call function
 	message("Calculating support...")
-	object <- calcSupport(object=object, inputAssay=inputAssay, outputColumn=outputColumn, unexpressed=unexpressed)
+	object <- calcSupport(object=object,
+												inputAssay=inputAssay,
+												outputColumn=outputColumn,
+												unexpressed=unexpressed)
 	before <- nrow(object)
 
 	# Subset
@@ -44,7 +48,9 @@ subsetBySupport <- function(object, inputAssay="counts", outputColumn="support",
 	removed <- before-after
 
 	# Print some info
-	message("Removed ", removed, " out of ", before, " regions (", round(removed/before*100, digits=1), "%)")
+	message("Removed ", removed,
+					" out of ", before,
+					" regions (", round(removed/before*100, digits=1), "%)")
 
 	# Return
 	object
@@ -89,13 +95,17 @@ subsetBySupport <- function(object, inputAssay="counts", outputColumn="support",
 #'
 #' # Keep only clusters more than 5% in more than 2 samples:
 #' subsetByComposition(exampleUnidirectional, unexpressed = 0.05, minSamples=2)
-subsetByComposition <- function(object, inputAssay="counts", outputColumn="composition", unexpressed=0.1, genes="geneID", minSamples=1){
+subsetByComposition <- function(object, inputAssay="counts",
+																outputColumn="composition", unexpressed=0.1,
+																genes="geneID", minSamples=1){
 	# Pre-checks
 	assert_that(is.numeric(minSamples))
 
 	# Call function
 	message("Calculating composition...")
-	object <- calcComposition(object=object, inputAssay=inputAssay, outputColumn=outputColumn, unexpressed=unexpressed, genes=genes)
+	object <- calcComposition(object=object, inputAssay=inputAssay,
+														outputColumn=outputColumn, unexpressed=unexpressed,
+														genes=genes)
 	before <- nrow(object)
 
 	# Subset
@@ -105,7 +115,9 @@ subsetByComposition <- function(object, inputAssay="counts", outputColumn="compo
 	removed <- before-after
 
 	# Print some info
-	message("Removed ", removed, " out of ", before, " regions (", round(removed/before*100, digits=1), "%)")
+	message("Removed ", removed,
+					" out of ", before,
+					" regions (", round(removed/before*100, digits=1), "%)")
 
 	# Return
 	object

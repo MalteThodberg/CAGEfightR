@@ -37,7 +37,9 @@ setGeneric("clusterUnidirectionally", function(object, ...) {
 })
 
 #' @rdname clusterUnidirectionally
-setMethod("clusterUnidirectionally", signature(object="GenomicRanges"), function(object, pooledCutoff=0, mergeDist=20){
+setMethod("clusterUnidirectionally",
+					signature(object="GenomicRanges"),
+					function(object, pooledCutoff=0, mergeDist=20){
 	# Pre-checks
 	assert_that(isDisjoint(object),
 							!is.null(score(object)),
@@ -55,8 +57,10 @@ setMethod("clusterUnidirectionally", signature(object="GenomicRanges"), function
 
 	# Peak calling: Find peaks
 	message("Finding tag clusters...")
-	peaks_plus <- slice(coverage_plus, lower=pooledCutoff, upper=Inf, includeLower=FALSE, rangesOnly=TRUE)
-	peaks_minus <- slice(coverage_minus, lower=pooledCutoff, upper=Inf, includeLower=FALSE, rangesOnly=TRUE)
+	peaks_plus <- slice(coverage_plus, lower=pooledCutoff, upper=Inf,
+											includeLower=FALSE, rangesOnly=TRUE)
+	peaks_minus <- slice(coverage_minus, lower=pooledCutoff, upper=Inf,
+											 includeLower=FALSE, rangesOnly=TRUE)
 
 	# Peak calling: Merge nearby peaks
 	reduced_plus <- reduce(peaks_plus, min.gapwidth=mergeDist)
@@ -81,12 +85,16 @@ setMethod("clusterUnidirectionally", signature(object="GenomicRanges"), function
 })
 
 #' @rdname clusterUnidirectionally
-setMethod("clusterUnidirectionally", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("clusterUnidirectionally",
+					signature(object="RangedSummarizedExperiment"),
+					function(object, ...){
 	clusterUnidirectionally(rowRanges(object), ...)
 })
 
 #' @rdname clusterUnidirectionally
-setMethod("clusterUnidirectionally", signature(object="GPos"), function(object, ...){
+setMethod("clusterUnidirectionally",
+					signature(object="GPos"),
+					function(object, ...){
 	warning("Using temporary GPos-method in clusterUnidirectionally!")
 	clusterUnidirectionally(methods::as(object, "GRanges"), ...)
 })
@@ -125,7 +133,10 @@ TCstats <- function(coverage_plus, coverage_minus, tcs_plus, tcs_minus){
 					 GRanges(tcs_minus, strand="-", score=sum_minus, thick=ranges_minus))
 
 	# Names as IDs for both ranges and peaks
-	TC_ids <- paste0(seqnames(TCs), ":", start(TCs), "-", end(TCs), ";", strand(TCs))
+	TC_ids <- paste0(seqnames(TCs), ":",
+									 start(TCs), "-",
+									 end(TCs), ";",
+									 strand(TCs))
 	names(TCs) <- TC_ids
 	names(TCs$thick) <- TC_ids
 

@@ -47,7 +47,9 @@ exampleUnidirectional <- subset(exampleUnidirectional, !is.na(geneID))
 calcComposition(exampleUnidirectional)
 
 # Use a lower threshold
-calcComposition(exampleUnidirectional, unexpressed=0.05, outputColumn="lenientComposition")
+calcComposition(exampleUnidirectional,
+                unexpressed=0.05,
+                outputColumn="lenientComposition")
 }
 \seealso{
 Other Calculation functions: \code{\link{calcBidirectionality}},

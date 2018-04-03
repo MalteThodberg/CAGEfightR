@@ -13,8 +13,10 @@ symmetricPercentiles <- function(r, prop){
 
 	# Trim both sides
 	half_prop <- prop / 2
-	left <- Position(function(x) x >= half_prop, f_cum, right=FALSE, nomatch=1)
-	right <- Position(function(x) x >= half_prop, r_cum, right = TRUE, nomatch=length(r))
+	left <- Position(function(x) x >= half_prop, f_cum,
+									 right=FALSE, nomatch=1)
+	right <- Position(function(x) x >= half_prop, r_cum,
+										right = TRUE, nomatch=length(r))
 
 	# Return range
 	c(left, right)
@@ -83,7 +85,9 @@ setGeneric("trimToPercentiles", function(object, pooled, ...) {
 })
 
 #' @rdname trimToPercentiles
-setMethod("trimToPercentiles", signature(object="GRanges", pooled="GenomicRanges"), function(object, pooled, percentile=0.1, symmetric=FALSE){
+setMethod("trimToPercentiles",
+					signature(object="GRanges", pooled="GenomicRanges"),
+					function(object, pooled, percentile=0.1, symmetric=FALSE){
 	# Pre-checks
 	assert_that(!is.null(score(pooled)),
 							is.numeric(score(pooled)),
@@ -114,12 +118,17 @@ setMethod("trimToPercentiles", signature(object="GRanges", pooled="GenomicRanges
 	# Extract Adjustments
 	if(symmetric){
 		message(paste0("Symmetric trimming to percentile: ", percentile * 100, "%"))
-		adjust_plus <- viewApply(views_plus, symmetricPercentiles, prop=percentile, simplify=FALSE)
-		adjust_minus <- viewApply(views_minus, symmetricPercentiles, prop=percentile, simplify=FALSE)
+		adjust_plus <- viewApply(views_plus, symmetricPercentiles,
+														 prop=percentile, simplify=FALSE)
+		adjust_minus <- viewApply(views_minus, symmetricPercentiles,
+															prop=percentile, simplify=FALSE)
 	}else if(!symmetric){
-		message(paste0("Asymmetric trimming to percentile: ", percentile * 100, "%"))
-		adjust_plus <- viewApply(views_plus, asymmetricPercentiles, prop=percentile, simplify=FALSE)
-		adjust_minus <- viewApply(views_minus, asymmetricPercentiles, prop=percentile, simplify=FALSE)
+		message(paste0("Asymmetric trimming to percentile: ",
+									 percentile * 100, "%"))
+		adjust_plus <- viewApply(views_plus, asymmetricPercentiles,
+														 prop=percentile, simplify=FALSE)
+		adjust_minus <- viewApply(views_minus, asymmetricPercentiles,
+															prop=percentile, simplify=FALSE)
 	}else{
 		stop("Additional percentile functions not yet implemented!")
 	}
@@ -127,10 +136,14 @@ setMethod("trimToPercentiles", signature(object="GRanges", pooled="GenomicRanges
 
 	# Adjustments as IntegerLists
 	message("Adjusting ranges...")
-	left_plus <- methods::as(lapply(adjust_plus, function(x) lapply(x, function(x) x[1])), "IntegerList")
-	right_plus <- methods::as(lapply(adjust_plus, function(x) lapply(x, function(x) x[2])), "IntegerList")
-	left_minus <- methods::as(lapply(adjust_minus, function(x) lapply(x, function(x) x[1])), "IntegerList")
-	right_minus <- methods::as(lapply(adjust_minus, function(x) lapply(x, function(x) x[2])), "IntegerList")
+	left_plus <- methods::as(lapply(adjust_plus, function(x)
+		lapply(x, function(x) x[1])), "IntegerList")
+	right_plus <- methods::as(lapply(adjust_plus, function(x)
+		lapply(x, function(x) x[2])), "IntegerList")
+	left_minus <- methods::as(lapply(adjust_minus, function(x)
+		lapply(x, function(x) x[1])), "IntegerList")
+	right_minus <- methods::as(lapply(adjust_minus, function(x)
+		lapply(x, function(x) x[2])), "IntegerList")
 
 	# Narrow ranges
 	irl_plus <- narrow(irl_plus, start=left_plus, end=right_plus)
@@ -139,8 +152,10 @@ setMethod("trimToPercentiles", signature(object="GRanges", pooled="GenomicRanges
 
 	# Calculate new stats
 	message("Calculating new stats...")
-	trimmedTCs <- TCstats(coverage_plus=coverage_plus, coverage_minus=coverage_minus,
-												tcs_plus=irl_plus, tcs_minus=irl_minus)
+	trimmedTCs <- TCstats(coverage_plus=coverage_plus,
+												coverage_minus=coverage_minus,
+												tcs_plus=irl_plus,
+												tcs_minus=irl_minus)
 	rm(coverage_plus, coverage_minus, irl_plus, irl_minus)
 
 	# Carry over seqinfo and sort
@@ -157,17 +172,26 @@ setMethod("trimToPercentiles", signature(object="GRanges", pooled="GenomicRanges
 })
 
 #' @rdname trimToPercentiles
-setMethod("trimToPercentiles", signature(object="RangedSummarizedExperiment", pooled="GenomicRanges"), function(object, pooled, ...){
+setMethod("trimToPercentiles",
+					signature(object="RangedSummarizedExperiment",
+										pooled="GenomicRanges"),
+					function(object, pooled, ...){
 	trimToPercentiles(rowRanges(object), pooled, ...)
 })
 
 #' @rdname trimToPercentiles
-setMethod("trimToPercentiles", signature(object="GRanges", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
+setMethod("trimToPercentiles",
+					signature(object="GRanges",
+										pooled="RangedSummarizedExperiment"),
+					function(object, pooled, ...){
 	trimToPercentiles(object, rowRanges(pooled), ...)
 })
 
 #' @rdname trimToPercentiles
-setMethod("trimToPercentiles", signature(object="RangedSummarizedExperiment", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
+setMethod("trimToPercentiles",
+					signature(object="RangedSummarizedExperiment",
+										pooled="RangedSummarizedExperiment"),
+					function(object, pooled, ...){
 	trimToPercentiles(rowRanges(object), rowRanges(pooled), ...)
 })
 
@@ -206,7 +230,8 @@ setGeneric("trimToPeak", function(object, pooled, ...) {
 })
 
 #' @rdname trimToPeak
-setMethod("trimToPeak", signature(object="GRanges", pooled="GenomicRanges"), function(object, pooled, upstream, downstream, peaks="thick"){
+setMethod("trimToPeak", signature(object="GRanges", pooled="GenomicRanges"),
+					function(object, pooled, upstream, downstream, peaks="thick"){
 	# Pre-Checks
 	assert_that(is.count(upstream),
 							is.count(downstream),
@@ -239,8 +264,10 @@ setMethod("trimToPeak", signature(object="GRanges", pooled="GenomicRanges"), fun
 
 	# Calculate new stats
 	message("Calculating new stats...")
-	trimmedTCs <- TCstats(coverage_plus=coverage_plus, coverage_minus=coverage_minus,
-												tcs_plus=irl_plus, tcs_minus=irl_minus)
+	trimmedTCs <- TCstats(coverage_plus=coverage_plus,
+												coverage_minus=coverage_minus,
+												tcs_plus=irl_plus,
+												tcs_minus=irl_minus)
 	rm(coverage_plus, coverage_minus, irl_plus, irl_minus)
 
 	# Carry over seqinfo and sort
@@ -257,17 +284,23 @@ setMethod("trimToPeak", signature(object="GRanges", pooled="GenomicRanges"), fun
 })
 
 #' @rdname trimToPeak
-setMethod("trimToPeak", signature(object="RangedSummarizedExperiment", pooled="GenomicRanges"), function(object, pooled, ...){
+setMethod("trimToPeak", signature(object="RangedSummarizedExperiment",
+																	pooled="GenomicRanges"),
+					function(object, pooled, ...){
 	trimToPeak(rowRanges(object), pooled, ...)
 })
 
 #' @rdname trimToPeak
-setMethod("trimToPeak", signature(object="GRanges", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
+setMethod("trimToPeak", signature(object="GRanges",
+																	pooled="RangedSummarizedExperiment"),
+					function(object, pooled, ...){
 	trimToPeak(object, rowRanges(pooled), ...)
 })
 
 #' @rdname trimToPeak
-setMethod("trimToPeak", signature(object="RangedSummarizedExperiment", pooled="RangedSummarizedExperiment"), function(object, pooled, ...){
+setMethod("trimToPeak", signature(object="RangedSummarizedExperiment",
+																	pooled="RangedSummarizedExperiment"),
+					function(object, pooled, ...){
 	trimToPeak(rowRanges(object), rowRanges(pooled), ...)
 })
 

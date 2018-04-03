@@ -24,7 +24,8 @@ gf_reducer <- function(mapped){
 
 	# Add j
 	#mapped <- mapply(function(gp, j){gp$j <- j; gp}, mapped, seq_along(mapped))#
-	mapped <- mapply(function(gp, j){mcols(gp)[,"j"] <- j; gp}, mapped, seq_along(mapped))
+	mapped <- mapply(function(gp, j){mcols(gp)[,"j"] <- j; gp},
+									 mapped, seq_along(mapped))
 
 	# Coerce to mat
 	#mapped <- do.call(pryr::partial(c, x=GPos()), mapped)
@@ -41,9 +42,14 @@ gf_reducer <- function(mapped){
 
 	# To matrix
 	if(length(mapped) > 0){
-		mapped <- Matrix::sparseMatrix(i=mapped$i, j=mapped$j, x=score(mapped), dimnames = list(NULL, j_names))
+		mapped <- Matrix::sparseMatrix(i=mapped$i,
+																	 j=mapped$j,
+																	 x=score(mapped),
+																	 dimnames = list(NULL, j_names))
 	}else{
-		mapped <- methods::as(matrix(nrow=0, ncol=length(j_names), dimnames=list(NULL, j_names)), "dgCMatrix")
+		mapped <- methods::as(matrix(nrow=0,
+																 ncol=length(j_names),
+																 dimnames=list(NULL, j_names)), "dgCMatrix")
 	}
 
 	# Assemble into summarized experiment
@@ -57,7 +63,9 @@ gf_reducer <- function(mapped){
 gf_wrapper <- function(files, ranges, seqinfo, strand){
 	# Run GenomicFiles
 	o <- GenomicFiles::reduceByRange(ranges=ranges, files=files,
-										 MAP=pryr::partial(gf_mapper, seqinfo=seqinfo, strand=strand),
+										 MAP=pryr::partial(gf_mapper,
+										 									seqinfo=seqinfo,
+										 									strand=strand),
 										 REDUCE=gf_reducer,
 										 iterate=FALSE)
 
@@ -123,7 +131,8 @@ gf_wrapper <- function(files, ranges, seqinfo, strand){
 #'                        design=exampleDesign,
 #'                        genome=si)
 #' }
-quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, tileWidth=1e8L){
+quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL,
+													genome=NULL, tileWidth=1e8L){
 	# Pre-checks
 	assert_that(class(plusStrand) == "BigWigFileList",
 							class(minusStrand) == "BigWigFileList",
@@ -158,14 +167,18 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 
 	# Setup tiles
 	grl <- GenomicRanges::tileGenome(genome, tilewidth=tileWidth)
-	message("Iterating over ", length(grl), " genomic tiles in ", length(plusStrand), " samples using ", BiocParallel::bpworkers(), " worker(s)...")
+	message("Iterating over ", length(grl), " genomic tiles in ",
+					length(plusStrand), " samples using ",
+					BiocParallel::bpworkers(), " worker(s)...")
 
 	# Load data
 	message("Importing CTSSs from plus strand...")
-	plus_strand <- gf_wrapper(files=plusStrand, ranges=grl, seqinfo=genome, strand="+")
+	plus_strand <- gf_wrapper(files=plusStrand, ranges=grl,
+														seqinfo=genome, strand="+")
 
 	message("Importing CTSSs from minus strand...")
-	minus_strand <- gf_wrapper(files=minusStrand, ranges=grl, seqinfo=genome, strand="-")
+	minus_strand <- gf_wrapper(files=minusStrand, ranges=grl,
+														 seqinfo=genome, strand="-")
 
 	# Merge
 	message("Merging strands...")
@@ -184,7 +197,9 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 	message("### CTSS summary ###")
 	message("Number of samples: ", ncol(o))
 	message("Number of CTSSs: ", format(nrow(o) / 1e6L, digits=4), " millions")
-	message("Sparsity: ", format((1 - (Matrix::nnzero(assay(o)) / length(assay(o)))) * 100, digits=4), " %")
+	message("Sparsity: ",
+					format((1 - (Matrix::nnzero(assay(o)) / length(assay(o)))) * 100,
+								 digits=4), " %")
 	message("Final object size: ", utils::capture.output(pryr::object_size(o)))
 
 	# Return
@@ -221,7 +236,8 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL, genome=NULL, til
 #' # For exceptionally large datasets,
 #' # the resulting count matrix can be left sparse:
 #' quantifyClusters(exampleCTSSs, rowRanges(exampleUnidirectional), sparse=TRUE)
-quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE){
+quantifyClusters <- function(object, clusters,
+														 inputAssay="counts", sparse=FALSE){
 	# Pre-checks
 	assert_that(class(object) == "RangedSummarizedExperiment",
 							not_empty(object),
@@ -247,7 +263,10 @@ quantifyClusters <- function(object, clusters, inputAssay="counts", sparse=FALSE
 
 	# Summarize
 	message("Aggregating within clusters...")
-	mat <- rowsum2(x=assay(object, inputAssay), group=hits, drop=FALSE, sparse=sparse)
+	mat <- rowsum2(x=assay(object, inputAssay),
+								 group=hits,
+								 drop=FALSE,
+								 sparse=sparse)
 
 	# Check output is the right format and assign names.
 	stopifnot(nrow(mat) == length(clusters))
@@ -317,7 +336,10 @@ quantifyGenes <- function(object, genes, inputAssay="counts", sparse=FALSE){
 	new_gr <- splitAsList(rowRanges(object), f=genes, drop=TRUE)
 
 	# Sum matrix
-	new_m <- rowsum2(assay(object, inputAssay), group=genes, drop=TRUE, sparse=sparse)
+	new_m <- rowsum2(assay(object, inputAssay),
+									 group=genes,
+									 drop=TRUE,
+									 sparse=sparse)
 
 	# Check that names match
 	stopifnot(setequal(rownames(new_m), names(new_gr)))

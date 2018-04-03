@@ -37,7 +37,10 @@ setGeneric("combineClusters", function(object1, object2, ...) {
 
 #' @rdname combineClusters
 #' @export
-setMethod("combineClusters", signature(object1="RangedSummarizedExperiment", "RangedSummarizedExperiment"), function(object1, object2, removeIfOverlapping="none"){
+setMethod("combineClusters",
+					signature(object1="RangedSummarizedExperiment",
+										"RangedSummarizedExperiment"),
+					function(object1, object2, removeIfOverlapping="none"){
 	# Pre-checks
 	assert_that(!is.null(rownames(object1)),
 							!is.null(rownames(object2)),

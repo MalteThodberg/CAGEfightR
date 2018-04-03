@@ -34,7 +34,8 @@ setGeneric("swapRanges", function(object, ...){
 })
 
 #' @rdname swapRanges
-setMethod("swapRanges", signature(object="GenomicRanges"), function(object, inputColumn="thick", outputColumn=NULL){
+setMethod("swapRanges", signature(object="GenomicRanges"),
+					function(object, inputColumn="thick", outputColumn=NULL){
 	# Pre-checks
 	assert_that(is.string(inputColumn),
 							is.element(inputColumn, colnames(mcols(object))),
@@ -44,7 +45,8 @@ setMethod("swapRanges", signature(object="GenomicRanges"), function(object, inpu
 	# Warnings
 	if(!is.null(outputColumn)){
 		if(outputColumn %in% colnames(mcols(object))){
-			warning("object already has a column named ", outputColumn," in mcols: It will be overwritten!")
+			warning("object already has a column named ",
+							outputColumn," in mcols: It will be overwritten!")
 		}
 	}
 
@@ -64,7 +66,8 @@ setMethod("swapRanges", signature(object="GenomicRanges"), function(object, inpu
 })
 
 #' @rdname swapRanges
-setMethod("swapRanges", signature(object="RangedSummarizedExperiment"), function(object, ...){
+setMethod("swapRanges", signature(object="RangedSummarizedExperiment"),
+					function(object, ...){
 	rowRanges(object) <- swapRanges(rowRanges(object), ...)
 	object
 })
@@ -100,7 +103,8 @@ swapScores <- function(object, outputColumn="score", inputAssay, sample){
 
 	# Warnings
 	if(outputColumn %in% colnames(rowData(object))){
-		warning("object already has a column named ", outputColumn," in rowData: It will be overwritten!")
+		warning("object already has a column named ", outputColumn,
+						" in rowData: It will be overwritten!")
 	}
 
 	# Swap in new column from assay

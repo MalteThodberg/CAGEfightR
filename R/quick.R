@@ -29,12 +29,14 @@ quickTSSs <- function(object){
 	}
 
 	message("\n - Running tuneTagClustering:")
-	tuned <- tuneTagClustering(object, searchMethod = "exponential"); invisible(gc())
+	tuned <- tuneTagClustering(object,
+														 searchMethod = "exponential"); invisible(gc())
 	pooledCutoff <- tuned[which.max(tuned$nTCs), 1]
 	message("Optimal pooled cutoff: ", pooledCutoff)
 
 	message("\n - Running clusterUnidirectionally:")
-	TCs <- clusterUnidirectionally(object, pooledCutoff=pooledCutoff); invisible(gc())
+	TCs <- clusterUnidirectionally(object,
+																 pooledCutoff=pooledCutoff); invisible(gc())
 
 	message("\n - Running quantifyClusters:")
 	TCs <- quantifyClusters(object, TCs); invisible(gc())

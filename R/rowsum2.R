@@ -2,14 +2,16 @@ setGeneric("rowsum2", function(x, group, ...){
 	standardGeneric("rowsum2")
 })
 
-setMethod("rowsum2", signature(x="matrix", group="factor"), function(x, group, drop=TRUE, sparse=FALSE){
+setMethod("rowsum2", signature(x="matrix", group="factor"),
+					function(x, group, drop=TRUE, sparse=FALSE){
 	# Pre-checks
 	stopifnot(nrow(x) == length(group),
 						length(sparse) == 1,
 						length(drop) == 1)
 
 	if(!drop | sparse){
-		warning("Aggregating base::matrix always drops unused levels and return a base::matrix!")
+		warning("Aggregating base::matrix always drops unused levels",
+						" and return a base::matrix!")
 	}
 
 	# Aggregate
@@ -29,7 +31,8 @@ setMethod("rowsum2", signature(x="matrix", group="factor"), function(x, group, d
 	o
 })
 
-setMethod("rowsum2", signature(x="dgCMatrix", group="factor"), function(x, group, drop=FALSE, sparse=FALSE){
+setMethod("rowsum2", signature(x="dgCMatrix", group="factor"),
+					function(x, group, drop=FALSE, sparse=FALSE){
 	# Pre-checks
 	stopifnot(nrow(x) == length(group),
 						length(sparse) == 1,
@@ -69,7 +72,8 @@ setMethod("rowsum2", signature(x="dgCMatrix", group="factor"), function(x, group
 	o
 })
 
-aggregate.Matrix2 <- function (x, groupings = NULL, form = NULL, fun = "sum", drop.unused.levels=TRUE, ...){
+aggregate.Matrix2 <- function (x, groupings = NULL, form = NULL, fun = "sum",
+															 drop.unused.levels=TRUE, ...){
 	if (!methods::is(x, "Matrix"))
 		x <- Matrix::Matrix(Matrix::as.matrix(x), sparse = TRUE)
 	if (fun == "count")
@@ -84,7 +88,8 @@ aggregate.Matrix2 <- function (x, groupings = NULL, form = NULL, fun = "sum", dr
 	if (is.null(form))
 		form <- stats::as.formula("~0+.")
 	form <- stats::as.formula(form)
-	mapping <- Matrix.utils::dMcast(groupings2, form, drop.unused.levels=drop.unused.levels)
+	mapping <- Matrix.utils::dMcast(groupings2, form,
+																	drop.unused.levels=drop.unused.levels)
 	colnames(mapping) <- substring(colnames(mapping), 2)
 	result <- t(mapping) %*% x
 	if (fun == "mean")

@@ -28,7 +28,8 @@
 #'                                      inputAssay="TPM",
 #'                                      unexpressed=1,
 #'                                      outputColumn="TPMsupport")
-calcSupport <- function(object, inputAssay="counts", outputColumn="support", unexpressed=0){
+calcSupport <- function(object, inputAssay="counts", outputColumn="support",
+												unexpressed=0){
 	# Prechecks
 	assert_that(methods::is(object, "SummarizedExperiment"),
 							is.string(inputAssay),
@@ -37,11 +38,14 @@ calcSupport <- function(object, inputAssay="counts", outputColumn="support", une
 							is.number(unexpressed))
 
 	if(outputColumn %in% colnames(rowData(object))){
-		warning("object already has a column named ", outputColumn," in rowData: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in rowData: It will be overwritten!")
 	}
 
 	# Calculate support
-	rowData(object)[,outputColumn] <- as.integer(Matrix::rowSums(assay(object, inputAssay) > unexpressed))
+	rowData(object)[,outputColumn] <- as.integer(
+		Matrix::rowSums(assay(object, inputAssay) > unexpressed)
+		)
 
 	# Return
 	object
@@ -63,7 +67,8 @@ calcSupport <- function(object, inputAssay="counts", outputColumn="support", une
 #' @examples
 #' data(exampleUnidirectional)
 #' calcTotalTags(exampleUnidirectional)
-calcTotalTags <- function(object, inputAssay="counts", outputColumn="totalTags"){
+calcTotalTags <- function(object, inputAssay="counts",
+													outputColumn="totalTags"){
 	# Prechecks
 	assert_that(class(object) == "RangedSummarizedExperiment",
 							not_empty(object),
@@ -72,7 +77,8 @@ calcTotalTags <- function(object, inputAssay="counts", outputColumn="totalTags")
 							is.string(outputColumn))
 
 	if(outputColumn %in% colnames(colData(object))){
-		warning("object already has a column named ", outputColumn," in colData: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in colData: It will be overwritten!")
 	}
 
 	# Calculate colSums
@@ -107,8 +113,11 @@ calcTotalTags <- function(object, inputAssay="counts", outputColumn="totalTags")
 #' calcTPM(exampleUnidirectional)
 #'
 #' # Use pre-calculated total number of tags:
-#' calcTPM(exampleUnidirectional, outputAssay="TPMsupplied", totalTags="totalTags")
-calcTPM <- function(object, inputAssay="counts", outputAssay="TPM", totalTags=NULL, outputColumn="totalTags"){
+#' calcTPM(exampleUnidirectional,
+#'         outputAssay="TPMsupplied",
+#'         totalTags="totalTags")
+calcTPM <- function(object, inputAssay="counts", outputAssay="TPM",
+										totalTags=NULL, outputColumn="totalTags"){
 	# Prechecks
 	assert_that(class(object) == "RangedSummarizedExperiment",
 							not_empty(object),
@@ -118,7 +127,9 @@ calcTPM <- function(object, inputAssay="counts", outputAssay="TPM", totalTags=NU
 
 	if(is.null(totalTags)){
 		message("Calculating library sizes...")
-		object <- calcTotalTags(object=object, inputAssay=inputAssay, outputColumn=outputColumn)
+		object <- calcTotalTags(object=object,
+														inputAssay=inputAssay,
+														outputColumn=outputColumn)
 		totalTags <- outputColumn
 	}else if(is.string(totalTags)){
 		message("Using supplied library sizes...")
@@ -130,12 +141,15 @@ calcTPM <- function(object, inputAssay="counts", outputAssay="TPM", totalTags=NU
 	}
 
 	if(outputAssay %in% assayNames(object)){
-		warning("object already has an assay named ", outputAssay,": It will be overwritten!")
+		warning("object already has an assay named ",
+						outputAssay,": It will be overwritten!")
 	}
 
 	# Scale counts to TPM
 	message("Calculating TPM...")
-	assay(object, outputAssay) <- Matrix::t(Matrix::t(assay(object, inputAssay)) / (colData(object)[,totalTags] / 1e6))
+	assay(object, outputAssay) <- Matrix::t(
+		Matrix::t(assay(object, inputAssay)) / (colData(object)[,totalTags] / 1e6)
+		)
 
 	# Return
 	object
@@ -171,7 +185,8 @@ calcPooled <- function(object, inputAssay="TPM", outputColumn="score"){
 							is.string(outputColumn))
 
 	if(outputColumn %in% colnames(rowData(object))){
-		warning("object already has a column named ", outputColumn," in rowData: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in rowData: It will be overwritten!")
 	}
 
 	# Calculate colSums
@@ -217,8 +232,14 @@ calcPooled <- function(object, inputAssay="TPM", outputColumn="score"){
 #' calcComposition(exampleUnidirectional)
 #'
 #' # Use a lower threshold
-#' calcComposition(exampleUnidirectional, unexpressed=0.05, outputColumn="lenientComposition")
-calcComposition <- function(object, inputAssay="counts", outputColumn="composition", unexpressed=0.1, genes="geneID"){
+#' calcComposition(exampleUnidirectional,
+#'                 unexpressed=0.05,
+#'                 outputColumn="lenientComposition")
+calcComposition <- function(object,
+														inputAssay="counts",
+														outputColumn="composition",
+														unexpressed=0.1,
+														genes="geneID"){
 	assert_that(methods::is(object, "SummarizedExperiment"),
 							is.string(inputAssay),
 							inputAssay %in% assayNames(object),
@@ -231,14 +252,20 @@ calcComposition <- function(object, inputAssay="counts", outputColumn="compositi
 							noNA(rowData(object)[,genes]))
 
 	if(outputColumn %in% colnames(rowData(object))){
-		warning("object already has a column named ", outputColumn," in rowData: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in rowData: It will be overwritten!")
 	}
 
 	# Extract gene-wise matrices
-	L <- splitAsList(x=assay(object, inputAssay), f=rowData(object)[,genes], drop = FALSE)
+	L <- splitAsList(x=assay(object, inputAssay),
+									 f=rowData(object)[,genes],
+									 drop = FALSE)
 
 	# Scale and find high compositions
-	L <- endoapply(L, function(x) scale(x, center=FALSE, scale=Matrix::colSums(x)) > unexpressed) # Scale always coerces to a base::matrix!
+	# Note: Scale always coerces to a base::matrix!
+	L <- endoapply(L, function(x) scale(x,
+																			center=FALSE,
+																			scale=Matrix::colSums(x)) > unexpressed)
 
 	# Calculate count high compositions
 	L <- endoapply(L, rowSums, na.rm=TRUE)

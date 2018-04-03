@@ -79,7 +79,10 @@ setGeneric("assignTxType", function(object, txModels, ...) {
 })
 
 #' @rdname assignTxType
-setMethod("assignTxType", signature(object="GenomicRanges", txModels="GenomicRangesList"), function(object, txModels, outputColumn="txType", swap=NULL, noOverlap="intergenic"){
+setMethod("assignTxType",
+					signature(object="GenomicRanges", txModels="GenomicRangesList"),
+					function(object, txModels, outputColumn="txType",
+									 swap=NULL, noOverlap="intergenic"){
 	# Pre-checks
 	assert_that(!is.null(names(txModels)),
 							is.string(outputColumn),
@@ -88,7 +91,8 @@ setMethod("assignTxType", signature(object="GenomicRanges", txModels="GenomicRan
 
 	# Warnings
 	if(outputColumn %in% colnames(mcols(object))){
-		warning("object already has a column named ", outputColumn," in mcols: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in mcols: It will be overwritten!")
 	}
 
 	# Find overlaps
@@ -128,7 +132,9 @@ setMethod("assignTxType", signature(object="GenomicRanges", txModels="GenomicRan
 })
 
 #' @rdname assignTxType
-setMethod("assignTxType", signature(object="RangedSummarizedExperiment", txModels="GenomicRangesList"), function(object, txModels, ...){
+setMethod("assignTxType", signature(object="RangedSummarizedExperiment",
+																		txModels="GenomicRangesList"),
+					function(object, txModels, ...){
 	rowRanges(object) <- assignTxType(rowRanges(object), txModels=txModels, ...)
 
 	# Return
@@ -136,7 +142,10 @@ setMethod("assignTxType", signature(object="RangedSummarizedExperiment", txModel
 })
 
 #' @rdname assignTxType
-setMethod("assignTxType", signature(object="GenomicRanges", txModels="TxDb"), function(object, txModels, outputColumn="txType", swap=NULL, tssUpstream=100, tssDownstream=100, proximalUpstream=1000, detailedAntisense=FALSE){
+setMethod("assignTxType", signature(object="GenomicRanges", txModels="TxDb"),
+					function(object, txModels, outputColumn="txType", swap=NULL,
+									 tssUpstream=100, tssDownstream=100, proximalUpstream=1000,
+									 detailedAntisense=FALSE){
 	# Pre-checks
 	assert_that(is.count(tssUpstream),
 							is.count(tssDownstream),
@@ -145,8 +154,12 @@ setMethod("assignTxType", signature(object="GenomicRanges", txModels="TxDb"), fu
 							identical(seqlengths(object), seqlengths(txModels)))
 
 	# Build sense hierachy
-	hierachy <- GRangesList(promoter=granges(trim(promoters(txModels, upstream=tssUpstream, downstream=tssDownstream))),
-									 proximal=granges(trim(promoters(txModels, upstream=proximalUpstream, downstream=0))),
+	hierachy <- GRangesList(promoter=granges(trim(promoters(txModels,
+																										upstream=tssUpstream,
+																										downstream=tssDownstream))),
+									 proximal=granges(trim(promoters(txModels,
+									 																upstream=proximalUpstream,
+									 																downstream=0))),
 									 fiveUTR=granges(unlist(fiveUTRsByTranscript(txModels))),
 									 threeUTR=granges(unlist(threeUTRsByTranscript(txModels))),
 									 CDS=granges(cds(txModels)),
@@ -155,8 +168,10 @@ setMethod("assignTxType", signature(object="GenomicRanges", txModels="TxDb"), fu
 
 	# Build sense hierachy
 	# message("Extracting txType categories...")
-	# hierachy <- List(promoter=trim(promoters(txModels, upstream=tssUpstream, downstream=tssDownstream)),
-	# 								 proximal=trim(promoters(txModels, upstream=proximalUpstream, downstream=0)),
+	# hierachy <- List(promoter=trim(promoters(txModels,
+	# upstream=tssUpstream, downstream=tssDownstream)),
+	# 								 proximal=trim(promoters(txModels,
+	# upstream=proximalUpstream, downstream=0)),
 	# 								 fiveUTR=fiveUTRsByTranscript(txModels),
 	# 								 threeUTR=threeUTRsByTranscript(txModels),
 	# 								 CDS=cds(txModels),
@@ -184,14 +199,18 @@ setMethod("assignTxType", signature(object="GenomicRanges", txModels="TxDb"), fu
 	rm(antisense)
 
 	# Overlap
-	object <- assignTxType(object=object, txModels=hierachy, outputColumn=outputColumn, swap=swap, noOverlap="intergenic")
+	object <- assignTxType(object=object, txModels=hierachy,
+												 outputColumn=outputColumn, swap=swap,
+												 noOverlap="intergenic")
 
 	# Return
 	object
 })
 
 #' @rdname assignTxType
-setMethod("assignTxType", signature(object="RangedSummarizedExperiment", txModels="TxDb"), function(object, txModels, ...){
+setMethod("assignTxType", signature(object="RangedSummarizedExperiment",
+																		txModels="TxDb"),
+					function(object, txModels, ...){
 	rowRanges(object) <- assignTxType(rowRanges(object), txModels=txModels, ...)
 
 	# Return
@@ -245,7 +264,10 @@ setGeneric("assignGeneID", function(object, geneModels, ...) {
 })
 
 #' @rdname assignGeneID
-setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="GenomicRanges"), function(object, geneModels, outputColumn="geneID", swap=NULL, upstream=1000, downstream=100){
+setMethod("assignGeneID", signature(object="GenomicRanges",
+																		geneModels="GenomicRanges"),
+					function(object, geneModels, outputColumn="geneID", swap=NULL,
+									 upstream=1000, downstream=100){
 	# Pre-checks
 	assert_that(!is.null(names(geneModels)),
 							is.string(outputColumn),
@@ -255,12 +277,15 @@ setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="GenomicR
 
 	# Warnings
 	if(outputColumn %in% colnames(mcols(object))){
-		warning("object already has a column named ", outputColumn," in mcols: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in mcols: It will be overwritten!")
 	}
 
 	# Extract anchor points
 	message("Overlapping while taking distance to nearest TSS into account...")
-	extendedGeneModels <- punion(geneModels, promoters(geneModels, upstream=upstream, downstream=downstream))
+	extendedGeneModels <- punion(geneModels, promoters(geneModels,
+																										 upstream=upstream,
+																										 downstream=downstream))
 	extendedGeneModels <- trim(extendedGeneModels)
 	TSSs <- resize(geneModels, width=1, fix="start")
 
@@ -270,15 +295,18 @@ setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="GenomicR
 		hits <- findOverlaps(object, extendedGeneModels)
 	}else{
 		message("Finding hierachical overlaps with swapped ranges...")
-		hits <- findOverlaps(swapRanges(object, inputColumn=swap), extendedGeneModels)
+		hits <- findOverlaps(swapRanges(object, inputColumn=swap),
+												 extendedGeneModels)
 	}
 
 	# Calculate distances to TSSs
 	mcols(hits)$distance <- distance(Pairs(object, TSSs, hits=hits))
 	rm(TSSs, extendedGeneModels)
 
-	# Resolve by distance to nearest TSS by split apply, THIS CAN BE UPDATED IN NEXT VERSION OF S4Vectors!
-	hits <- hits[which.min(splitAsList(mcols(hits)$distance, queryHits(hits)), global=TRUE)]
+	# Resolve by distance to nearest TSS by split apply,
+	# THIS CAN BE UPDATED IN NEXT VERSION OF S4Vectors!
+	hits <- hits[which.min(splitAsList(mcols(hits)$distance,
+																		 queryHits(hits)), global=TRUE)]
 
 	# Extract ids
 	hits <- methods::as(hits, "List")
@@ -291,7 +319,8 @@ setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="GenomicR
 
 	# Return
 	message("### Overlap Summary: ###")
-	message("Features overlapping genes: ", round(mean(!is.na(hits)) * 100, digits=2), " %")
+	message("Features overlapping genes: ", round(mean(!is.na(hits)) * 100,
+																								digits=2), " %")
 	message("Number of unique genes: ", length(unique(hits)))
 
 	# Return
@@ -299,15 +328,20 @@ setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="GenomicR
 })
 
 #' @rdname assignGeneID
-setMethod("assignGeneID", signature(object="RangedSummarizedExperiment", geneModels="GenomicRanges"), function(object, geneModels, ...){
-	rowRanges(object) <- assignGeneID(rowRanges(object), geneModels=geneModels, ...)
+setMethod("assignGeneID", signature(object="RangedSummarizedExperiment",
+																		geneModels="GenomicRanges"),
+					function(object, geneModels, ...){
+	rowRanges(object) <- assignGeneID(rowRanges(object),
+																		geneModels=geneModels, ...)
 
 	# Return
 	object
 })
 
 #' @rdname assignGeneID
-setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="TxDb"), function(object, geneModels, outputColumn="geneID", swap=NULL, upstream=1000, downstream=100){
+setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="TxDb"),
+					function(object, geneModels, outputColumn="geneID", swap=NULL,
+									 upstream=1000, downstream=100){
 	# Pre-checks
 	assert_that(is.string(outputColumn),
 							is.number(upstream),
@@ -319,15 +353,19 @@ setMethod("assignGeneID", signature(object="GenomicRanges", geneModels="TxDb"), 
 	as_gr <- genes(geneModels)
 
 	# Overlap
-	object <- assignGeneID(object, geneModels=as_gr, outputColumn=outputColumn, swap=swap, upstream=upstream, downstream=downstream)
+	object <- assignGeneID(object, geneModels=as_gr, outputColumn=outputColumn,
+												 swap=swap, upstream=upstream, downstream=downstream)
 
 	# Return
 	object
 })
 
 #' @rdname assignGeneID
-setMethod("assignGeneID", signature(object="RangedSummarizedExperiment", geneModels="TxDb"), function(object, geneModels, ...){
-	rowRanges(object) <- assignGeneID(rowRanges(object), geneModels=geneModels, ...)
+setMethod("assignGeneID", signature(object="RangedSummarizedExperiment",
+																		geneModels="TxDb"),
+					function(object, geneModels, ...){
+	rowRanges(object) <- assignGeneID(rowRanges(object),
+																		geneModels=geneModels, ...)
 
 	# Return
 	object
@@ -379,7 +417,9 @@ setGeneric("assignTxID", function(object, txModels, ...) {
 })
 
 #' @rdname assignTxID
-setMethod("assignTxID", signature(object="GenomicRanges", txModels="GenomicRanges"), function(object, txModels, outputColumn="txID", swap=NULL){
+setMethod("assignTxID", signature(object="GenomicRanges",
+																	txModels="GenomicRanges"),
+					function(object, txModels, outputColumn="txID", swap=NULL){
 	# Pre-checks
 	assert_that(!is.null(names(txModels)),
 							is.string(outputColumn),
@@ -387,7 +427,8 @@ setMethod("assignTxID", signature(object="GenomicRanges", txModels="GenomicRange
 
 	# Warnings
 	if(outputColumn %in% colnames(mcols(object))){
-		warning("object already has a column named ", outputColumn," in mcols: It will be overwritten!")
+		warning("object already has a column named ",
+						outputColumn," in mcols: It will be overwritten!")
 	}
 
 	# Find overlaps
@@ -417,7 +458,8 @@ setMethod("assignTxID", signature(object="GenomicRanges", txModels="GenomicRange
 
 	# Return
 	message("### Overlap Summary: ###")
-	message("Features overlapping transcripts: ", round(mean(!is.na(hits)) * 100, digits=2), " %")
+	message("Features overlapping transcripts: ", round(mean(!is.na(hits)) * 100,
+																											digits=2), " %")
 	message("Number of unique transcripts: ", nTxs)
 
 	# Return
@@ -425,7 +467,9 @@ setMethod("assignTxID", signature(object="GenomicRanges", txModels="GenomicRange
 })
 
 #' @rdname assignTxID
-setMethod("assignTxID", signature(object="RangedSummarizedExperiment", txModels="GenomicRanges"), function(object, txModels, ...){
+setMethod("assignTxID", signature(object="RangedSummarizedExperiment",
+																	txModels="GenomicRanges"),
+					function(object, txModels, ...){
 	rowRanges(object) <- assignTxID(rowRanges(object), txModels=txModels, ...)
 
 	# Return
@@ -433,7 +477,9 @@ setMethod("assignTxID", signature(object="RangedSummarizedExperiment", txModels=
 })
 
 #' @rdname assignTxID
-setMethod("assignTxID", signature(object="GenomicRanges", txModels="TxDb"), function(object, txModels, outputColumn="txID", swap=NULL, upstream=1000, downstream=0){
+setMethod("assignTxID", signature(object="GenomicRanges", txModels="TxDb"),
+					function(object, txModels, outputColumn="txID", swap=NULL,
+									 upstream=1000, downstream=0){
 	# Pre-checks
 	assert_that(is.string(outputColumn),
 							is.number(upstream),
@@ -457,7 +503,9 @@ setMethod("assignTxID", signature(object="GenomicRanges", txModels="TxDb"), func
 })
 
 #' @rdname assignTxID
-setMethod("assignTxID", signature(object="RangedSummarizedExperiment", txModels="TxDb"), function(object, txModels, ...){
+setMethod("assignTxID", signature(object="RangedSummarizedExperiment",
+																	txModels="TxDb"),
+					function(object, txModels, ...){
 	rowRanges(object) <- assignTxID(rowRanges(object), txModels=txModels, ...)
 
 	# Return
@@ -507,7 +555,8 @@ setGeneric("assignMissingID", function(object, ...) {
 })
 
 #' @rdname assignMissingID
-setMethod("assignMissingID", signature(object="character"), function(object, prefix="Novel"){
+setMethod("assignMissingID", signature(object="character"),
+					function(object, prefix="Novel"){
 	# Pre-checks
 	assert_that(is.string(prefix))
 
@@ -520,21 +569,25 @@ setMethod("assignMissingID", signature(object="character"), function(object, pre
 })
 
 #' @rdname assignMissingID
-setMethod("assignMissingID", signature(object="GenomicRanges"), function(object, outputColumn="geneID", prefix="Novel"){
+setMethod("assignMissingID", signature(object="GenomicRanges"),
+					function(object, outputColumn="geneID", prefix="Novel"){
 	# Pre-checks
 	assert_that(is.string(outputColumn),
 							outputColumn %in% colnames(mcols(object)))
 
 	# Replace
-	mcols(object)[,outputColumn] <- assignMissingID(mcols(object)[,outputColumn], prefix=prefix)
+	mcols(object)[,outputColumn] <- assignMissingID(mcols(object)[,outputColumn],
+																									prefix=prefix)
 
 	# Return
 	object
 })
 
 #' @rdname assignMissingID
-setMethod("assignMissingID", signature(object="RangedSummarizedExperiment"), function(object, outputColumn="geneID", prefix="Novel"){
-	rowRanges(object) <- assignMissingID(rowRanges(object), outputColumn=outputColumn, prefix=prefix)
+setMethod("assignMissingID", signature(object="RangedSummarizedExperiment"),
+					function(object, outputColumn="geneID", prefix="Novel"){
+	rowRanges(object) <- assignMissingID(rowRanges(object),
+																			 outputColumn=outputColumn, prefix=prefix)
 
 	# Return
 	object

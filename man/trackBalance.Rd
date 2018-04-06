@@ -46,7 +46,7 @@ data(exampleCTSSs)
 data(exampleBidirectional)
 
 # Calculate pooled CTSSs
-exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags='totalTags')
 exampleCTSSs <- calcPooled(exampleCTSSs)
 
 # Find a bidirectional cluster to plot:

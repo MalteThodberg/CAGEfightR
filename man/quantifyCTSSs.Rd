@@ -31,12 +31,12 @@ matrix is stored as a sparse matrix (dgCMatrix).
 \examples{
 \dontrun{
 # Load the example data
-data("exampleDesign")
+data('exampleDesign')
 # Use the BigWig-files included with the package:
-bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
-                       package = "CAGEfightR")
-bw_minus <- system.file("extdata", exampleDesign$BigWigMinus,
-                        package = "CAGEfightR")
+bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
+                       package = 'CAGEfightR')
+bw_minus <- system.file('extdata', exampleDesign$BigWigMinus,
+                        package = 'CAGEfightR')
 
 # Create two named BigWigFileList-objects:
 bw_plus <- BigWigFileList(bw_plus)
@@ -51,7 +51,7 @@ CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
 
 # Alternatively, a genome can be specified:
 si <- seqinfo(bw_plus[[1]])
-si <- si["chr18"]
+si <- si['chr18']
 CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
                        minusStrand=bw_minus,
                        design=exampleDesign,

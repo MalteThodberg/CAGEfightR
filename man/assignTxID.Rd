@@ -58,13 +58,13 @@ txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 # Assign txIDs
 assignTxID(exampleUnidirectional,
            txModels=txdb,
-           outputColumn="geneID")
+           outputColumn='geneID')
 
 # Assign txIDs using only TC peaks:
 assignTxID(exampleUnidirectional,
              txModels=txdb,
-             outputColumn="geneID",
-             swap="thick")
+             outputColumn='geneID',
+             swap='thick')
 }
 \seealso{
 Other Annotation functions: \code{\link{assignGeneID}},

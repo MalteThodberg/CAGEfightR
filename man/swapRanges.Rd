@@ -46,7 +46,7 @@ head(width(peaks))
 swapRanges(exampleUnidirectional)
 
 # The original can optionally be saved in the output object
-swapRanges(gr, outputColumn = "swapped")
+swapRanges(gr, outputColumn = 'swapped')
 }
 \seealso{
 Other Swapping functions: \code{\link{swapScores}}

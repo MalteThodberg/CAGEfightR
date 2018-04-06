@@ -11,9 +11,9 @@
 #' @export
 #' @examples
 #' # Use the BigWig-files included with the package:
-#' data("exampleDesign")
-#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
-#'                        package = "CAGEfightR")
+#' data('exampleDesign')
+#' bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
+#'                        package = 'CAGEfightR')
 #'
 #' # Create a named BigWigFileList-object with names
 #' bw_plus <- BigWigFileList(bw_plus)
@@ -25,28 +25,26 @@
 #' # Check the entire BigWigFileList:
 #' bwValid(bw_plus)
 setGeneric("bwValid", function(object) {
-	standardGeneric("bwValid")
+    standardGeneric("bwValid")
 })
 
 #' @rdname bwValid
-setMethod("bwValid", signature(object="BigWigFile"), function(object){
-	# Checks, maybe wrap all of this in it's own function
-	assert_that(file.exists(object@resource),
-							has_extension(object@resource, "bw"),
-							is.readable(object@resource))
-
-	# Only returned if all tests pass
-	TRUE
+setMethod("bwValid", signature(object = "BigWigFile"), function(object) {
+    # Checks, maybe wrap all of this in it's own function
+    assert_that(file.exists(object@resource), has_extension(object@resource, "bw"), 
+        is.readable(object@resource))
+    
+    # Only returned if all tests pass
+    TRUE
 })
 
 #' @rdname bwValid
-setMethod("bwValid", signature(object="BigWigFileList"), function(object){
-	# Checks, maybe wrap all of this in it's own function
-	assert_that(all(vapply(object, bwValid, logical(1))),
-							!is.null(names(object)))
-
-	# Only returned if all tests pass
-	TRUE
+setMethod("bwValid", signature(object = "BigWigFileList"), function(object) {
+    # Checks, maybe wrap all of this in it's own function
+    assert_that(all(vapply(object, bwValid, logical(1))), !is.null(names(object)))
+    
+    # Only returned if all tests pass
+    TRUE
 })
 
 #' Find a common genome for a series of BigWig files.
@@ -56,18 +54,18 @@ setMethod("bwValid", signature(object="BigWigFileList"), function(object){
 #'
 #' @param plusStrand BigWigFileList: BigWig files with plus-strand CTSS data.
 #' @param minusStrand BigWigFileList: BigWig files with minus-strand CTSS data.
-#' @param method character: Either "intersect" or "union".
+#' @param method character: Either 'intersect' or 'union'.
 #'
 #' @return Sorted Seqinfo-object.
 #' @family BigWig functions
 #' @export
 #' @examples
 #' # Use the BigWig-files included with the package:
-#' data("exampleDesign")
-#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
-#'                        package = "CAGEfightR")
-#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus,
-#'                         package = "CAGEfightR")
+#' data('exampleDesign')
+#' bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
+#'                        package = 'CAGEfightR')
+#' bw_minus <- system.file('extdata', exampleDesign$BigWigMinus,
+#'                         package = 'CAGEfightR')
 #'
 #' # Create two named BigWigFileList-objects:
 #' bw_plus <- BigWigFileList(bw_plus)
@@ -76,38 +74,36 @@ setMethod("bwValid", signature(object="BigWigFileList"), function(object){
 #' names(bw_minus) <- exampleDesign$Name
 #'
 #' # Find the smallest common genome (intersect) across the BigWigList-objects:
-#' bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method="intersect")
+#' bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='intersect')
 #'
 #' # Find the most inclusive genome (union) across the BigWigList-objects:
-#' bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method="union")
-bwCommonGenome <- function(plusStrand, minusStrand, method="intersect"){
-	assert_that(class(plusStrand) == "BigWigFileList",
-							class(minusStrand) == "BigWigFileList",
-							is.string(method),
-							method %in% c("intersect", "union"))
-
-	# Get seqinfo
-	seqInfoPlus <- lapply(plusStrand, seqinfo)
-	seqInfoMinus <- lapply(minusStrand, seqinfo)
-
-	# Unique seqinfos
-	seqInfo <- unique(c(seqInfoPlus, seqInfoMinus))
-
-	# Sort every element
-	seqInfo <- seqInfo[order(vapply(seqInfo, length, numeric(1)))]
-
-	# Merge using either function
-	if(method == "intersect"){
-		o <- suppressWarnings(Reduce(f=intersect, seqInfo))
-	}else if(method == "union"){
-		o <- suppressWarnings(Reduce(f=merge, seqInfo))
-	}
-
-	# Sort
-	o <- sortSeqlevels(o)
-
-	# Return
-	o
+#' bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='union')
+bwCommonGenome <- function(plusStrand, minusStrand, method = "intersect") {
+    assert_that(class(plusStrand) == "BigWigFileList", class(minusStrand) == "BigWigFileList", 
+        is.string(method), method %in% c("intersect", "union"))
+    
+    # Get seqinfo
+    seqInfoPlus <- lapply(plusStrand, seqinfo)
+    seqInfoMinus <- lapply(minusStrand, seqinfo)
+    
+    # Unique seqinfos
+    seqInfo <- unique(c(seqInfoPlus, seqInfoMinus))
+    
+    # Sort every element
+    seqInfo <- seqInfo[order(vapply(seqInfo, length, numeric(1)))]
+    
+    # Merge using either function
+    if (method == "intersect") {
+        o <- suppressWarnings(Reduce(f = intersect, seqInfo))
+    } else if (method == "union") {
+        o <- suppressWarnings(Reduce(f = merge, seqInfo))
+    }
+    
+    # Sort
+    o <- sortSeqlevels(o)
+    
+    # Return
+    o
 }
 
 #' Check if BigWig-files are compatible with a given genome.
@@ -124,11 +120,11 @@ bwCommonGenome <- function(plusStrand, minusStrand, method="intersect"){
 #' @export
 #' @examples
 #' # Use the BigWig-files included with the package:
-#' data("exampleDesign")
-#' bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
-#'                        package = "CAGEfightR")
-#' bw_minus <- system.file("extdata", exampleDesign$BigWigMinus,
-#'                         package = "CAGEfightR")
+#' data('exampleDesign')
+#' bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
+#'                        package = 'CAGEfightR')
+#' bw_minus <- system.file('extdata', exampleDesign$BigWigMinus,
+#'                         package = 'CAGEfightR')
 #'
 #' # Create two named BigWigFileList-objects:
 #' bw_plus <- BigWigFileList(bw_plus)
@@ -138,25 +134,24 @@ bwCommonGenome <- function(plusStrand, minusStrand, method="intersect"){
 #'
 #' # Make a smaller genome:
 #' si <- seqinfo(bw_plus[[1]])
-#' si <- si["chr18"]
+#' si <- si['chr18']
 #'
 #' # Check if it is still compatible:
 #' bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)
-bwGenomeCompatibility <- function(plusStrand, minusStrand, genome){
-	assert_that(class(plusStrand) == "BigWigFileList",
-							class(minusStrand) == "BigWigFileList",
-							class(genome) == "Seqinfo")
-
-	# Get seqinfo
-	seqInfoPlus <- lapply(plusStrand, seqinfo)
-	seqInfoMinus <- lapply(minusStrand, seqinfo)
-
-	# Unique seqinfos
-	seqInfos <- unique(c(seqInfoPlus, seqInfoMinus))
-
-	# Check if error is produces
-	lapply(seqInfos, merge, y=genome)
-
-	# Return
-	TRUE
+bwGenomeCompatibility <- function(plusStrand, minusStrand, genome) {
+    assert_that(class(plusStrand) == "BigWigFileList", class(minusStrand) == "BigWigFileList", 
+        class(genome) == "Seqinfo")
+    
+    # Get seqinfo
+    seqInfoPlus <- lapply(plusStrand, seqinfo)
+    seqInfoMinus <- lapply(minusStrand, seqinfo)
+    
+    # Unique seqinfos
+    seqInfos <- unique(c(seqInfoPlus, seqInfoMinus))
+    
+    # Check if error is produces
+    lapply(seqInfos, merge, y = genome)
+    
+    # Return
+    TRUE
 }

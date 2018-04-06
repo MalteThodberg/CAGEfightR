@@ -17,7 +17,7 @@ subsetByBidirectionality(object, ...)
 }
 \arguments{
 \item{object}{GRanges or RangedSummarizedExperiment: Unstranded clusters with
-peaks stored in the "thick" column.}
+peaks stored in the 'thick' column.}
 
 \item{...}{additional arguments passed to methods.}
 

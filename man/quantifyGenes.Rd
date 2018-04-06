@@ -35,16 +35,16 @@ library(TxDb.Mmusculus.UCSC.mm9.knownGene)
 txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 exampleUnidirectional <- assignGeneID(exampleUnidirectional,
                                       geneModels=txdb,
-                                      outputColumn="geneID")
+                                      outputColumn='geneID')
 
 # Quantify counts within genes:
-quantifyGenes(exampleUnidirectional, genes="geneID", inputAssay="counts")
+quantifyGenes(exampleUnidirectional, genes='geneID', inputAssay='counts')
 
 # For exceptionally large datasets,
 # the resulting count matrix can be left sparse:
 quantifyGenes(exampleUnidirectional,
-              genes="geneID",
-              inputAssay="counts",
+              genes='geneID',
+              inputAssay='counts',
               sparse=TRUE)
 }
 \seealso{

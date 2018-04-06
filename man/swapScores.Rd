@@ -28,7 +28,7 @@ data(exampleCTSSs)
 sample_names <- colnames(exampleCTSSs)
 
 # Replace scores with values from the first sample:
-x <- swapScores(exampleCTSSs, inputAssay="counts", sample=sample_names[1])
+x <- swapScores(exampleCTSSs, inputAssay='counts', sample=sample_names[1])
 rowRanges(x)
 }
 \seealso{

@@ -2,7 +2,7 @@
 
 #' Annotate ranges with transcript type.
 #'
-#' Annotate a set of ranges in a GRanges object with transcript type (TxType)
+#' Annotate a set of ranges in a GRanges object with transcript type (txType)
 #' based on their genic context. Transcripts are obtained from a TxDb object,
 #' but can alternatively be specified manually as a GRangesList.
 #'
@@ -24,8 +24,7 @@
 #'   a GRangesList, what to call regions with no overlap.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with txType added as factor in metadata columns (inside
-#'   rowRanges in case object is a RangedSummarizedExperiment)
+#' @return object with txType added as factor column in rowData (or mcols)
 #'
 #' @family Annotation functions
 #' @export
@@ -237,8 +236,7 @@ setMethod("assignTxType", signature(object="RangedSummarizedExperiment",
 #' @param downstream integer: Distance to extend annotated promoter downstream.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with geneID added in columns outputColumn (inside rowRanges
-#'   in case object is a RangedSummarizedExperiment)
+#' @return object with geneID added as a column in rowData (or mcols).
 #'
 #' @family Annotation functions
 #' @export
@@ -390,8 +388,7 @@ setMethod("assignGeneID", signature(object="RangedSummarizedExperiment",
 #' @param downstream integer: Distance to extend annotated promoter downstream.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with txID added in column outputColumn (inside rowRanges in
-#'   case object is a RangedSummarizedExperiment)
+#' @return object with txID added as a column in rowData (or mcols)
 #'
 #' @family Annotation functions
 #' @export
@@ -527,8 +524,7 @@ setMethod("assignTxID", signature(object="RangedSummarizedExperiment",
 #'   the style prefix1, prefix2, etc.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return GRanges with NAs replaced in outputColumn (inside rowRanges in case
-#'   object is a RangedSummarizedExperiment)
+#' @return object with NAs replaced in outputColumn
 #'
 #' @family Annotation functions
 #' @export

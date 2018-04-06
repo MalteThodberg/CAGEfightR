@@ -1,5 +1,8 @@
 #' Calculate support of CAGE data.
 #'
+#' Calculate the number of samples expression a feature above a certain level.
+#' This number is refered to as the "support".
+#'
 #' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
 #'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
@@ -9,8 +12,7 @@
 #'   larger than this cutoff.
 #'
 #' @importClassesFrom Matrix dgCMatrix
-#' @return RangedSummarizedExperiment with support added as a column in
-#'   rowRanges.
+#' @return object with support added as a column in rowRanges.
 #' @family Calculation functions
 #' @export
 #' @examples
@@ -53,6 +55,8 @@ calcSupport <- function(object, inputAssay="counts", outputColumn="support",
 
 #' Calculate the total number of CAGE tags across samples.
 #'
+#' For each CAGE library, calculate the total number of tags.
+#'
 #' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
 #'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
@@ -60,7 +64,7 @@ calcSupport <- function(object, inputAssay="counts", outputColumn="support",
 #'   total tags.
 #'
 #' @importClassesFrom Matrix dgCMatrix
-#' @return RangedSummarizedExperiment with total tags added as a column in
+#' @return object with total tags per library added as a column in
 #'   colData.
 #' @family Calculation functions
 #' @export
@@ -90,6 +94,8 @@ calcTotalTags <- function(object, inputAssay="counts",
 
 #' Calculate CAGE Tags-Per-Million (TPM)
 #'
+#' Normalize CAGE-tag counts into TPM values.
+#'
 #' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
 #'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
@@ -100,8 +106,8 @@ calcTotalTags <- function(object, inputAssay="counts",
 #' @param outputColumn character: Name of column in colData to hold number of
 #'   total tags, only used if totalTags is NULL.
 #'
-#' @return RangedSummarizedExperiment with TPM-values as a new assay. If
-#'   totalTags is NULL, total tags added as a column in colData.
+#' @return object with TPM-values added as a new assay. If totalTags is NULL,
+#'   total tags added as a column in colData.
 #' @family Calculation functions
 #'
 #' @importClassesFrom Matrix dgCMatrix
@@ -157,6 +163,8 @@ calcTPM <- function(object, inputAssay="counts", outputAssay="TPM",
 
 #' Calculate pooled expression across all samples.
 #'
+#' Sum expression of features across all samples to obtain a "pooled" signal.
+#'
 #' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
 #'   cluster or gene-level.
 #' @param inputAssay character: Name of assay holding input expression values.
@@ -164,7 +172,7 @@ calcTPM <- function(object, inputAssay="counts", outputAssay="TPM",
 #'   expression.
 #'
 #' @importClassesFrom Matrix dgCMatrix
-#' @return RangedSummarizedExperiment with pooled expression added as a column
+#' @return object with pooled expression added as a column
 #'   in rowRanges.
 #' @family Calculation functions
 #' @export
@@ -198,9 +206,9 @@ calcPooled <- function(object, inputAssay="TPM", outputColumn="score"){
 
 #' Calculate composition of CAGE data.
 #'
-#' For every feature (e.g. TSSs) count in how many samples it is expressed above
-#' a certain fraction (e.g. 10 percent) within a grouping, usually genes. This
-#' counts is refered to as a composition value.
+#' For every feature, count in how many samples it is expressed above a certain
+#' fraction (e.g. 10 percent) within a grouping, usually genes. This count is
+#' refered to as the "composition" value.
 #'
 #' @param object RangedSummarizedExperiment: CAGE data quantified at CTSS,
 #'   cluster or gene-level.
@@ -210,10 +218,9 @@ calcPooled <- function(object, inputAssay="TPM", outputColumn="score"){
 #' @param unexpressed numeric: Composition will be calculated based on features
 #'   larger than this cutoff.
 #' @param genes character: Name of column in rowData holding genes (NAs are not
-#'   allowed.)
+#'   currently allowed.)
 #'
-#' @return RangedSummarizedExperiment with composition added as a column in
-#'   rowData.
+#' @return object with composition added as a column in rowData.
 #' @family Calculation functions
 #' @export
 #' @examples

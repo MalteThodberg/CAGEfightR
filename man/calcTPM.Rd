@@ -23,11 +23,11 @@ calcTotalTags.}
 total tags, only used if totalTags is NULL.}
 }
 \value{
-RangedSummarizedExperiment with TPM-values as a new assay. If
-  totalTags is NULL, total tags added as a column in colData.
+object with TPM-values added as a new assay. If totalTags is NULL,
+  total tags added as a column in colData.
 }
 \description{
-Calculate CAGE Tags-Per-Million (TPM)
+Normalize CAGE-tag counts into TPM values.
 }
 \examples{
 data(exampleUnidirectional)

@@ -16,11 +16,11 @@ cluster or gene-level.}
 total tags.}
 }
 \value{
-RangedSummarizedExperiment with total tags added as a column in
+object with total tags per library added as a column in
   colData.
 }
 \description{
-Calculate the total number of CAGE tags across samples.
+For each CAGE library, calculate the total number of tags.
 }
 \examples{
 data(exampleUnidirectional)

@@ -21,12 +21,12 @@ will be found using bwCommonGenome.}
 }
 \value{
 RangedSummarizedExperiment, where assay is a sparse matrix
-  (dgCMatrix) of CTSS counts and rowRanges is GPos-object.
+  (dgCMatrix) of CTSS counts..
 }
 \description{
 This function reads in CTSS count data from a series of BigWig-files and
-returns a CTSS-by-library count matrix. To save memory, the count matrix is
-stored as a sparse matrix (dgCMatrix), and CTSS positions as GPos-object.
+returns a CTSS-by-library count matrix. For efficient processing, the count
+matrix is stored as a sparse matrix (dgCMatrix).
 }
 \examples{
 \dontrun{

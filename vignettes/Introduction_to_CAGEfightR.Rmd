@@ -141,23 +141,75 @@ RSE <- subsetBySupport(RSE,
 											 minSamples = 1)
 ```
 
-# Background and theory
+# Introduction and overview
 
-## Introduction to CAGE
+## Introduction to CAGE data
 
-Some background biology...
+Cap Analysis of Gene Expression (CAGE) is one of the most popular high-throughput assay for profiling Transcription Start Site (TSS) activity. CAGE is based on sequencing the first 20-30 basepairs of capped full-length RNAs, called CAGE-tags. When mapped to a reference genome, CAGE-tags can be used to identify both TSSs and enhancers. See the `CAGEfightR` paper for additional introduction.
+
+CAGE-data is often represented as CAGE TSSs (CTSSs), which is the the number of CAGE-tag 5'-ends mapping to each genomic position. CTSSs thereby represent a genome-wide, basepair resolution, quantitative atlas of transcription. CTSSs are inherently sparse, as only very few genomic positions are CTSSs, and only very few CTSSs have a high number of CAGE-tags.
+
+Analysis of CAGE data is often focused on identifying clusters of CTSSs that corresponds to activity of individual TSSs and enhancers. Having access to both TSSs and enhancers in a single experiment makes CAGE well suited for studying many aspects of transcriptional regulation, for example differential expression, motif analysis and alternative TSS usage.
 
 ## Central S4-classes
 
 There are two key S4-classes to understand when using CAGEfightR:
 
-The `GRanges`-class: Genomic locations or ranges are stored as `GRanges`-objects from the `r BiocStyle::Biocpkg("GenomicRanges")` package. `GRanges` contain chromosome (`seqnames`), start (`start`) and end (`end`) positions of ranges, along with chromosome lengths (`seqinfo`). An important additional features is added information for each range via metadata columns (`mcols`). These can be anything almost anything, as long as they can be put into a `DataFrame`. Some metadata columns have special meanings: the score column (accesible via the `score` function) and thick column, as these columns can be exported to a standard BED-format file via the `export` function from the `r BiocStyle::Biocpkg("rtracklayer")` package. An important variant of the `GRanges` class is the `GPos` class, which store single basepair width ranges. In almost all cases it works exactly like a `GRanges`, but is much more memory efficient.
+The `GRanges`-class: Genomic locations or ranges are stored as `GRanges`-objects from the `r BiocStyle::Biocpkg("GenomicRanges")` package. `GRanges` contain chromosome (`seqnames`), start (`start`) and end (`end`) positions of ranges, along with chromosome lengths (`seqinfo`). An important additional features is added information for each range via metadata columns (`mcols`). These can be anything almost anything, as long as they can be put into a `DataFrame`. Some metadata columns have special meanings: the score column (accesible via the `score` function) and thick column, as these columns can be exported to a standard BED-format file via the `export` function from the `r BiocStyle::Biocpkg("rtracklayer")` package.
 
-The `RangedSummarizedExperiment`-class: Complete CAGE experiments can be stored as `RangedSummarizedExperiment`-objects from the `r BiocStyle::Biocpkg("SummarizedExperiment")`, which implements the idea of the "three tables of genomics". A `RangedSummarizedExperiment` can store several matrices of the same shape, e.g. counts and normalized expression values (accesible via `assay` and `assays`), along with information about each sample as a `DataFrame`-object (accesible via `colData`) and about each feature as a `GRanges`-object like above (accesible via `rowRanges`). Many `GRanges` methods will also work on`RangedSummarizedExperiment`-objects, like `sort`, `findOverlaps`, etc., will naturally work on `RangedSummarizedExperiments`.  Storing all information as a single `RangedSummarizedExperiment` helps keeping data organized, for example when extracting subsets of the data, where `subset` can be used to simultaneously extract requested data from all three tables at once.
+The `RangedSummarizedExperiment`-class: Complete CAGE experiments can be stored as `RangedSummarizedExperiment`-objects from the `r BiocStyle::Biocpkg("SummarizedExperiment")`, which implements the idea of the "three tables of genomics". A `RangedSummarizedExperiment` can store several matrices of the same shape, e.g. counts and normalized expression values (accesible via `assay` and `assays`), along with information about each sample as a `DataFrame`-object (accesible via `colData`) and about each feature as a `GRanges`-object like above (accesible via `rowRanges`). Many `GRanges` methods also work on`RangedSummarizedExperiment`-objects, like `sort`, `findOverlaps`, etc..  Storing all information as a single `RangedSummarizedExperiment` helps keeping data organized, for example when extracting subsets of the data, where `subset` can be used to simultaneously extract requested data from all three tables at once.
 
 Other S4-classes includes `TxDb`-objects from `r BiocStyle::Biocpkg("GenomicFeatures")` and various track-objects from `r BiocStyle::Biocpkg("Gviz")`. See [Annotation with transcript models] and [Plotting CAGE data in a genome browser] for more details.
 
 ## Overview of functions
+
+CAGEfightR conceptually analyses CAGE-data at 3 levels:
+
+1) CTSS-level: Analysis at the level of number of CAGE tags per CTSS.
+2) Cluster-level: Analysis at the level of clusters of CTSSs, usually TSSs and/or enhancers.
+3) Gene-level: Analysis at the level of annotated genes.
+
+For easier overview, functions in `CAGEfightR` are organized by prefixes. The most important groups are:
+
+The `quantify*`-functions summarizes CAGE data to a higher level. In all cases, data is a stored as a `RangedSummarizedExperiment`:
+
+- `quantifyCTSSs`: Quantify the number of CAGE-tags for each CTSSs from BigWig-files.
+- `quantifyClusters`: Quantify the number of CAGE-tags within clusters of CTSSs, usually TSSs or enhancers.
+- `quantifyGenes`: Quantify the number of CAGE-tags within annotated genes, by summing the number of CAGE-tags annotated clusters.
+
+The `calc*`-functions modify data stored in a `RangedSummarizedExperiment`. The following `calc*` functions perform basic calculations applicable to all three levels:
+
+- `calcTotalTags`: Calculate the total number of CAGE tags in a library
+- `calcTPM`: Calcuate Tags-Per-Million (TPM)
+- `calcPooled`: Calculate a pooled signal across all samples
+- `calcSupport`: Count the number of samples expression a feature above some level. Useful for removing lowly expressed features via the `subsetBySupport` wrapper.
+
+Some `calc*` functions only work for a specfic level:
+
+- `calcShape`: Quantify the shape of TCs using `shape*`-functions.
+- `calcBidirectionality`: Count the number of samples showing bidirectional transcription. Useful for finding candidate enhancers via the `subsetByBidirectionality` wrapper.
+- `calcComposition`: Calculate how much each TSSs contribute to gene expression. Useful for removing lowly expressed TSSs via the `subsetByComposition` wrapper.
+
+The `cluster*`-functions can cluster CTSSs to find TSSs or enhancers:
+
+- `clusterUnidirectionally`: Find unidirectional or Tag Clusters (TCs). Search threshold can be be found using `tuneTagClustering`. TCs can be modified using the `trim*`-functions.
+- `clusterBidirectionally`: Find bidirectional clusters (BCs) for enhancer identification.
+
+The `assign*`-functions can annotate CTSSs and clusters with transcript and genes models:
+
+- `assignTxID`: Annotate clusters with transcript IDs
+- `assignTxType`: Annotate clusters based on their overlap with known transcripts, for example to determine whether a TSS is known or novel.
+- `assignGeneID`: Annotate with gene IDs, for example prior to running quantifyGenes.
+
+Other groups of functions are `bw*`-functions for checking BigWig-files, `swap*`-functions for manipulating `GRanges`-objects, `track*`-functions for visualization and `combine*`-functions for safe merging of different types of clusters. The `quick*`-functions are high-level wrappers for many other functions, intended to be used as single-line execution of the standard pipeline.
+
+## Pipeability
+
+The majority of functions in `CAGEfightR` are _endomorphisms_, meaning they returned modified versions of the input objects. This often works by adding calculated values as new metadata columns, accesible via `rowData` or `mcols`.
+
+While not used in this vignette, this means that CAGEfightR is highly compatible with the pipes from the `r BiocStyle::CRANpkg("magrittr")` package.
+
+The main exceptions to pipeable functions this are the quantify* functions, that instead summarizes data between different levels.
 
 # Detailed Introduction
 
@@ -172,13 +224,13 @@ data(exampleCTSSs)
 exampleCTSSs
 ```
 
-This is a somewhat special `RangedSummarizedExperiment`: Firstly, The assay is not a normal `matrix`, but rather a _sparse matrix_ (`dgCMatrix` from the `r BiocStyle::CRANpkg("Matrix")` package). Since CAGE data is inherently sparse (vast majority sites in the genome have no counts), storing CTSSs as a sparse matrix allows for much faster and memory efficient processing of data:
+This is a somewhat special `RangedSummarizedExperiment`: The assay is not a normal `matrix`, but rather a _sparse matrix_ (`dgCMatrix` from the `r BiocStyle::CRANpkg("Matrix")` package). Since CAGE data is inherently sparse (vast majority sites in the genome have no counts), storing CTSSs as a sparse matrix allows for much faster and memory efficient processing of data:
 
 ```{r dgCMatrix, tidy=TRUE}
 head(assay(exampleCTSSs))
 ```
 
-Secondly, the ranges are stored as `GPos` rather than a `GRanges`: This allows for very memory efficient storage of the millions of single basepair positions with CTSSs.
+The ranges are stored as `GRanges`, where all ranges a one basepair wide:
 
 ```{r GPos, tidy=TRUE}
 rowRanges(exampleCTSSs)

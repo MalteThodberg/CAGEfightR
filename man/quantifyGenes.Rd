@@ -7,24 +7,25 @@
 quantifyGenes(object, genes, inputAssay = "counts", sparse = FALSE)
 }
 \arguments{
-\item{object}{RangedSummarizedExperiment: Transcript-level counts.}
+\item{object}{RangedSummarizedExperiment: Cluster-level expression values.}
 
-\item{genes}{character: Name of column in rowData holding genes (NAs will be
-discarded).}
+\item{genes}{character: Name of column in rowData holding gene IDs (NAs will
+be discarded).}
 
 \item{inputAssay}{character: Name of assay holding values to be quantified,
-usually raw counts.}
+(usually counts).}
 
 \item{sparse}{logical: If the input is a sparse matrix, TRUE will keep the
 output matrix sparse while FALSE will coerce it into a normal matrix.}
 }
 \value{
-RangedSummarizedExperiment with rows corresponding to genes. All
-  other information is copied over from object.
+RangedSummarizedExperiment with rows corresponding to genes. Location
+  of clusters within genes is stored as a GRangesList in rowRanges. seqinfo
+  and colData is copied over from object.
 }
 \description{
-Obtain a gene-level EM by summing transcripts within genes. Unannotated
-transcripts (NAs) are discarded.
+Obtain gene-level expression estimates by summing clusters annotated to the
+same gene. Unannotated transcripts (NAs) are discarded.
 }
 \examples{
 data(exampleUnidirectional)

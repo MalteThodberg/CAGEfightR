@@ -20,11 +20,11 @@ values.}
 larger than this cutoff.}
 }
 \value{
-RangedSummarizedExperiment with support added as a column in
-  rowRanges.
+object with support added as a column in rowRanges.
 }
 \description{
-Calculate support of CAGE data.
+Calculate the number of samples expression a feature above a certain level.
+This number is refered to as the "support".
 }
 \examples{
 data(exampleUnidirectional)

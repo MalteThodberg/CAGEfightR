@@ -16,11 +16,11 @@ cluster or gene-level.}
 expression.}
 }
 \value{
-RangedSummarizedExperiment with pooled expression added as a column
+object with pooled expression added as a column
   in rowRanges.
 }
 \description{
-Calculate pooled expression across all samples.
+Sum expression of features across all samples to obtain a "pooled" signal.
 }
 \examples{
 data(exampleCTSSs)

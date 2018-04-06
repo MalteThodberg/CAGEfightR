@@ -12,9 +12,9 @@ gf_mapper <- function(range, file, seqinfo, strand="*"){
 	# Compress and rename scores
 	score(o) <- as.integer(score(o))
 
-	# Return as GenomicPositions
-	#methods::as(o, "GPos")
-	o
+	# Return (GPos in comments)
+	#methods::as(o, "GPos") #
+	 o
 }
 
 #' @importClassesFrom Matrix dgCMatrix
@@ -79,8 +79,8 @@ gf_wrapper <- function(files, ranges, seqinfo, strand){
 #' Quantify CAGE Transcriptions Start Sites (CTSSs)
 #'
 #' This function reads in CTSS count data from a series of BigWig-files and
-#' returns a CTSS-by-library count matrix. To save memory, the count matrix is
-#' stored as a sparse matrix (dgCMatrix), and CTSS positions as GPos-object.
+#' returns a CTSS-by-library count matrix. For efficient processing, the count
+#' matrix is stored as a sparse matrix (dgCMatrix).
 #'
 #' @param plusStrand BigWigFileList: BigWig files with plus-strand CTSS data.
 #' @param minusStrand BigWigFileList: BigWig files with minus-strand CTSS data.
@@ -90,7 +90,7 @@ gf_wrapper <- function(files, ranges, seqinfo, strand){
 #' @param tileWidth integer: Size of tiles to parallelize over.
 #'
 #' @return RangedSummarizedExperiment, where assay is a sparse matrix
-#'   (dgCMatrix) of CTSS counts and rowRanges is GPos-object.
+#'   (dgCMatrix) of CTSS counts..
 #' @family Quantification functions
 #' @importClassesFrom Matrix dgCMatrix
 #' @export
@@ -188,9 +188,8 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL,
 	# Attach design
 	colData(o) <- design
 
-	# Post-checks
-	stopifnot(class(rowRanges(o)) == "GRanges",
-						#class(rowRanges(o)) == "GPos", Comment  in for GPos
+	# Post-checks (GPos commented out)
+	stopifnot(class(rowRanges(o)) == "GRanges", #class(rowRanges(o)) == "GPos",
 						length(plusStrand) == ncol(o),
 						identical(seqinfo(o), genome))
 
@@ -208,16 +207,18 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design=NULL,
 
 #### TCs and Genes ####
 
-#' Quantify expression of clusters (TSSs or enhancers)
+#' Quantify expression of clusters (TSSs or enhancers) by summing CTSSs within
+#' clusters.
 #'
 #' @param object RangedSummarizedExperiment: CTSSs.
-#' @param clusters GRanges: Clusters ro be quantified.
-#' @param inputAssay character: Name of holding values to be quantified
+#' @param clusters GRanges: Clusters to be quantified.
+#' @param inputAssay character: Name of assay holding expression values to be
+#'   quantified (usually counts).
 #' @param sparse logical: If the input is a sparse matrix, TRUE will keep the
 #'   output matrix sparse while FALSE will coerce it into a normal matrix.
 #'
-#' @return RangedSummarizedExperiment with quantified CTSSs for each region in
-#'   cluster, with seqinfo and colData is copied over.
+#' @return RangedSummarizedExperiment with row corresponding to clusters.
+#'   seqinfo and colData is copied over from object.
 #'
 #' @family Quantification functions
 #' @importClassesFrom Matrix dgCMatrix
@@ -284,19 +285,20 @@ quantifyClusters <- function(object, clusters,
 
 #' Quantify expression of genes
 #'
-#' Obtain a gene-level EM by summing transcripts within genes. Unannotated
-#' transcripts (NAs) are discarded.
+#' Obtain gene-level expression estimates by summing clusters annotated to the
+#' same gene. Unannotated transcripts (NAs) are discarded.
 #'
-#' @param object RangedSummarizedExperiment: Transcript-level counts.
-#' @param genes character: Name of column in rowData holding genes (NAs will be
-#'   discarded).
+#' @param object RangedSummarizedExperiment: Cluster-level expression values.
+#' @param genes character: Name of column in rowData holding gene IDs (NAs will
+#'   be discarded).
 #' @param inputAssay character: Name of assay holding values to be quantified,
-#'   usually raw counts.
+#'   (usually counts).
 #' @param sparse logical: If the input is a sparse matrix, TRUE will keep the
 #'   output matrix sparse while FALSE will coerce it into a normal matrix.
 #'
-#' @return RangedSummarizedExperiment with rows corresponding to genes. All
-#'   other information is copied over from object.
+#' @return RangedSummarizedExperiment with rows corresponding to genes. Location
+#'   of clusters within genes is stored as a GRangesList in rowRanges. seqinfo
+#'   and colData is copied over from object.
 #' @family Quantification functions
 #' @export
 #' @examples

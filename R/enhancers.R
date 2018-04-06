@@ -211,20 +211,14 @@ setMethod("clusterBidirectionally",
 	clusterBidirectionally(rowRanges(object), ...)
 })
 
-#' @rdname clusterBidirectionally
-setMethod("clusterBidirectionally", signature(object="GPos"),
-					function(object, ...){
-	warning("Using temporary GPos-method in clusterBidirectionaly!")
-	clusterBidirectionally(methods::as(object, "GRanges"), ...)
-})
-
 #' Calculate sample-wise bidirectionally of clusters.
 #'
-#' For each bidirectional site, calculates how many individual samples shows
-#' transcription in both directions.
+#' For each cluster, calculate how many individual samples shows transcription
+#' in both directions. This is refered to as the "bidirectionality". Clusters
+#' must be unstranded (*) and have a midpoint stored in the thick column
 #'
-#' @param object GenomicRanges or RangedSummarizedExperiment: Ranges with pooled
-#'   CTSSs stored in the score column.
+#' @param object GenomicRanges or RangedSummarizedExperiment: Unstranded
+#'   clusters with midpoints stored in the "thick" column.
 #' @param samples RangedSummarizedExperiment: Sample-wise CTSSs stored as an
 #'   assay.
 #' @param inputAssay character: Name of assay in samples holding input CTSS
@@ -233,7 +227,8 @@ setMethod("clusterBidirectionally", signature(object="GPos"),
 #'   bidirectionality values.
 #' @param ... additional arguments passed to methods.
 #'
-#' @return object returned with bidirectionality scores added in mcols.
+#' @return object returned with bidirectionality scores added in rowData (or
+#'   mcols).
 #' @family Calculation functions
 #' @export
 #' @examples

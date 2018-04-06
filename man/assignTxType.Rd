@@ -52,11 +52,10 @@ considered proximal.}
 the antisense direction (TRUE) or lump them all together (FALSE).}
 }
 \value{
-GRanges with txType added as factor in metadata columns (inside
-  rowRanges in case object is a RangedSummarizedExperiment)
+object with txType added as factor column in rowData (or mcols)
 }
 \description{
-Annotate a set of ranges in a GRanges object with transcript type (TxType)
+Annotate a set of ranges in a GRanges object with transcript type (txType)
 based on their genic context. Transcripts are obtained from a TxDb object,
 but can alternatively be specified manually as a GRangesList.
 }

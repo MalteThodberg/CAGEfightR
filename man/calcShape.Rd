@@ -7,8 +7,7 @@
 \alias{calcShape,RangedSummarizedExperiment,GenomicRanges-method}
 \alias{calcShape,GRanges,RangedSummarizedExperiment-method}
 \alias{calcShape,RangedSummarizedExperiment,RangedSummarizedExperiment-method}
-\alias{calcShape,GRanges,GPos-method}
-\title{Quantify Tag Cluster shapes}
+\title{Calculate Tag Cluster shapes}
 \usage{
 calcShape(object, pooled, ...)
 
@@ -23,11 +22,9 @@ calcShape(object, pooled, ...)
 
   \S4method{calcShape}{RangedSummarizedExperiment,RangedSummarizedExperiment}(object,
   pooled, ...)
-
-\S4method{calcShape}{GRanges,GPos}(object, pooled, ...)
 }
 \arguments{
-\item{object}{GenomicRanges or RangedSummarizedExperiment: Tag clusters.}
+\item{object}{GenomicRanges or RangedSummarizedExperiment: TCs.}
 
 \item{pooled}{GenomicRanges or RangedSummarizedExperiment: Pooled CTSS as the
 score column.}
@@ -39,10 +36,11 @@ score column.}
 \item{shapeFunction}{function: Function to apply to each TC (See details).}
 }
 \value{
-Adds a column
+object with calculated shape statistics added as a column in rowData
+  (or mcols).
 }
 \description{
-Apply a shape-function to the pooled CTSS of every TC.
+Apply a shape-function to the pooled CTSS signal of every Tag Cluster (TC).
 }
 \examples{
 data(exampleCTSSs)

@@ -1,17 +1,18 @@
 #### Main shape function ####
 
-#' Quantify Tag Cluster shapes
+#' Calculate Tag Cluster shapes
 #'
-#' Apply a shape-function to the pooled CTSS of every TC.
+#' Apply a shape-function to the pooled CTSS signal of every Tag Cluster (TC).
 #'
-#' @param object GenomicRanges or RangedSummarizedExperiment: Tag clusters.
+#' @param object GenomicRanges or RangedSummarizedExperiment: TCs.
 #' @param pooled GenomicRanges or RangedSummarizedExperiment: Pooled CTSS as the
 #'   score column.
 #' @param outputColumn character: Name of column to hold shape statistics.
 #' @param shapeFunction function: Function to apply to each TC (See details).
 #' @param ... additional arguments passed to shapeFunction.
 #'
-#' @return Adds a column
+#' @return object with calculated shape statistics added as a column in rowData
+#'   (or mcols).
 #' @family Calculation functions
 #' @family Shape functions
 #' @export
@@ -128,13 +129,6 @@ setMethod("calcShape", signature(object="RangedSummarizedExperiment",
 					function(object, pooled, ...){
 	rowRanges(object) <- calcShape(rowRanges(object), rowRanges(pooled), ...)
 	object
-})
-
-#' @rdname calcShape
-setMethod("calcShape", signature(object="GRanges", pooled="GPos"),
-					function(object, pooled, ...){
-	warning("Using temporary GPos-method in calcShape!")
-	calcShape(object, methods::as(pooled, "GRanges"), ...)
 })
 
 #### Individual shape functions ####

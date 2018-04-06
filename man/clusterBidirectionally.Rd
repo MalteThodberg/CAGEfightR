@@ -5,7 +5,6 @@
 \alias{clusterBidirectionally}
 \alias{clusterBidirectionally,GenomicRanges-method}
 \alias{clusterBidirectionally,RangedSummarizedExperiment-method}
-\alias{clusterBidirectionally,GPos-method}
 \title{Bidirectional clustering of pooled CTSSs.}
 \usage{
 clusterBidirectionally(object, ...)
@@ -14,8 +13,6 @@ clusterBidirectionally(object, ...)
   balanceThreshold = 0.95)
 
 \S4method{clusterBidirectionally}{RangedSummarizedExperiment}(object, ...)
-
-\S4method{clusterBidirectionally}{GPos}(object, ...)
 }
 \arguments{
 \item{object}{GenomicRanges or RangedSummarizedExperiment: Pooled CTSSs

@@ -20,16 +20,15 @@ composition values.}
 larger than this cutoff.}
 
 \item{genes}{character: Name of column in rowData holding genes (NAs are not
-allowed.)}
+currently allowed.)}
 }
 \value{
-RangedSummarizedExperiment with composition added as a column in
-  rowData.
+object with composition added as a column in rowData.
 }
 \description{
-For every feature (e.g. TSSs) count in how many samples it is expressed above
-a certain fraction (e.g. 10 percent) within a grouping, usually genes. This
-counts is refered to as a composition value.
+For every feature, count in how many samples it is expressed above a certain
+fraction (e.g. 10 percent) within a grouping, usually genes. This count is
+refered to as the "composition" value.
 }
 \examples{
 data(exampleUnidirectional)

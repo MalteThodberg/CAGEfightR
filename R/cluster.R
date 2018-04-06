@@ -91,14 +91,6 @@ setMethod("clusterUnidirectionally",
 	clusterUnidirectionally(rowRanges(object), ...)
 })
 
-#' @rdname clusterUnidirectionally
-setMethod("clusterUnidirectionally",
-					signature(object="GPos"),
-					function(object, ...){
-	warning("Using temporary GPos-method in clusterUnidirectionally!")
-	clusterUnidirectionally(methods::as(object, "GRanges"), ...)
-})
-
 ### Helper functions
 
 TCstats <- function(coverage_plus, coverage_minus, tcs_plus, tcs_minus){

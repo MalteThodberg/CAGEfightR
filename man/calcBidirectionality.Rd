@@ -15,8 +15,8 @@ calcBidirectionality(object, ...)
 \S4method{calcBidirectionality}{RangedSummarizedExperiment}(object, ...)
 }
 \arguments{
-\item{object}{GenomicRanges or RangedSummarizedExperiment: Ranges with pooled
-CTSSs stored in the score column.}
+\item{object}{GenomicRanges or RangedSummarizedExperiment: Unstranded
+clusters with midpoints stored in the "thick" column.}
 
 \item{...}{additional arguments passed to methods.}
 
@@ -30,11 +30,13 @@ values.}
 bidirectionality values.}
 }
 \value{
-object returned with bidirectionality scores added in mcols.
+object returned with bidirectionality scores added in rowData (or
+  mcols).
 }
 \description{
-For each bidirectional site, calculates how many individual samples shows
-transcription in both directions.
+For each cluster, calculate how many individual samples shows transcription
+in both directions. This is refered to as the "bidirectionality". Clusters
+must be unstranded (*) and have a midpoint stored in the thick column
 }
 \examples{
 data(exampleCTSSs)

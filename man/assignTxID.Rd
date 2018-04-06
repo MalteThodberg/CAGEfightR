@@ -41,8 +41,7 @@ column.}
 \item{downstream}{integer: Distance to extend annotated promoter downstream.}
 }
 \value{
-GRanges with txID added in column outputColumn (inside rowRanges in
-  case object is a RangedSummarizedExperiment)
+object with txID added as a column in rowData (or mcols)
 }
 \description{
 Annotate a set of ranges in a GRanges object with transcript IDs based on

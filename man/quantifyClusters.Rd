@@ -2,26 +2,29 @@
 % Please edit documentation in R/quantify.R
 \name{quantifyClusters}
 \alias{quantifyClusters}
-\title{Quantify expression of clusters (TSSs or enhancers)}
+\title{Quantify expression of clusters (TSSs or enhancers) by summing CTSSs within
+clusters.}
 \usage{
 quantifyClusters(object, clusters, inputAssay = "counts", sparse = FALSE)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CTSSs.}
 
-\item{clusters}{GRanges: Clusters ro be quantified.}
+\item{clusters}{GRanges: Clusters to be quantified.}
 
-\item{inputAssay}{character: Name of holding values to be quantified}
+\item{inputAssay}{character: Name of assay holding expression values to be
+quantified (usually counts).}
 
 \item{sparse}{logical: If the input is a sparse matrix, TRUE will keep the
 output matrix sparse while FALSE will coerce it into a normal matrix.}
 }
 \value{
-RangedSummarizedExperiment with quantified CTSSs for each region in
-  cluster, with seqinfo and colData is copied over.
+RangedSummarizedExperiment with row corresponding to clusters.
+  seqinfo and colData is copied over from object.
 }
 \description{
-Quantify expression of clusters (TSSs or enhancers)
+Quantify expression of clusters (TSSs or enhancers) by summing CTSSs within
+clusters.
 }
 \examples{
 # CTSSs stored in a RangedSummarizedExperiment:

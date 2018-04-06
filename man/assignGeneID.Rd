@@ -44,8 +44,7 @@ column.}
 \item{downstream}{integer: Distance to extend annotated promoter downstream.}
 }
 \value{
-GRanges with geneID added in columns outputColumn (inside rowRanges
-  in case object is a RangedSummarizedExperiment)
+object with geneID added as a column in rowData (or mcols).
 }
 \description{
 Annotate a set of ranges in a GRanges object with gene IDs (i.e. Entrez Gene

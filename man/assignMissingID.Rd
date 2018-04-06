@@ -30,8 +30,7 @@ the style prefix1, prefix2, etc.}
 \item{outputColumn}{character: Name of column to hold txID values.}
 }
 \value{
-GRanges with NAs replaced in outputColumn (inside rowRanges in case
-  object is a RangedSummarizedExperiment)
+object with NAs replaced in outputColumn
 }
 \description{
 This function can relabel ranges with missing IDs (i.e. returned by

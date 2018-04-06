@@ -40,7 +40,7 @@ data(exampleUnidirectional)
 TCs <- subset(exampleUnidirectional, width >= 100)
 
 # Create track
-clusters_track <- trackClusters(TCs[1:2,], name="Tag clusters", col=NULL)
+clusters_track <- trackClusters(TCs[1:2,], name='Tag clusters', col=NULL)
 
 # Plot
 plotTracks(clusters_track)

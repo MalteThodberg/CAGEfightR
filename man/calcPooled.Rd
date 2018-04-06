@@ -20,13 +20,13 @@ object with pooled expression added as a column
   in rowRanges.
 }
 \description{
-Sum expression of features across all samples to obtain a "pooled" signal.
+Sum expression of features across all samples to obtain a 'pooled' signal.
 }
 \examples{
 data(exampleCTSSs)
 
 # Calculate TPM using supplied total number of tags:
-exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags='totalTags')
 
 # Sum TPM values over samples:
 calcPooled(exampleCTSSs)

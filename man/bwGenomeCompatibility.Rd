@@ -22,11 +22,11 @@ checking if all common seqlevels have equal seqlengths.
 }
 \examples{
 # Use the BigWig-files included with the package:
-data("exampleDesign")
-bw_plus <- system.file("extdata", exampleDesign$BigWigPlus,
-                       package = "CAGEfightR")
-bw_minus <- system.file("extdata", exampleDesign$BigWigMinus,
-                        package = "CAGEfightR")
+data('exampleDesign')
+bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
+                       package = 'CAGEfightR')
+bw_minus <- system.file('extdata', exampleDesign$BigWigMinus,
+                        package = 'CAGEfightR')
 
 # Create two named BigWigFileList-objects:
 bw_plus <- BigWigFileList(bw_plus)
@@ -36,7 +36,7 @@ names(bw_minus) <- exampleDesign$Name
 
 # Make a smaller genome:
 si <- seqinfo(bw_plus[[1]])
-si <- si["chr18"]
+si <- si['chr18']
 
 # Check if it is still compatible:
 bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)

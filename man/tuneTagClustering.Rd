@@ -30,7 +30,7 @@ treshold=0).}
 \item{searchMethod}{character: For advanced user only, see details.}
 
 \item{maxExponent}{numeric: The maximal threshold to analyse is obtained as
-min(score)*2^maxExponent (only used if searchMethod="exponential").}
+min(score)*2^maxExponent (only used if searchMethod='exponential').}
 }
 \value{
 data.frame with two columns: threshold and nTCs (number of Tag
@@ -45,10 +45,10 @@ data(exampleCTSSs)
 
 # Calculate pooledTPM, using supplied number of total tags
 exampleCTSSs <- calcTPM(exampleCTSSs,
-                        inputAssay="counts",
-                        outputAssay="TPM",
-                        totalTags="totalTags")
-exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+                        inputAssay='counts',
+                        outputAssay='TPM',
+                        totalTags='totalTags')
+exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay='TPM')
 
 # Set backend
 library(BiocParallel)

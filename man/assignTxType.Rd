@@ -74,12 +74,12 @@ assignTxType(exampleUnidirectional,
 # Assign txIDs using only TC peaks:
 exampleUnidirectional <- assignTxType(exampleUnidirectional,
                                       txModels=txdb,
-                                      swap="thick")
+                                      swap='thick')
 
-# The "promoter" and "proximal" category boundaries can be changed:
+# The 'promoter' and 'proximal' category boundaries can be changed:
 assignTxType(exampleUnidirectional,
              txModels=txdb,
-             swap="thick",
+             swap='thick',
              tssUpstream=50,
              tssDownstream=50,
              proximalUpstream=100)
@@ -87,8 +87,8 @@ assignTxType(exampleUnidirectional,
 # Annotation using complete antisense categories:
 exampleUnidirectional <- assignTxType(exampleUnidirectional,
                                     txModels=txdb,
-                                    outputColumn="txTypeExtended",
-                                    swap="thick",
+                                    outputColumn='txTypeExtended',
+                                    swap='thick',
                                     detailedAntisense=TRUE)
 
 # The output is always a factor added as a column:
@@ -100,9 +100,9 @@ custom_hierarchy <- GRangesList(promoters=granges(promoters(txdb)),
                                 exons=granges(exons(txdb)))
 assignTxType(exampleUnidirectional,
              txModels=custom_hierarchy,
-             outputColumn="customType",
-             swap="thick",
-             noOverlap = "intergenic")
+             outputColumn='customType',
+             swap='thick',
+             noOverlap = 'intergenic')
 }
 }
 \seealso{

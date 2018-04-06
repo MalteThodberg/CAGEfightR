@@ -24,23 +24,23 @@ object with support added as a column in rowRanges.
 }
 \description{
 Calculate the number of samples expression a feature above a certain level.
-This number is refered to as the "support".
+This number is refered to as the 'support'.
 }
 \examples{
 data(exampleUnidirectional)
 
 # Count samples with at at least a single tags
 exampleUnidirectional <- calcSupport(exampleUnidirectional,
-                                     inputAssay="counts",
+                                     inputAssay='counts',
                                      unexpressed=0)
 
 # Count number of samples with more than 1 TPM and save as a new column.
 exampleUnidirectional <- calcTPM(exampleUnidirectional,
-                                 totalTags = "totalTags")
+                                 totalTags = 'totalTags')
 exampleUnidirectional <- calcSupport(exampleUnidirectional,
-                                     inputAssay="TPM",
+                                     inputAssay='TPM',
                                      unexpressed=1,
-                                     outputColumn="TPMsupport")
+                                     outputColumn='TPMsupport')
 }
 \seealso{
 Other Calculation functions: \code{\link{calcBidirectionality}},

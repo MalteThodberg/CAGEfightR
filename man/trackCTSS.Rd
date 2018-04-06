@@ -51,9 +51,9 @@ pooledTrack <- trackCTSS(subsetOfCTSSs)
 
 # Plot
 plotTracks(pooledTrack, from=start(TC)-100, to=end(TC)+100,
-           chromosome=seqnames(TC), name="TC")
+           chromosome=seqnames(TC), name='TC')
 plotTracks(pooledTrack, from=start(BC)-100, to=end(BC)+100,
-           chromosome=seqnames(BC), name="BC")
+           chromosome=seqnames(BC), name='BC')
 
 # See vignette for examples on how to combine multiple Gviz tracks
 }

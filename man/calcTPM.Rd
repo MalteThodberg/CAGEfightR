@@ -37,8 +37,8 @@ calcTPM(exampleUnidirectional)
 
 # Use pre-calculated total number of tags:
 calcTPM(exampleUnidirectional,
-        outputAssay="TPMsupplied",
-        totalTags="totalTags")
+        outputAssay='TPMsupplied',
+        totalTags='totalTags')
 }
 \seealso{
 Other Calculation functions: \code{\link{calcBidirectionality}},

@@ -16,7 +16,7 @@ calcBidirectionality(object, ...)
 }
 \arguments{
 \item{object}{GenomicRanges or RangedSummarizedExperiment: Unstranded
-clusters with midpoints stored in the "thick" column.}
+clusters with midpoints stored in the 'thick' column.}
 
 \item{...}{additional arguments passed to methods.}
 
@@ -35,7 +35,7 @@ object returned with bidirectionality scores added in rowData (or
 }
 \description{
 For each cluster, calculate how many individual samples shows transcription
-in both directions. This is refered to as the "bidirectionality". Clusters
+in both directions. This is refered to as the 'bidirectionality'. Clusters
 must be unstranded (*) and have a midpoint stored in the thick column
 }
 \examples{

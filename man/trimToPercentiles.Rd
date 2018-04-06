@@ -48,7 +48,7 @@ data(exampleCTSSs)
 data(exampleBidirectional)
 
 # Calculate pooled CTSSs
-exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags='totalTags')
 exampleCTSSs <- calcPooled(exampleCTSSs)
 
 # Choose a few wide clusters:

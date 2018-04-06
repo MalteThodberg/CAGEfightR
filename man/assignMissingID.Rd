@@ -47,14 +47,14 @@ txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 # Assign geneIDs using only TC peaks:
 exampleUnidirectional <- assignGeneID(exampleUnidirectional,
                                       geneModels=txdb,
-                                      outputColumn="geneID",
-                                      swap="thick")
+                                      outputColumn='geneID',
+                                      swap='thick')
 
-# Replace NAs with "Novel"
+# Replace NAs with 'Novel'
 assignMissingID(exampleUnidirectional)
 
-# Replace NAs with "NovelTSS"
-assignMissingID(exampleUnidirectional, prefix = "NovelTSS")
+# Replace NAs with 'NovelTSS'
+assignMissingID(exampleUnidirectional, prefix = 'NovelTSS')
 }
 \seealso{
 Other Annotation functions: \code{\link{assignGeneID}},

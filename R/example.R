@@ -1,8 +1,8 @@
 #' Example CAGE Data
 #'
-#' Subset of the CAGE dataset from the paper "Identification of Gene
+#' Subset of the CAGE dataset from the paper 'Identification of Gene
 #' Transcription Start Sites and Enhancers Responding to Pulmonary Carbon
-#' Nanotube Exposure in Vivo". CTSS data from subsets of chr18 and chr19 across
+#' Nanotube Exposure in Vivo'. CTSS data from subsets of chr18 and chr19 across
 #' 3 mouse (mm9 ) samples are included. Datasets can be loaded with the data
 #' function.
 #'

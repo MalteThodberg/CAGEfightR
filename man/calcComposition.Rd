@@ -28,7 +28,7 @@ object with composition added as a column in rowData.
 \description{
 For every feature, count in how many samples it is expressed above a certain
 fraction (e.g. 10 percent) within a grouping, usually genes. This count is
-refered to as the "composition" value.
+refered to as the 'composition' value.
 }
 \examples{
 data(exampleUnidirectional)
@@ -38,8 +38,8 @@ library(TxDb.Mmusculus.UCSC.mm9.knownGene)
 txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 exampleUnidirectional <- assignGeneID(exampleUnidirectional,
                                       geneModels=txdb,
-                                      outputColumn="geneID",
-                                      swap="thick")
+                                      outputColumn='geneID',
+                                      swap='thick')
 
 # Calculate composition values:
 exampleUnidirectional <- subset(exampleUnidirectional, !is.na(geneID))
@@ -48,7 +48,7 @@ calcComposition(exampleUnidirectional)
 # Use a lower threshold
 calcComposition(exampleUnidirectional,
                 unexpressed=0.05,
-                outputColumn="lenientComposition")
+                outputColumn='lenientComposition')
 }
 \seealso{
 Other Calculation functions: \code{\link{calcBidirectionality}},

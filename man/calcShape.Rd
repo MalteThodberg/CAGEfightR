@@ -47,13 +47,13 @@ data(exampleCTSSs)
 data(exampleUnidirectional)
 
 # Calculate pooled CTSSs using pre-calculated number of total tags:
-exampleCTSSs <- calcTPM(exampleCTSSs, totalTags="totalTags")
+exampleCTSSs <- calcTPM(exampleCTSSs, totalTags='totalTags')
 exampleCTSSs <- calcPooled(exampleCTSSs)
 
 # Calculate shape statistics
 calcShape(exampleUnidirectional, pooled=exampleCTSSs,
-    outputColumn="entropy", shapeFunction=shapeEntropy)
-calcShape(exampleUnidirectional, pooled=exampleCTSSs, outputColumn="IQR",
+    outputColumn='entropy', shapeFunction=shapeEntropy)
+calcShape(exampleUnidirectional, pooled=exampleCTSSs, outputColumn='IQR',
     shapeFunction=shapeIQR, lower=0.2, upper=0.8)
 
 # See the vignette for how to implement custom shape functions!

@@ -38,10 +38,10 @@ data(exampleCTSSs)
 
 # Calculate pooledTPM, using supplied number of total tags
 exampleCTSSs <- calcTPM(exampleCTSSs,
-                        inputAssay="counts",
-                        outputAssay="TPM",
-                        totalTags="totalTags")
-exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay="TPM")
+                        inputAssay='counts',
+                        outputAssay='TPM',
+                        totalTags='totalTags')
+exampleCTSSs <- calcPooled(exampleCTSSs, inputAssay='TPM')
 
 # Cluster using defaults: slice-threshold of 0 and reduce-distance of 20
 clusterUnidirectionally(exampleCTSSs)

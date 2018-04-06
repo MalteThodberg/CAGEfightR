@@ -20,7 +20,7 @@ combineClusters(object1, object2, ...)
 \item{...}{arguments passed to methods.}
 
 \item{removeIfOverlapping}{character: Whether to keep overlapping ranges
-("none") or discard from either the first ("object1") or second ("object2")
+('none') or discard from either the first ('object1') or second ('object2')
 experiment.}
 }
 \value{
@@ -44,9 +44,9 @@ combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional)
 
 # If features overlap, keep only from object1
 combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional,
-   removeIfOverlapping="object2")
+   removeIfOverlapping='object2')
 
 # If features overlap, keep only from object2
 combineClusters(object1=exampleUnidirectional, object2=exampleBidirectional,
-   removeIfOverlapping="object1")
+   removeIfOverlapping='object1')
 }

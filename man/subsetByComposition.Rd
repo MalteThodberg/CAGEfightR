@@ -42,7 +42,7 @@ txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 
 exampleUnidirectional <- assignGeneID(exampleUnidirectional,
                                       geneModels=txdb,
-                                      outputColumn="geneID")
+                                      outputColumn='geneID')
 exampleUnidirectional <- subset(exampleUnidirectional, !is.na(geneID))
 
 # Keep only clusters more than 10\% in more than one sample:

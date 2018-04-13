@@ -2,12 +2,17 @@ Package: CAGEfightR
 Type: Package
 Title: Analysis of Cap Analysis of Gene Expression (CAGE) data using
     Bioconductor
-Version: 0.99.4
+Version: 0.99.5
 Author: Malte Thodberg
 Maintainer: Malte Thodberg <maltethodberg@gmail.com>
-Description: Includes functions for: Finding Tag Cluster (TCs), quantifying
-    expression as an Expression Matrix (EM), annotating TCs using transcript models,
-    finding Bidirectonal Clusters (BCs).
+Description: CAGE is a widely used high throughput assay for measuring 
+		transcription start site (TSS) activity. CAGEfightR is an R/Bioconductor 
+		package for performing a wide range of common CAGE data analysis tasks. 
+		Core functionality includes: import of CAGE TSSs (CTSSs), tag 
+		(or unidirectional) clustering for TSS identification, 
+		bidirectional clustering for enhancer identification, annotation with 
+		transcript and gene models, calculation of TSS shapes and quantification of 
+		CAGE expression as expression matrices.
 URL: https://github.com/MalteThodberg/CAGEfightR
 BugReports: https://github.com/MalteThodberg/CAGEfightR/issues
 Depends:

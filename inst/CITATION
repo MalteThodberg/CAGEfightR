@@ -1,0 +1,17 @@
+citHeader("To cite CAGEfightR in publications use:")
+
+citEntry(entry="article",
+         title = "CAGEfightR: Cap Analysis of Gene Expression (CAGE) in R/Bioconductor",
+         author = personList( as.person("Malte Thodberg"),
+         											as.person("Axel Thieffry"),
+         											as.person("Kristoffer Vitting-Seerup"),
+         											as.person("Robin Andersson"),
+                              as.person("Albin Sandelin")),
+         year = 2018,
+         journal = "bioRxiv",
+         url = "https://doi.org/10.1101/310623",
+         textVersion =
+         paste("Malte Thodberg, Axel Thieffry, Kristoffer Vitting-Seerup, Robin Andersson, Albin Sandelin (2017): ",
+               "CAGEfightR: Cap Analysis of Gene Expression (CAGE) in R/Bioconductor.",
+               "bioRxiv, ",
+                "URL: https://doi.org/10.1101/310623" ) )

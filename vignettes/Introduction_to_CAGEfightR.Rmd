@@ -24,8 +24,9 @@ knitr::opts_chunk$set(
 Install the most recent stable version from Bioconductor:
 
 ```{r bioconductor, eval=FALSE}
-source("https://bioconductor.org/biocLite.R")
-biocLite("CAGEfightR")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("CAGEfightR")
 ```
 
 And load `CAGEfightR`:

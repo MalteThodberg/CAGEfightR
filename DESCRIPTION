@@ -2,7 +2,7 @@ Package: CAGEfightR
 Type: Package
 Title: Analysis of Cap Analysis of Gene Expression (CAGE) data using
     Bioconductor
-Version: 1.1.1
+Version: 1.1.2
 Author: Malte Thodberg
 Maintainer: Malte Thodberg <maltethodberg@gmail.com>
 Description: CAGE is a widely used high throughput assay for measuring 

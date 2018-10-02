@@ -53,3 +53,4 @@ Other Calculation functions: \code{\link{calcComposition}},
   \code{\link{subsetByComposition}},
   \code{\link{subsetBySupport}}
 }
+\concept{Calculation functions}

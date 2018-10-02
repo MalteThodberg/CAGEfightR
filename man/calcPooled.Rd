@@ -40,3 +40,4 @@ Other Calculation functions: \code{\link{calcBidirectionality}},
   \code{\link{subsetByComposition}},
   \code{\link{subsetBySupport}}
 }
+\concept{Calculation functions}

@@ -23,3 +23,4 @@ clusterUnidirectionally and quantifyClusters.
 \seealso{
 Other Wrapper functions: \code{\link{quickEnhancers}}
 }
+\concept{Wrapper functions}

@@ -7,10 +7,10 @@ gf_mapper <- function(range, file, seqinfo, strand = "*") {
     # isCircular(o) <- isCircular(seqinfo) genome(o) <- genome(seqinfo)
     seqinfo(o) <- seqinfo
     strand(o) <- strand
-    
+
     # Compress and rename scores
     score(o) <- as.integer(score(o))
-    
+
     # Return (GPos in comments) methods::as(o, 'GPos') #
     o
 }
@@ -19,50 +19,51 @@ gf_mapper <- function(range, file, seqinfo, strand = "*") {
 gf_reducer <- function(mapped) {
     # Save names
     j_names <- names(mapped)
-    
+
     # Add j mapped <- mapply(function(gp, j){gp$j <- j; gp}, mapped,
     # seq_along(mapped))#
     mapped <- mapply(function(gp, j) {
         mcols(gp)[, "j"] <- j
         gp
     }, mapped, seq_along(mapped))
-    
-    # Coerce to mat mapped <- do.call(pryr::partial(c, x=GPos()), mapped)
+
+    # Coerce to mat
+    # mapped <- do.call(pryr::partial(c, x=GPos()), mapped)
     mapped <- do.call(pryr::partial(c, x = GRanges()), mapped)
-    
-    # Add i (erase mcols to save memory) dj <- unique(granges(mapped)) # Old version,
-    # coerced to GRanges
+
+    # Add i (erase mcols to save memory)
+    # dj <- unique(granges(mapped)) # Old version, coerced to GRanges
     dj <- mapped
     mcols(dj) <- NULL
     dj <- unique(dj)
     dj <- sort(dj)
-    
+
     mapped$i <- match(mapped, dj)
-    
+
     # To matrix
     if (length(mapped) > 0) {
-        mapped <- Matrix::sparseMatrix(i = mapped$i, j = mapped$j, x = score(mapped), 
+        mapped <- Matrix::sparseMatrix(i = mapped$i, j = mapped$j, x = score(mapped),
             dimnames = list(NULL, j_names))
     } else {
-        mapped <- methods::as(matrix(nrow = 0, ncol = length(j_names), dimnames = list(NULL, 
+        mapped <- methods::as(matrix(nrow = 0, ncol = length(j_names), dimnames = list(NULL,
             j_names)), "dgCMatrix")
     }
-    
+
     # Assemble into summarized experiment
     mapped <- SummarizedExperiment(assays = SimpleList(counts = mapped), rowRanges = dj)
-    
+
     # Return
     mapped
 }
 
 gf_wrapper <- function(files, ranges, seqinfo, strand) {
     # Run GenomicFiles
-    o <- GenomicFiles::reduceByRange(ranges = ranges, files = files, MAP = pryr::partial(gf_mapper, 
+    o <- GenomicFiles::reduceByRange(ranges = ranges, files = files, MAP = pryr::partial(gf_mapper,
         seqinfo = seqinfo, strand = strand), REDUCE = gf_reducer, iterate = FALSE)
-    
+
     # Merge output
     o <- do.call(rbind, o)
-    
+
     # Return
     o
 }
@@ -122,17 +123,21 @@ gf_wrapper <- function(files, ranges, seqinfo, strand) {
 #'                        design=exampleDesign,
 #'                        genome=si)
 #' }
-quantifyCTSSs <- function(plusStrand, minusStrand, design = NULL, genome = NULL, 
+quantifyCTSSs <- function(plusStrand, minusStrand, design = NULL, genome = NULL,
     tileWidth = 100000000L) {
     # Pre-checks
-    assert_that(class(plusStrand) == "BigWigFileList", class(minusStrand) == "BigWigFileList", 
-        length(plusStrand) == length(minusStrand), bwValid(plusStrand), bwValid(minusStrand), 
-        all(names(plusStrand) == names(minusStrand)), is.count(tileWidth))
-    
+    assert_that(methods::is(plusStrand, "BigWigFileList"),
+    						methods::is(minusStrand, "BigWigFileList"),
+    						length(plusStrand) == length(minusStrand),
+    						bwValid(plusStrand),
+    						bwValid(minusStrand),
+    						all(names(plusStrand) == names(minusStrand)),
+    						is.count(tileWidth))
+
     # Set design
     if (is.null(design)) {
         design <- DataFrame(row.names = names(plusStrand))
-    } else if (class(design) == "DataFrame") {
+    } else if (methods::is(design, "DataFrame")) {
         assert_that(all(rownames(design) == names(plusStrand)))
     } else if (is.data.frame(design)) {
         assert_that(all(rownames(design) == names(plusStrand)))
@@ -140,51 +145,56 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design = NULL, genome = NULL,
     } else {
         stop("design must either NULL or a DataFrame-/data.frame-object!")
     }
-    
+
     # Aquire seqinfo if missing.
     if (is.null(genome)) {
         message("Finding common genome...")
         genome <- bwCommonGenome(plusStrand, minusStrand, method = "intersect")
-    } else if (class(genome) == "Seqinfo") {
+    } else if (methods::is(genome, "Seqinfo")) {
         message("Checking supplied genome compatibility...")
         bwGenomeCompatibility(plusStrand, minusStrand, genome)
     } else {
         stop("genome must either NULL or a Seqinfo-object!")
     }
-    
+
     # Setup tiles
     grl <- GenomicRanges::tileGenome(genome, tilewidth = tileWidth)
-    message("Iterating over ", length(grl), " genomic tiles in ", length(plusStrand), 
+    message("Iterating over ", length(grl), " genomic tiles in ", length(plusStrand),
         " samples using ", BiocParallel::bpworkers(), " worker(s)...")
-    
+
     # Load data
     message("Importing CTSSs from plus strand...")
-    plus_strand <- gf_wrapper(files = plusStrand, ranges = grl, seqinfo = genome, 
+    plus_strand <- gf_wrapper(files = plusStrand, ranges = grl, seqinfo = genome,
         strand = "+")
-    
+
     message("Importing CTSSs from minus strand...")
-    minus_strand <- gf_wrapper(files = minusStrand, ranges = grl, seqinfo = genome, 
+    minus_strand <- gf_wrapper(files = minusStrand, ranges = grl, seqinfo = genome,
         strand = "-")
-    
+
     # Merge
     message("Merging strands...")
     o <- rbind(plus_strand, minus_strand)
     rm(plus_strand, minus_strand)
-    
+
     # Attach design
     colData(o) <- design
-    
+
+    # Convert to GPos if small
+    if(length(o) < .Machine$integer.max){
+    	rowRanges(o) <- methods::as(rowRanges(o), "GPos")
+    }
+
     # Post-checks (GPos commented out)
-    stopifnot(class(rowRanges(o)) == "GRanges", length(plusStrand) == ncol(o), identical(seqinfo(o), 
-        genome))
-    
+    stopifnot(length(plusStrand) == ncol(o),
+    					identical(seqinfo(o), genome))
+
     message("### CTSS summary ###")
     message("Number of samples: ", ncol(o))
     message("Number of CTSSs: ", format(nrow(o)/1000000L, digits = 4), " millions")
-    message("Sparsity: ", format((1 - (Matrix::nnzero(assay(o))/length(assay(o)))) * 
+    message("Sparsity: ", format((1 - (Matrix::nnzero(assay(o))/length(assay(o)))) *
         100, digits = 4), " %")
     message("Final object size: ", utils::capture.output(pryr::object_size(o)))
-    
+
     # Return
     o
 }
@@ -223,34 +233,41 @@ quantifyCTSSs <- function(plusStrand, minusStrand, design = NULL, genome = NULL,
 #' quantifyClusters(exampleCTSSs, rowRanges(exampleUnidirectional), sparse=TRUE)
 quantifyClusters <- function(object, clusters, inputAssay = "counts", sparse = FALSE) {
     # Pre-checks
-    assert_that(class(object) == "RangedSummarizedExperiment", not_empty(object), 
-        isDisjoint(object), methods::is(clusters, "GRanges"), not_empty(clusters), 
-        isDisjoint(clusters), identical(seqinfo(object), seqinfo(clusters)), is.string(inputAssay), 
-        inputAssay %in% assayNames(object), is.flag(sparse))
-    
+    assert_that(methods::is(object, "RangedSummarizedExperiment"),
+    						not_empty(object),
+    						isDisjoint(object),
+    						methods::is(clusters, "GRanges"),
+    						not_empty(clusters),
+    						isDisjoint(clusters),
+    						identical(seqinfo(object),
+    											seqinfo(clusters)),
+    						is.string(inputAssay),
+    						inputAssay %in% assayNames(object),
+    						is.flag(sparse))
+
     # Find overlaps
     message("Finding overlaps...")
     hits <- findOverlaps(query = object, subject = clusters, select = "arbitrary")
     hits <- factor(hits, levels = seq_along(clusters))
     missing_hits <- is.na(hits)
-    
+
     # Warn if there is no overlap
     if (all(missing_hits)) {
         warning("The supplied clusters had no overlapping CTSSs!")
     }
-    
+
     # Summarize
     message("Aggregating within clusters...")
     mat <- rowsum2(x = assay(object, inputAssay), group = hits, drop = FALSE, sparse = sparse)
-    
+
     # Check output is the right format and assign names.
     stopifnot(nrow(mat) == length(clusters))
     rownames(mat) <- names(clusters)
-    
+
     # Coerce to RSE
     o <- SummarizedExperiment(assays = SimpleList(mat), rowRanges = clusters, colData = colData(object))
     assayNames(o) <- inputAssay
-    
+
     # Return
     o
 }
@@ -294,33 +311,33 @@ quantifyClusters <- function(object, clusters, inputAssay = "counts", sparse = F
 #'               sparse=TRUE)
 quantifyGenes <- function(object, genes, inputAssay = "counts", sparse = FALSE) {
     # Pre-checks
-    assert_that(methods::is(object, "RangedSummarizedExperiment"), isDisjoint(object), 
-        is.string(genes), is.element(genes, colnames(rowData(object))), is.character(rowData(object)[, 
+    assert_that(methods::is(object, "RangedSummarizedExperiment"), isDisjoint(object),
+        is.string(genes), is.element(genes, colnames(rowData(object))), is.character(rowData(object)[,
             genes]), is.string(inputAssay), inputAssay %in% assayNames(object), is.flag(sparse))
-    
+
     # Factor genes
     genes <- factor(rowData(object)[, genes])
-    
+
     # Split ranges
     new_gr <- splitAsList(rowRanges(object), f = genes, drop = TRUE)
-    
+
     # Sum matrix
     new_m <- rowsum2(assay(object, inputAssay), group = genes, drop = TRUE, sparse = sparse)
-    
+
     # Check that names match
     stopifnot(setequal(rownames(new_m), names(new_gr)))
     if (!all(rownames(new_m) == names(new_gr))) {
         new_m <- new_m[names(new_gr), ]
     }
-    
+
     # Reassemble and copy over
-    o <- SummarizedExperiment(assays = list(new_m), rowRanges = new_gr, colData = colData(object), 
+    o <- SummarizedExperiment(assays = list(new_m), rowRanges = new_gr, colData = colData(object),
         metadata = metadata(object))
     assayNames(o) <- inputAssay
-    
+
     # Calculate some stats
     rowData(o)[, "nClusters"] <- elementNROWS(new_gr)
-    
+
     # Return
     o
 }

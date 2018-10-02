@@ -62,3 +62,4 @@ Other Clustering functions: \code{\link{clusterBidirectionally}},
   \code{\link{clusterUnidirectionally}},
   \code{\link{trimToPeak}}, \code{\link{trimToPercentiles}}
 }
+\concept{Clustering functions}

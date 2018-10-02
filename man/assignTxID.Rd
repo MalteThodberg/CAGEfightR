@@ -18,9 +18,11 @@ assignTxID(object, txModels, ...)
   txModels, ...)
 
 \S4method{assignTxID}{GenomicRanges,TxDb}(object, txModels,
-  outputColumn = "txID", swap = NULL, upstream = 1000, downstream = 0)
+  outputColumn = "txID", swap = NULL, upstream = 1000,
+  downstream = 0)
 
-\S4method{assignTxID}{RangedSummarizedExperiment,TxDb}(object, txModels, ...)
+\S4method{assignTxID}{RangedSummarizedExperiment,TxDb}(object, txModels,
+  ...)
 }
 \arguments{
 \item{object}{GRanges or RangedSummarizedExperiment: Ranges to be annotated.}
@@ -70,3 +72,4 @@ assignTxID(exampleUnidirectional,
 Other Annotation functions: \code{\link{assignGeneID}},
   \code{\link{assignMissingID}}, \code{\link{assignTxType}}
 }
+\concept{Annotation functions}

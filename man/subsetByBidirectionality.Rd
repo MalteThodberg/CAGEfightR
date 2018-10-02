@@ -13,7 +13,8 @@ subsetByBidirectionality(object, ...)
   inputAssay = "counts", outputColumn = "bidirectionality",
   minSamples = 0)
 
-\S4method{subsetByBidirectionality}{RangedSummarizedExperiment}(object, ...)
+\S4method{subsetByBidirectionality}{RangedSummarizedExperiment}(object,
+  ...)
 }
 \arguments{
 \item{object}{GRanges or RangedSummarizedExperiment: Unstranded clusters with
@@ -58,3 +59,5 @@ Other Calculation functions: \code{\link{calcBidirectionality}},
   \code{\link{subsetByComposition}},
   \code{\link{subsetBySupport}}
 }
+\concept{Calculation functions}
+\concept{Subsetting functions}

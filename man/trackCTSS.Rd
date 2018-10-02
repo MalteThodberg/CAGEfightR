@@ -61,3 +61,4 @@ plotTracks(pooledTrack, from=start(BC)-100, to=end(BC)+100,
 Other Genome Browser functions: \code{\link{trackBalance}},
   \code{\link{trackClusters}}
 }
+\concept{Genome Browser functions}

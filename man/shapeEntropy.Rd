@@ -31,3 +31,4 @@ shapeEntropy(x_broad)
 Other Shape functions: \code{\link{calcShape}},
   \code{\link{shapeIQR}}, \code{\link{shapeMultimodality}}
 }
+\concept{Shape functions}

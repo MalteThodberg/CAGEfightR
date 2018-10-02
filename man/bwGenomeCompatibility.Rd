@@ -45,3 +45,4 @@ bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)
 Other BigWig functions: \code{\link{bwCommonGenome}},
   \code{\link{bwValid}}
 }
+\concept{BigWig functions}

@@ -4,6 +4,7 @@
 \name{clusterBidirectionally}
 \alias{clusterBidirectionally}
 \alias{clusterBidirectionally,GenomicRanges-method}
+\alias{clusterBidirectionally,GPos-method}
 \alias{clusterBidirectionally,RangedSummarizedExperiment-method}
 \title{Bidirectional clustering of pooled CTSSs.}
 \usage{
@@ -11,6 +12,8 @@ clusterBidirectionally(object, ...)
 
 \S4method{clusterBidirectionally}{GenomicRanges}(object, window = 199,
   balanceThreshold = 0.95)
+
+\S4method{clusterBidirectionally}{GPos}(object, ...)
 
 \S4method{clusterBidirectionally}{RangedSummarizedExperiment}(object, ...)
 }
@@ -61,3 +64,4 @@ Other Clustering functions: \code{\link{clusterUnidirectionally}},
   \code{\link{trimToPercentiles}},
   \code{\link{tuneTagClustering}}
 }
+\concept{Clustering functions}

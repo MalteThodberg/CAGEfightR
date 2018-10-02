@@ -4,7 +4,8 @@
 \alias{calcTotalTags}
 \title{Calculate the total number of CAGE tags across samples.}
 \usage{
-calcTotalTags(object, inputAssay = "counts", outputColumn = "totalTags")
+calcTotalTags(object, inputAssay = "counts",
+  outputColumn = "totalTags")
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
@@ -35,3 +36,4 @@ Other Calculation functions: \code{\link{calcBidirectionality}},
   \code{\link{subsetByComposition}},
   \code{\link{subsetBySupport}}
 }
+\concept{Calculation functions}

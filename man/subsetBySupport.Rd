@@ -4,8 +4,8 @@
 \alias{subsetBySupport}
 \title{Subset by support across samples}
 \usage{
-subsetBySupport(object, inputAssay = "counts", outputColumn = "support",
-  unexpressed = 0, minSamples = 1)
+subsetBySupport(object, inputAssay = "counts",
+  outputColumn = "support", unexpressed = 0, minSamples = 1)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
@@ -49,3 +49,5 @@ Other Calculation functions: \code{\link{calcBidirectionality}},
   \code{\link{subsetByBidirectionality}},
   \code{\link{subsetByComposition}}
 }
+\concept{Calculation functions}
+\concept{Subsetting functions}

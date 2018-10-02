@@ -14,11 +14,12 @@ trimToPercentiles(object, pooled, ...)
 \S4method{trimToPercentiles}{GRanges,GenomicRanges}(object, pooled,
   percentile = 0.1, symmetric = FALSE)
 
-\S4method{trimToPercentiles}{RangedSummarizedExperiment,GenomicRanges}(object,
+
+  \S4method{trimToPercentiles}{RangedSummarizedExperiment,GenomicRanges}(object,
   pooled, ...)
 
-\S4method{trimToPercentiles}{GRanges,RangedSummarizedExperiment}(object, pooled,
-  ...)
+\S4method{trimToPercentiles}{GRanges,RangedSummarizedExperiment}(object,
+  pooled, ...)
 
 
   \S4method{trimToPercentiles}{RangedSummarizedExperiment,RangedSummarizedExperiment}(object,
@@ -70,3 +71,5 @@ Other Clustering functions: \code{\link{clusterBidirectionally}},
 
 Other Trimming functions: \code{\link{trimToPeak}}
 }
+\concept{Clustering functions}
+\concept{Trimming functions}

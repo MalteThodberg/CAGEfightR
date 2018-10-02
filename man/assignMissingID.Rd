@@ -12,8 +12,8 @@ assignMissingID(object, ...)
 
 \S4method{assignMissingID}{character}(object, prefix = "Novel")
 
-\S4method{assignMissingID}{GenomicRanges}(object, outputColumn = "geneID",
-  prefix = "Novel")
+\S4method{assignMissingID}{GenomicRanges}(object,
+  outputColumn = "geneID", prefix = "Novel")
 
 \S4method{assignMissingID}{RangedSummarizedExperiment}(object,
   outputColumn = "geneID", prefix = "Novel")
@@ -60,3 +60,4 @@ assignMissingID(exampleUnidirectional, prefix = 'NovelTSS')
 Other Annotation functions: \code{\link{assignGeneID}},
   \code{\link{assignTxID}}, \code{\link{assignTxType}}
 }
+\concept{Annotation functions}

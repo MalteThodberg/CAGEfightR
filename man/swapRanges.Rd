@@ -51,3 +51,4 @@ swapRanges(gr, outputColumn = 'swapped')
 \seealso{
 Other Swapping functions: \code{\link{swapScores}}
 }
+\concept{Swapping functions}

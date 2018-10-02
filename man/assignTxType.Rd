@@ -14,14 +14,17 @@ assignTxType(object, txModels, ...)
 \S4method{assignTxType}{GenomicRanges,GenomicRangesList}(object, txModels,
   outputColumn = "txType", swap = NULL, noOverlap = "intergenic")
 
-\S4method{assignTxType}{RangedSummarizedExperiment,GenomicRangesList}(object,
+
+  \S4method{assignTxType}{RangedSummarizedExperiment,GenomicRangesList}(object,
   txModels, ...)
 
 \S4method{assignTxType}{GenomicRanges,TxDb}(object, txModels,
   outputColumn = "txType", swap = NULL, tssUpstream = 100,
-  tssDownstream = 100, proximalUpstream = 1000, detailedAntisense = FALSE)
+  tssDownstream = 100, proximalUpstream = 1000,
+  detailedAntisense = FALSE)
 
-\S4method{assignTxType}{RangedSummarizedExperiment,TxDb}(object, txModels, ...)
+\S4method{assignTxType}{RangedSummarizedExperiment,TxDb}(object, txModels,
+  ...)
 }
 \arguments{
 \item{object}{GRanges or RangedSummarizedExperiment: Ranges to be annotated.}
@@ -109,3 +112,4 @@ assignTxType(exampleUnidirectional,
 Other Annotation functions: \code{\link{assignGeneID}},
   \code{\link{assignMissingID}}, \code{\link{assignTxID}}
 }
+\concept{Annotation functions}

@@ -5,7 +5,8 @@
 \title{Quantify expression of clusters (TSSs or enhancers) by summing CTSSs within
 clusters.}
 \usage{
-quantifyClusters(object, clusters, inputAssay = "counts", sparse = FALSE)
+quantifyClusters(object, clusters, inputAssay = "counts",
+  sparse = FALSE)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CTSSs.}
@@ -45,3 +46,4 @@ quantifyClusters(exampleCTSSs, rowRanges(exampleUnidirectional), sparse=TRUE)
 Other Quantification functions: \code{\link{quantifyCTSSs}},
   \code{\link{quantifyGenes}}
 }
+\concept{Quantification functions}

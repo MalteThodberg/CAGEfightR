@@ -31,9 +31,9 @@ setGeneric("bwValid", function(object) {
 #' @rdname bwValid
 setMethod("bwValid", signature(object = "BigWigFile"), function(object) {
     # Checks, maybe wrap all of this in it's own function
-    assert_that(file.exists(object@resource), has_extension(object@resource, "bw"), 
+    assert_that(file.exists(object@resource), has_extension(object@resource, "bw"),
         is.readable(object@resource))
-    
+
     # Only returned if all tests pass
     TRUE
 })
@@ -42,7 +42,7 @@ setMethod("bwValid", signature(object = "BigWigFile"), function(object) {
 setMethod("bwValid", signature(object = "BigWigFileList"), function(object) {
     # Checks, maybe wrap all of this in it's own function
     assert_that(all(vapply(object, bwValid, logical(1))), !is.null(names(object)))
-    
+
     # Only returned if all tests pass
     TRUE
 })
@@ -79,29 +79,30 @@ setMethod("bwValid", signature(object = "BigWigFileList"), function(object) {
 #' # Find the most inclusive genome (union) across the BigWigList-objects:
 #' bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='union')
 bwCommonGenome <- function(plusStrand, minusStrand, method = "intersect") {
-    assert_that(class(plusStrand) == "BigWigFileList", class(minusStrand) == "BigWigFileList", 
+    assert_that(methods::is(plusStrand, "BigWigFileList"),
+    						methods::is(minusStrand, "BigWigFileList"),
         is.string(method), method %in% c("intersect", "union"))
-    
+
     # Get seqinfo
     seqInfoPlus <- lapply(plusStrand, seqinfo)
     seqInfoMinus <- lapply(minusStrand, seqinfo)
-    
+
     # Unique seqinfos
     seqInfo <- unique(c(seqInfoPlus, seqInfoMinus))
-    
+
     # Sort every element
     seqInfo <- seqInfo[order(vapply(seqInfo, length, numeric(1)))]
-    
+
     # Merge using either function
     if (method == "intersect") {
         o <- suppressWarnings(Reduce(f = intersect, seqInfo))
     } else if (method == "union") {
         o <- suppressWarnings(Reduce(f = merge, seqInfo))
     }
-    
+
     # Sort
     o <- sortSeqlevels(o)
-    
+
     # Return
     o
 }
@@ -139,19 +140,20 @@ bwCommonGenome <- function(plusStrand, minusStrand, method = "intersect") {
 #' # Check if it is still compatible:
 #' bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)
 bwGenomeCompatibility <- function(plusStrand, minusStrand, genome) {
-    assert_that(class(plusStrand) == "BigWigFileList", class(minusStrand) == "BigWigFileList", 
-        class(genome) == "Seqinfo")
-    
+    assert_that(methods::is(plusStrand, "BigWigFileList"),
+    						methods::is(minusStrand, "BigWigFileList"),
+    						methods::is(genome, "Seqinfo"))
+
     # Get seqinfo
     seqInfoPlus <- lapply(plusStrand, seqinfo)
     seqInfoMinus <- lapply(minusStrand, seqinfo)
-    
+
     # Unique seqinfos
     seqInfos <- unique(c(seqInfoPlus, seqInfoMinus))
-    
+
     # Check if error is produces
     lapply(seqInfos, merge, y = genome)
-    
+
     # Return
     TRUE
 }

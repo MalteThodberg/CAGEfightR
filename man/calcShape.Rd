@@ -6,6 +6,7 @@
 \alias{calcShape,GRanges,GenomicRanges-method}
 \alias{calcShape,RangedSummarizedExperiment,GenomicRanges-method}
 \alias{calcShape,GRanges,RangedSummarizedExperiment-method}
+\alias{calcShape,GRanges,GPos-method}
 \alias{calcShape,RangedSummarizedExperiment,RangedSummarizedExperiment-method}
 \title{Calculate Tag Cluster shapes}
 \usage{
@@ -14,10 +15,13 @@ calcShape(object, pooled, ...)
 \S4method{calcShape}{GRanges,GenomicRanges}(object, pooled,
   outputColumn = "IQR", shapeFunction = shapeIQR, ...)
 
-\S4method{calcShape}{RangedSummarizedExperiment,GenomicRanges}(object, pooled,
+\S4method{calcShape}{RangedSummarizedExperiment,GenomicRanges}(object,
+  pooled, ...)
+
+\S4method{calcShape}{GRanges,RangedSummarizedExperiment}(object, pooled,
   ...)
 
-\S4method{calcShape}{GRanges,RangedSummarizedExperiment}(object, pooled, ...)
+\S4method{calcShape}{GRanges,GPos}(object, pooled, ...)
 
 
   \S4method{calcShape}{RangedSummarizedExperiment,RangedSummarizedExperiment}(object,
@@ -70,3 +74,5 @@ Other Calculation functions: \code{\link{calcBidirectionality}},
 Other Shape functions: \code{\link{shapeEntropy}},
   \code{\link{shapeIQR}}, \code{\link{shapeMultimodality}}
 }
+\concept{Calculation functions}
+\concept{Shape functions}

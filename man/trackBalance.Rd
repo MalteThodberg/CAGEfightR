@@ -66,3 +66,4 @@ plotTracks(balance_track, from=start(BC), to=end(BC),
 Other Genome Browser functions: \code{\link{trackCTSS}},
   \code{\link{trackClusters}}
 }
+\concept{Genome Browser functions}

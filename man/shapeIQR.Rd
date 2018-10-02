@@ -35,3 +35,4 @@ Other Shape functions: \code{\link{calcShape}},
   \code{\link{shapeEntropy}},
   \code{\link{shapeMultimodality}}
 }
+\concept{Shape functions}

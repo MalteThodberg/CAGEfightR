@@ -14,10 +14,11 @@ trimToPeak(object, pooled, ...)
 \S4method{trimToPeak}{GRanges,GenomicRanges}(object, pooled, upstream,
   downstream, peaks = "thick")
 
-\S4method{trimToPeak}{RangedSummarizedExperiment,GenomicRanges}(object, pooled,
-  ...)
+\S4method{trimToPeak}{RangedSummarizedExperiment,GenomicRanges}(object,
+  pooled, ...)
 
-\S4method{trimToPeak}{GRanges,RangedSummarizedExperiment}(object, pooled, ...)
+\S4method{trimToPeak}{GRanges,RangedSummarizedExperiment}(object, pooled,
+  ...)
 
 
   \S4method{trimToPeak}{RangedSummarizedExperiment,RangedSummarizedExperiment}(object,
@@ -66,3 +67,5 @@ Other Clustering functions: \code{\link{clusterBidirectionally}},
 
 Other Trimming functions: \code{\link{trimToPercentiles}}
 }
+\concept{Clustering functions}
+\concept{Trimming functions}

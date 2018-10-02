@@ -43,3 +43,4 @@ bwValid(bw_plus)
 Other BigWig functions: \code{\link{bwCommonGenome}},
   \code{\link{bwGenomeCompatibility}}
 }
+\concept{BigWig functions}

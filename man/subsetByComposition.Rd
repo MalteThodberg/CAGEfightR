@@ -62,3 +62,5 @@ Other Calculation functions: \code{\link{calcBidirectionality}},
   \code{\link{subsetByBidirectionality}},
   \code{\link{subsetBySupport}}
 }
+\concept{Calculation functions}
+\concept{Subsetting functions}

@@ -70,3 +70,4 @@ CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
 Other Quantification functions: \code{\link{quantifyClusters}},
   \code{\link{quantifyGenes}}
 }
+\concept{Quantification functions}

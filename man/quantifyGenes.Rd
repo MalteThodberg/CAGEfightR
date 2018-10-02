@@ -51,3 +51,4 @@ quantifyGenes(exampleUnidirectional,
 Other Quantification functions: \code{\link{quantifyCTSSs}},
   \code{\link{quantifyClusters}}
 }
+\concept{Quantification functions}

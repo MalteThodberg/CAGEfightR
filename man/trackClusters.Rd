@@ -9,8 +9,9 @@
 \usage{
 trackClusters(object, ...)
 
-\S4method{trackClusters}{GenomicRanges}(object, plusColor = "cornflowerblue",
-  minusColor = "tomato", unstrandedColor = "hotpink", ...)
+\S4method{trackClusters}{GenomicRanges}(object,
+  plusColor = "cornflowerblue", minusColor = "tomato",
+  unstrandedColor = "hotpink", ...)
 
 \S4method{trackClusters}{RangedSummarizedExperiment}(object, ...)
 }
@@ -51,3 +52,4 @@ plotTracks(clusters_track)
 Other Genome Browser functions: \code{\link{trackBalance}},
   \code{\link{trackCTSS}}
 }
+\concept{Genome Browser functions}

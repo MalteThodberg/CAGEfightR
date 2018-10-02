@@ -22,8 +22,8 @@ assignGeneID(object, geneModels, ...)
   outputColumn = "geneID", swap = NULL, upstream = 1000,
   downstream = 100)
 
-\S4method{assignGeneID}{RangedSummarizedExperiment,TxDb}(object, geneModels,
-  ...)
+\S4method{assignGeneID}{RangedSummarizedExperiment,TxDb}(object,
+  geneModels, ...)
 }
 \arguments{
 \item{object}{GRanges or RangedSummarizedExperiment: Ranges to be annotated.}
@@ -74,3 +74,4 @@ assignGeneID(exampleUnidirectional,
 Other Annotation functions: \code{\link{assignMissingID}},
   \code{\link{assignTxID}}, \code{\link{assignTxType}}
 }
+\concept{Annotation functions}

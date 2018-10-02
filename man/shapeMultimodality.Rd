@@ -22,3 +22,4 @@ Shape statistic: Multimodality
 Other Shape functions: \code{\link{calcShape}},
   \code{\link{shapeEntropy}}, \code{\link{shapeIQR}}
 }
+\concept{Shape functions}

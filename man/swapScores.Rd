@@ -34,3 +34,4 @@ rowRanges(x)
 \seealso{
 Other Swapping functions: \code{\link{swapRanges}}
 }
+\concept{Swapping functions}

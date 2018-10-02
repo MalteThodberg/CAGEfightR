@@ -5,14 +5,17 @@
 \alias{clusterUnidirectionally}
 \alias{clusterUnidirectionally,GenomicRanges-method}
 \alias{clusterUnidirectionally,RangedSummarizedExperiment-method}
+\alias{clusterUnidirectionally,GPos-method}
 \title{Unidirectional Clustering (Tag Clustering) of pooled CTSSs.}
 \usage{
 clusterUnidirectionally(object, ...)
 
-\S4method{clusterUnidirectionally}{GenomicRanges}(object, pooledCutoff = 0,
-  mergeDist = 20)
+\S4method{clusterUnidirectionally}{GenomicRanges}(object,
+  pooledCutoff = 0, mergeDist = 20)
 
 \S4method{clusterUnidirectionally}{RangedSummarizedExperiment}(object, ...)
+
+\S4method{clusterUnidirectionally}{GPos}(object, ...)
 }
 \arguments{
 \item{object}{GRanges or RangedSummarizedExperiment: Basepair-wise pooled
@@ -55,3 +58,4 @@ Other Clustering functions: \code{\link{clusterBidirectionally}},
   \code{\link{trimToPercentiles}},
   \code{\link{tuneTagClustering}}
 }
+\concept{Clustering functions}

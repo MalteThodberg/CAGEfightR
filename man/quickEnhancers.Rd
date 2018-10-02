@@ -24,3 +24,4 @@ and quantifyClusters.
 \seealso{
 Other Wrapper functions: \code{\link{quickTSSs}}
 }
+\concept{Wrapper functions}

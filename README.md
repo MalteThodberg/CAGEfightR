@@ -8,7 +8,7 @@ You can install CAGEfightR from github with `devtools`:
 
 ``` r
 # Install Bioconductor packages:
-BiocInstaller::biocLite(c("GenomicRanges", "rtracklayer", "SummarizedExperiment", 
+BiocManager::install(c("GenomicRanges", "rtracklayer", "SummarizedExperiment", 
 "BiocGenerics", "S4Vectors", "IRanges", "GenomeInfoDb", "GenomicFeatures", 
 "TxDb.Mmusculus.UCSC.mm9.knownGene", "org.Mm.eg.db,", "BiocParallel", 
 "GenomicFiles", "Gviz"))

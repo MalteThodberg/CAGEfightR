@@ -3,15 +3,15 @@
 \docType{methods}
 \name{clusterBidirectionally}
 \alias{clusterBidirectionally}
-\alias{clusterBidirectionally,GenomicRanges-method}
+\alias{clusterBidirectionally,GRanges-method}
 \alias{clusterBidirectionally,GPos-method}
 \alias{clusterBidirectionally,RangedSummarizedExperiment-method}
 \title{Bidirectional clustering of pooled CTSSs.}
 \usage{
 clusterBidirectionally(object, ...)
 
-\S4method{clusterBidirectionally}{GenomicRanges}(object, window = 199,
-  balanceThreshold = 0.95)
+\S4method{clusterBidirectionally}{GRanges}(object, window = 201,
+  balanceThreshold = 0.95, balanceFun = balanceBC)
 
 \S4method{clusterBidirectionally}{GPos}(object, ...)
 
@@ -28,6 +28,10 @@ sums.}
 
 \item{balanceThreshold}{numeric: Minimum value of the BC to use for
 slice-reduce, a value of 1 corresponds to perfectly balanced sites.}
+
+\item{balanceFun}{function: Advanced users may supply their own function for
+calculating the balance score instead of the the default balanceBC. See
+details for instructions.}
 }
 \value{
 GRanges with bidirectional sites: Minimum width is 1 + 2*window, TPM

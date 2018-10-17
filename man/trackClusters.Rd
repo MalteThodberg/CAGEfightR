@@ -3,15 +3,14 @@
 \docType{methods}
 \name{trackClusters}
 \alias{trackClusters}
-\alias{trackClusters,GenomicRanges-method}
+\alias{trackClusters,GRanges-method}
 \alias{trackClusters,RangedSummarizedExperiment-method}
 \title{Create genome browser track of clusters.}
 \usage{
 trackClusters(object, ...)
 
-\S4method{trackClusters}{GenomicRanges}(object,
-  plusColor = "cornflowerblue", minusColor = "tomato",
-  unstrandedColor = "hotpink", ...)
+\S4method{trackClusters}{GRanges}(object, plusColor = "cornflowerblue",
+  minusColor = "tomato", unstrandedColor = "hotpink", ...)
 
 \S4method{trackClusters}{RangedSummarizedExperiment}(object, ...)
 }

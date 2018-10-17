@@ -3,15 +3,15 @@
 \docType{methods}
 \name{clusterUnidirectionally}
 \alias{clusterUnidirectionally}
-\alias{clusterUnidirectionally,GenomicRanges-method}
+\alias{clusterUnidirectionally,GRanges-method}
 \alias{clusterUnidirectionally,RangedSummarizedExperiment-method}
 \alias{clusterUnidirectionally,GPos-method}
 \title{Unidirectional Clustering (Tag Clustering) of pooled CTSSs.}
 \usage{
 clusterUnidirectionally(object, ...)
 
-\S4method{clusterUnidirectionally}{GenomicRanges}(object,
-  pooledCutoff = 0, mergeDist = 20)
+\S4method{clusterUnidirectionally}{GRanges}(object, pooledCutoff = 0,
+  mergeDist = 20L)
 
 \S4method{clusterUnidirectionally}{RangedSummarizedExperiment}(object, ...)
 

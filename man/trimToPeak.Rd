@@ -3,7 +3,8 @@
 \docType{methods}
 \name{trimToPeak}
 \alias{trimToPeak}
-\alias{trimToPeak,GRanges,GenomicRanges-method}
+\alias{trimToPeak,GRanges,GRanges-method}
+\alias{trimToPeak,GRanges,GPos-method}
 \alias{trimToPeak,RangedSummarizedExperiment,GenomicRanges-method}
 \alias{trimToPeak,GRanges,RangedSummarizedExperiment-method}
 \alias{trimToPeak,RangedSummarizedExperiment,RangedSummarizedExperiment-method}
@@ -11,8 +12,10 @@
 \usage{
 trimToPeak(object, pooled, ...)
 
-\S4method{trimToPeak}{GRanges,GenomicRanges}(object, pooled, upstream,
-  downstream, peaks = "thick")
+\S4method{trimToPeak}{GRanges,GRanges}(object, pooled, upstream,
+  downstream)
+
+\S4method{trimToPeak}{GRanges,GPos}(object, pooled, ...)
 
 \S4method{trimToPeak}{RangedSummarizedExperiment,GenomicRanges}(object,
   pooled, ...)
@@ -35,8 +38,6 @@ pooled CTSS (stored in the score column).}
 \item{upstream}{integer: Maximum upstream distance from TC peak.}
 
 \item{downstream}{integer: Maximum downstream distance from TC peak.}
-
-\item{peaks}{character: Name of column in TCs holding TC peaks as an IRanges.}
 }
 \value{
 data.frame with two columns: threshold and nTCs (number of Tag

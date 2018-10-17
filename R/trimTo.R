@@ -2,20 +2,20 @@
 symmetricPercentiles <- function(r, prop) {
     # Convert to normal vector
     r <- as.vector(r)
-    
+
     # Calculate proportions
     r_sum <- sum(r)
     r_prop <- r/r_sum
-    
+
     # Cumulate sum from either side
     f_cum <- cumsum(r_prop)
     r_cum <- rev(cumsum(rev(r_prop)))
-    
+
     # Trim both sides
     half_prop <- prop/2
     left <- Position(function(x) x >= half_prop, f_cum, right = FALSE, nomatch = 1)
     right <- Position(function(x) x >= half_prop, r_cum, right = TRUE, nomatch = length(r))
-    
+
     # Return range
     c(left, right)
 }
@@ -23,22 +23,22 @@ symmetricPercentiles <- function(r, prop) {
 asymmetricPercentiles <- function(r, prop) {
     # Convert to normal vector
     r <- as.vector(r)
-    
+
     # Calculate proportions
     r_sum <- sum(r)
     r_prop <- r/r_sum
-    
+
     # Sort be minimum cumsum from either side
     f_cum <- cumsum(r_prop)
     r_cum <- rev(cumsum(rev(r_prop)))
     min_cum <- pmin(f_cum, r_cum)
     o_cum <- order(min_cum)
-    
+
     # Order original proportions and cut
     r_ord <- cumsum(r_prop[o_cum])
     left <- Position(function(x) x > prop, r_ord, right = FALSE, nomatch = 1)
     o_out <- o_cum[left:length(r_ord)]
-    
+
     # Return range
     range(o_out)
 }
@@ -83,100 +83,119 @@ setGeneric("trimToPercentiles", function(object, pooled, ...) {
 })
 
 #' @rdname trimToPercentiles
-setMethod("trimToPercentiles", signature(object = "GRanges", pooled = "GenomicRanges"), 
+setMethod("trimToPercentiles", signature(object = "GRanges", pooled = "GRanges"),
     function(object, pooled, percentile = 0.1, symmetric = FALSE) {
         # Pre-checks
-        assert_that(!is.null(score(pooled)), is.numeric(score(pooled)), is.numeric(percentile), 
-            percentile > 0 & percentile <= 1, is.logical(symmetric), identical(seqlengths(object), 
-                seqlengths(pooled)))
-        
+        assert_that(checkPooled(pooled),
+                    percentile > 0 & percentile <= 1,
+                    is.logical(symmetric),
+                    identical(seqlengths(object), seqlengths(pooled)))
+
         # Split by strand
         message("Splitting by strand...")
-        coverage_stranded <- splitByStrand(pooled)
-        coverage_plus <- coverage(coverage_stranded$`+`, weight = "score")
-        coverage_minus <- coverage(coverage_stranded$`-`, weight = "score")
-        tcs_stranded <- splitByStrand(object)
-        rm(coverage_stranded)
-        
-        # Convert to IRangesList irl_plus <- methods::as(tcs_stranded$`+`,'RangesList')
-        # irl_minus <- methods::as(tcs_stranded$`-`,'RangesList')
-        irl_plus <- split(ranges(tcs_stranded$`+`), seqnames(tcs_stranded$`+`))
-        irl_minus <- split(ranges(tcs_stranded$`-`), seqnames(tcs_stranded$`-`))
-        rm(tcs_stranded)
-        
+        covByStrand <- splitPooled(pooled)
+        TCsByStrand <- splitByStrand(object)
+
+        # coverage_stranded <- splitByStrand(pooled)
+        # coverage_plus <- coverage(coverage_stranded$`+`, weight = "score")
+        # coverage_minus <- coverage(coverage_stranded$`-`, weight = "score")
+        # tcs_stranded <- splitByStrand(object)
+        # rm(coverage_stranded)
+
+        # Convert to IRangesList
+        irl_plus <- methods::as(TCsByStrand$`+`,'IRangesList')
+        irl_minus <- methods::as(TCsByStrand$`-`,'IRangesList')
+
+        # Tempoary workwaround
+        # irl_plus <- split(ranges(tcs_stranded$`+`), seqnames(tcs_stranded$`+`))
+        # irl_minus <- split(ranges(tcs_stranded$`-`), seqnames(tcs_stranded$`-`))
+        # rm(tcs_stranded)
+
         # Obtain views
-        views_plus <- Views(coverage_plus, irl_plus)
-        views_minus <- Views(coverage_minus, irl_minus)
-        
+        # views_plus <- Views(coverage_plus, irl_plus)
+        # views_minus <- Views(coverage_minus, irl_minus)
+
+        # Views
+        views_plus <- Views(covByStrand$`+`, irl_plus)
+        views_minus <- Views(covByStrand$`-`, irl_minus)
+
         # Extract Adjustments
         if (symmetric) {
-            message(paste0("Symmetric trimming to percentile: ", percentile * 100, 
-                "%"))
-            adjust_plus <- viewApply(views_plus, symmetricPercentiles, prop = percentile, 
-                simplify = FALSE)
-            adjust_minus <- viewApply(views_minus, symmetricPercentiles, prop = percentile, 
-                simplify = FALSE)
+            message(paste0("Symmetric trimming to percentile: ",
+                           percentile * 100, "%"))
+            adjust_plus <- viewApply(views_plus, symmetricPercentiles,
+                                     prop = percentile, simplify = FALSE)
+            adjust_minus <- viewApply(views_minus, symmetricPercentiles,
+                                      prop = percentile, simplify = FALSE)
         } else if (!symmetric) {
-            message(paste0("Asymmetric trimming to percentile: ", percentile * 100, 
-                "%"))
-            adjust_plus <- viewApply(views_plus, asymmetricPercentiles, prop = percentile, 
-                simplify = FALSE)
-            adjust_minus <- viewApply(views_minus, asymmetricPercentiles, prop = percentile, 
-                simplify = FALSE)
+            message(paste0("Asymmetric trimming to percentile: ",
+                           percentile * 100, "%"))
+            adjust_plus <- viewApply(views_plus, asymmetricPercentiles,
+                                     prop = percentile, simplify = FALSE)
+            adjust_minus <- viewApply(views_minus, asymmetricPercentiles,
+                                      prop = percentile, simplify = FALSE)
         } else {
             stop("Additional percentile functions not yet implemented!")
         }
         rm(views_plus, views_minus)
-        
+
         # Adjustments as IntegerLists
         message("Adjusting ranges...")
-        left_plus <- methods::as(lapply(adjust_plus, function(x) lapply(x, function(x) x[1])), 
+        left_plus <- methods::as(lapply(adjust_plus, function(x) lapply(x, function(x) x[1])),
             "IntegerList")
-        right_plus <- methods::as(lapply(adjust_plus, function(x) lapply(x, function(x) x[2])), 
+        right_plus <- methods::as(lapply(adjust_plus, function(x) lapply(x, function(x) x[2])),
             "IntegerList")
-        left_minus <- methods::as(lapply(adjust_minus, function(x) lapply(x, function(x) x[1])), 
+        left_minus <- methods::as(lapply(adjust_minus, function(x) lapply(x, function(x) x[1])),
             "IntegerList")
-        right_minus <- methods::as(lapply(adjust_minus, function(x) lapply(x, function(x) x[2])), 
+        right_minus <- methods::as(lapply(adjust_minus, function(x) lapply(x, function(x) x[2])),
             "IntegerList")
-        
+
         # Narrow ranges
         irl_plus <- narrow(irl_plus, start = left_plus, end = right_plus)
         irl_minus <- narrow(irl_minus, start = left_minus, end = right_minus)
         rm(left_plus, right_plus, left_minus, right_minus)
-        
+
         # Calculate new stats
         message("Calculating new stats...")
-        trimmedTCs <- TCstats(coverage_plus = coverage_plus, coverage_minus = coverage_minus, 
-            tcs_plus = irl_plus, tcs_minus = irl_minus)
-        rm(coverage_plus, coverage_minus, irl_plus, irl_minus)
-        
+        trimmedTCs <- TCstats(coverage_plus = covByStrand$`+`,
+                              coverage_minus = covByStrand$`-`,
+                              tcs_plus = irl_plus,
+                              tcs_minus = irl_minus)
+        rm(covByStrand, irl_plus, irl_minus)
+
         # Carry over seqinfo and sort
         message("Preparing output...")
         seqinfo(trimmedTCs) <- seqinfo(object)
         trimmedTCs <- sort(trimmedTCs)
-        
+
         # Print some basic stats
         message("Tag clustering summary:")
         summarizeWidths(trimmedTCs)
-        
+
         # Return
         trimmedTCs
     })
 
 #' @rdname trimToPercentiles
-setMethod("trimToPercentiles", signature(object = "RangedSummarizedExperiment", pooled = "GenomicRanges"), 
+setMethod("trimToPercentiles", signature(object = "GRanges", pooled = "GPos"),
+          function(object, pooled, ...) {
+              trimToPercentiles(object, methods::as(pooled, "GRanges"), ...)
+          })
+
+#' @rdname trimToPercentiles
+setMethod("trimToPercentiles", signature(object = "RangedSummarizedExperiment", pooled = "GenomicRanges"),
     function(object, pooled, ...) {
         trimToPercentiles(rowRanges(object), pooled, ...)
     })
 
 #' @rdname trimToPercentiles
-setMethod("trimToPercentiles", signature(object = "GRanges", pooled = "RangedSummarizedExperiment"), 
+setMethod("trimToPercentiles", signature(object = "GRanges", pooled = "RangedSummarizedExperiment"),
     function(object, pooled, ...) {
         trimToPercentiles(object, rowRanges(pooled), ...)
     })
 
 #' @rdname trimToPercentiles
-setMethod("trimToPercentiles", signature(object = "RangedSummarizedExperiment", pooled = "RangedSummarizedExperiment"), 
+setMethod("trimToPercentiles", signature(object = "RangedSummarizedExperiment", pooled = "RangedSummarizedExperiment"),
     function(object, pooled, ...) {
         trimToPercentiles(rowRanges(object), rowRanges(pooled), ...)
     })
@@ -190,7 +209,6 @@ setMethod("trimToPercentiles", signature(object = "RangedSummarizedExperiment", 
 #'   pooled CTSS (stored in the score column).
 #' @param upstream integer: Maximum upstream distance from TC peak.
 #' @param downstream integer: Maximum downstream distance from TC peak.
-#' @param peaks character: Name of column in TCs holding TC peaks as an IRanges.
 #' @param ... additional arguments passed to methods.
 #'
 #' @return data.frame with two columns: threshold and nTCs (number of Tag
@@ -216,69 +234,88 @@ setGeneric("trimToPeak", function(object, pooled, ...) {
 })
 
 #' @rdname trimToPeak
-setMethod("trimToPeak", signature(object = "GRanges", pooled = "GenomicRanges"), 
-    function(object, pooled, upstream, downstream, peaks = "thick") {
+setMethod("trimToPeak", signature(object = "GRanges", pooled = "GRanges"),
+    function(object, pooled, upstream, downstream) {
         # Pre-Checks
-        assert_that(is.count(upstream), is.count(downstream), identical(seqlengths(object), 
-            seqlengths(pooled)))
-        
+        assert_that(checkPeaked(object),
+                    checkPooled(pooled),
+                    is.count(upstream),
+                    is.count(downstream),
+                    identical(seqlengths(object), seqlengths(pooled)))
+
         # Extract peaks
         message("Trimming TCs around peaks...")
         peaks <- swapRanges(object)
-        
+
         # Expand peaks
-        expanded <- promoters(peaks, upstream = upstream, downstream = downstream)
-        
+        expanded <- promoters(peaks,
+                              upstream = upstream,
+                              downstream = downstream)
+
         # Intersect to obtain filtered peaks.
         ranges(peaks) <- pintersect(ranges(object), ranges(expanded))
-        
+
         # Split by strand
         message("Splitting by strand...")
-        coverage_stranded <- splitByStrand(pooled)
-        coverage_plus <- coverage(coverage_stranded$`+`, weight = "score")
-        coverage_minus <- coverage(coverage_stranded$`-`, weight = "score")
-        tcs_stranded <- splitByStrand(peaks)
-        rm(coverage_stranded, peaks)
-        
-        # Convert to IRangesList irl_plus <- methods::as(tcs_stranded$`+`,'RangesList')
-        # irl_minus <- methods::as(tcs_stranded$`-`,'RangesList')
-        irl_plus <- split(ranges(tcs_stranded$`+`), seqnames(tcs_stranded$`+`))
-        irl_minus <- split(ranges(tcs_stranded$`-`), seqnames(tcs_stranded$`-`))
-        rm(tcs_stranded)
-        
+        covByStrand <- splitPooled(pooled)
+        TCsByStrand <- splitByStrand(peaks)
+
+         # coverage_stranded <- splitByStrand(pooled)
+        # coverage_plus <- coverage(coverage_stranded$`+`, weight = "score")
+        # coverage_minus <- coverage(coverage_stranded$`-`, weight = "score")
+        # tcs_stranded <- splitByStrand(peaks)
+        # rm(coverage_stranded, peaks)
+
+        # Convert to IRangesList
+        irl_plus <- methods::as(TCsByStrand$`+`,'IRangesList')
+        irl_minus <- methods::as(TCsByStrand$`-`,'IRangesList')
+        rm(TCsByStrand)
+
+        # irl_plus <- split(ranges(tcs_stranded$`+`), seqnames(tcs_stranded$`+`))
+        # irl_minus <- split(ranges(tcs_stranded$`-`), seqnames(tcs_stranded$`-`))
+        # rm(tcs_stranded)
+
         # Calculate new stats
         message("Calculating new stats...")
-        trimmedTCs <- TCstats(coverage_plus = coverage_plus, coverage_minus = coverage_minus, 
-            tcs_plus = irl_plus, tcs_minus = irl_minus)
-        rm(coverage_plus, coverage_minus, irl_plus, irl_minus)
-        
+        trimmedTCs <- TCstats(coverage_plus = covByStrand$`+`,
+                              coverage_minus = covByStrand$`-`,
+                              tcs_plus = irl_plus,
+                              tcs_minus = irl_minus)
+        rm(covByStrand, irl_plus, irl_minus)
+
         # Carry over seqinfo and sort
         message("Preparing output...")
         seqinfo(trimmedTCs) <- seqinfo(object)
         trimmedTCs <- sort(trimmedTCs)
-        
+
         # Print some basic stats
         message("Tag clustering summary:")
         summarizeWidths(trimmedTCs)
-        
+
         # Return
         trimmedTCs
     })
 
 #' @rdname trimToPeak
-setMethod("trimToPeak", signature(object = "RangedSummarizedExperiment", pooled = "GenomicRanges"), 
+setMethod("trimToPeak", signature(object = "GRanges", pooled = "GPos"),
+          function(object, pooled, ...) {
+              trimToPeak(object, methods::as(pooled, "GRanges"), ...)
+          })
+
+#' @rdname trimToPeak
+setMethod("trimToPeak", signature(object = "RangedSummarizedExperiment", pooled = "GenomicRanges"),
     function(object, pooled, ...) {
         trimToPeak(rowRanges(object), pooled, ...)
     })
 
 #' @rdname trimToPeak
-setMethod("trimToPeak", signature(object = "GRanges", pooled = "RangedSummarizedExperiment"), 
+setMethod("trimToPeak", signature(object = "GRanges", pooled = "RangedSummarizedExperiment"),
     function(object, pooled, ...) {
         trimToPeak(object, rowRanges(pooled), ...)
     })
 
 #' @rdname trimToPeak
-setMethod("trimToPeak", signature(object = "RangedSummarizedExperiment", pooled = "RangedSummarizedExperiment"), 
+setMethod("trimToPeak", signature(object = "RangedSummarizedExperiment", pooled = "RangedSummarizedExperiment"),
     function(object, pooled, ...) {
         trimToPeak(rowRanges(object), rowRanges(pooled), ...)
     })

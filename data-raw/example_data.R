@@ -75,7 +75,7 @@ GE <- TCs %>%
 #### Subset down ####
 
 exampleDesign <- design
-exampleCTSSs <- subset(CTSSs, (seqnames == "chr18" & start > 72500000) | (seqnames == "chr19" & start > 50000000))
+exampleCTSSs <- subset(CTSSs, (seqnames == "chr18" & pos > 72500000) | (seqnames == "chr19" & pos > 50000000))
 assay(exampleCTSSs, "TPM") <- NULL
 exampleUnidirectional <- subsetByOverlaps(TCs, exampleCTSSs)
 exampleUnidirectional$support <- NULL

@@ -2,8 +2,8 @@
 
 #' Determine the optimal pooled threshold for unidirectional tag clustering.
 #'
-#' This function counts the number of Tag Clusters (TCs) for an exponentially
-#' increasing series of expression cutoffs.
+#' This function counts the number of Tag Clusters (TCs) for an series of small
+#' incremental pooled cutoffs
 #'
 #' @param object GenomicRanges or RangedSummarizedExperiment: Pooled CTSS.
 #' @param steps integer: Number of thresholds to analyze (in addition to
@@ -39,82 +39,91 @@ setGeneric("tuneTagClustering", function(object, ...) {
 })
 
 #' @rdname tuneTagClustering
-setMethod("tuneTagClustering", signature(object = "GenomicRanges"), function(object, 
-    steps = 10L, mergeDist = 20L, searchMethod = "minUnique", maxExponent = 1) {
+setMethod("tuneTagClustering", signature(object = "GRanges"),
+          function(object, steps = 10L, mergeDist = 20L,
+                   searchMethod = "minUnique", maxExponent = 1) {
     # Pre-checks
-    assert_that(isDisjoint(object), !is.null(score(object)), is.numeric(score(object)), 
-        not_empty(seqlengths(object)), is.count(steps), is.numeric(maxExponent), 
-        is.count(mergeDist))
-    
+    assert_that(checkPooled(object),
+                is.count(steps),
+                is.numeric(maxExponent),
+                is.count(mergeDist))
+
     # Setup series
     message("Finding thresholds to be tested...")
     if (searchMethod == "exponential") {
-        exp_series <- min(score(object)) * 2^seq(from = 0, to = maxExponent, length.out = steps)
+        exp_series <- min(score(object)) * 2^seq(from = 0,
+                                                 to = maxExponent,
+                                                 length.out = steps)
     } else if (searchMethod == "minUnique") {
         steps_series <- seq_len(steps)
-        exp_series <- sort(unique(score(object)), partial = steps_series)[steps_series]
+        exp_series <- sort(unique(score(object)),
+                           partial = steps_series)[steps_series]
         rm(steps_series)
     } else {
         stop("searchMethod must be either exponential or minUnique")
     }
-    
+
     # Add zero
     exp_series <- c(0, exp_series)
-    
+
     # Split coverage by strand
-    message("Splitting coverage by strand...")
-    by_strand <- splitByStrand(object)
-    coverage_plus <- coverage(by_strand$`+`, weight = "score")
-    coverage_minus <- coverage(by_strand$`-`, weight = "score")
-    rm(by_strand)
-    
+    message("Splitting by strand...")
+    covByStrand <- splitPooled(object)
+
+    # by_strand <- splitByStrand(object)
+    # coverage_plus <- coverage(by_strand$`+`, weight = "score")
+    # coverage_minus <- coverage(by_strand$`-`, weight = "score")
+    # rm(by_strand)
+
     # Print some info
-    message("Iterating over ", length(exp_series), " thresholds using ", BiocParallel::bpworkers(), 
-        " worker(s)...")
-    
+    message("Iterating over ", length(exp_series),
+            " thresholds using ", BiocParallel::bpworkers(), " worker(s)...")
+
     # Count
     message("Analyzing plus strand...")
-    n_plus <- BiocParallel::bpvec(exp_series, countClusters, cv = coverage_plus, 
-        mergeDist = mergeDist)
+    n_plus <- BiocParallel::bpvec(exp_series, countClusters,
+                                  cv = covByStrand$`+`, mergeDist = mergeDist)
     message("Analyzing minus strand...")
-    n_minus <- BiocParallel::bpvec(exp_series, countClusters, cv = coverage_minus, 
-        mergeDist = mergeDist)
-    
+    n_minus <- BiocParallel::bpvec(exp_series, countClusters,
+                                   cv = covByStrand$`-`, mergeDist = mergeDist)
+
     # Assemble results
     message("Preparing output...")
     o <- data.frame(threshold = exp_series, nTCs = n_plus + n_minus)
-    
+
     # Return
     o
 })
 
 #' @rdname tuneTagClustering
-setMethod("tuneTagClustering", signature(object = "RangedSummarizedExperiment"), 
+setMethod("tuneTagClustering", signature(object = "RangedSummarizedExperiment"),
     function(object, ...) {
         tuneTagClustering(rowRanges(object), ...)
     })
 
 #' @rdname tuneTagClustering
-setMethod("tuneTagClustering", signature(object = "GPos"), function(object, ...) {
-    warning("Using temporary GPos-method in tuneTagClustering!")
+setMethod("tuneTagClustering",
+          signature(object = "GPos"), function(object, ...) {
     tuneTagClustering(methods::as(object, "GRanges"), ...)
 })
 
 #### Helpers ####
 
-countClusters <- function(thresholds, cv, mergeDist = 20) {
+countClusters <- function(thresholds, cv, mergeDist = 20L) {
     # Slice
-    o <- lapply(thresholds, slice, x = cv, includeLower = FALSE, upper = Inf, rangesOnly = TRUE)
-    
+    o <- lapply(thresholds, slice,
+                x = cv, includeLower = FALSE,
+                upper = Inf, rangesOnly = TRUE)
+
     # Reduce
     o <- lapply(o, reduce, min.gapwidth = mergeDist)
-    
+
     # Count
     o <- lapply(o, elementNROWS)
-    
+
     # Sum
     o <- vapply(o, sum, integer(1))
-    
+
     # Return
     o
 }

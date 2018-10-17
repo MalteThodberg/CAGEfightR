@@ -31,8 +31,9 @@ setGeneric("bwValid", function(object) {
 #' @rdname bwValid
 setMethod("bwValid", signature(object = "BigWigFile"), function(object) {
     # Checks, maybe wrap all of this in it's own function
-    assert_that(file.exists(object@resource), has_extension(object@resource, "bw"),
-        is.readable(object@resource))
+    assert_that(file.exists(resource(object)),
+                has_extension(resource(object), "bw"),
+                is.readable(resource(object)))
 
     # Only returned if all tests pass
     TRUE
@@ -80,8 +81,9 @@ setMethod("bwValid", signature(object = "BigWigFileList"), function(object) {
 #' bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='union')
 bwCommonGenome <- function(plusStrand, minusStrand, method = "intersect") {
     assert_that(methods::is(plusStrand, "BigWigFileList"),
-    						methods::is(minusStrand, "BigWigFileList"),
-        is.string(method), method %in% c("intersect", "union"))
+                methods::is(minusStrand, "BigWigFileList"),
+                is.string(method),
+                method %in% c("intersect", "union"))
 
     # Get seqinfo
     seqInfoPlus <- lapply(plusStrand, seqinfo)
@@ -141,8 +143,8 @@ bwCommonGenome <- function(plusStrand, minusStrand, method = "intersect") {
 #' bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)
 bwGenomeCompatibility <- function(plusStrand, minusStrand, genome) {
     assert_that(methods::is(plusStrand, "BigWigFileList"),
-    						methods::is(minusStrand, "BigWigFileList"),
-    						methods::is(genome, "Seqinfo"))
+                methods::is(minusStrand, "BigWigFileList"),
+                methods::is(genome, "Seqinfo"))
 
     # Get seqinfo
     seqInfoPlus <- lapply(plusStrand, seqinfo)

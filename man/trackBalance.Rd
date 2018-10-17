@@ -3,15 +3,18 @@
 \docType{methods}
 \name{trackBalance}
 \alias{trackBalance}
-\alias{trackBalance,GenomicRanges-method}
+\alias{trackBalance,GRanges-method}
+\alias{trackBalance,GPos-method}
 \alias{trackBalance,RangedSummarizedExperiment-method}
 \title{Create Genome Browser Track of bidirectional balance scores}
 \usage{
 trackBalance(object, ...)
 
-\S4method{trackBalance}{GenomicRanges}(object, window = 199,
+\S4method{trackBalance}{GRanges}(object, window = 199,
   plusColor = "cornflowerblue", minusColor = "tomato",
   balanceColor = "forestgreen", ...)
+
+\S4method{trackBalance}{GPos}(object, ...)
 
 \S4method{trackBalance}{RangedSummarizedExperiment}(object, ...)
 }

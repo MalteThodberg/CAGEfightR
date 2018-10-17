@@ -4,6 +4,7 @@
 \name{calcBidirectionality}
 \alias{calcBidirectionality}
 \alias{calcBidirectionality,GRanges-method}
+\alias{calcBidirectionality,GPos-method}
 \alias{calcBidirectionality,RangedSummarizedExperiment-method}
 \title{Calculate sample-wise bidirectionally of clusters.}
 \usage{
@@ -11,6 +12,8 @@ calcBidirectionality(object, ...)
 
 \S4method{calcBidirectionality}{GRanges}(object, samples,
   inputAssay = "counts", outputColumn = "bidirectionality")
+
+\S4method{calcBidirectionality}{GPos}(object, ...)
 
 \S4method{calcBidirectionality}{RangedSummarizedExperiment}(object, ...)
 }

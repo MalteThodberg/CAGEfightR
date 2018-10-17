@@ -3,14 +3,14 @@
 \docType{methods}
 \name{tuneTagClustering}
 \alias{tuneTagClustering}
-\alias{tuneTagClustering,GenomicRanges-method}
+\alias{tuneTagClustering,GRanges-method}
 \alias{tuneTagClustering,RangedSummarizedExperiment-method}
 \alias{tuneTagClustering,GPos-method}
 \title{Determine the optimal pooled threshold for unidirectional tag clustering.}
 \usage{
 tuneTagClustering(object, ...)
 
-\S4method{tuneTagClustering}{GenomicRanges}(object, steps = 10L,
+\S4method{tuneTagClustering}{GRanges}(object, steps = 10L,
   mergeDist = 20L, searchMethod = "minUnique", maxExponent = 1)
 
 \S4method{tuneTagClustering}{RangedSummarizedExperiment}(object, ...)
@@ -37,8 +37,8 @@ data.frame with two columns: threshold and nTCs (number of Tag
   Clusters)
 }
 \description{
-This function counts the number of Tag Clusters (TCs) for an exponentially
-increasing series of expression cutoffs.
+This function counts the number of Tag Clusters (TCs) for an series of small
+incremental pooled cutoffs
 }
 \examples{
 data(exampleCTSSs)

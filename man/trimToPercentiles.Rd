@@ -3,7 +3,8 @@
 \docType{methods}
 \name{trimToPercentiles}
 \alias{trimToPercentiles}
-\alias{trimToPercentiles,GRanges,GenomicRanges-method}
+\alias{trimToPercentiles,GRanges,GRanges-method}
+\alias{trimToPercentiles,GRanges,GPos-method}
 \alias{trimToPercentiles,RangedSummarizedExperiment,GenomicRanges-method}
 \alias{trimToPercentiles,GRanges,RangedSummarizedExperiment-method}
 \alias{trimToPercentiles,RangedSummarizedExperiment,RangedSummarizedExperiment-method}
@@ -11,8 +12,10 @@
 \usage{
 trimToPercentiles(object, pooled, ...)
 
-\S4method{trimToPercentiles}{GRanges,GenomicRanges}(object, pooled,
+\S4method{trimToPercentiles}{GRanges,GRanges}(object, pooled,
   percentile = 0.1, symmetric = FALSE)
+
+\S4method{trimToPercentiles}{GRanges,GPos}(object, pooled, ...)
 
 
   \S4method{trimToPercentiles}{RangedSummarizedExperiment,GenomicRanges}(object,

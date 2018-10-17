@@ -3,8 +3,8 @@
 \docType{methods}
 \name{calcShape}
 \alias{calcShape}
-\alias{calcShape,GRanges,GenomicRanges-method}
-\alias{calcShape,RangedSummarizedExperiment,GenomicRanges-method}
+\alias{calcShape,GRanges,GRanges-method}
+\alias{calcShape,RangedSummarizedExperiment,GRanges-method}
 \alias{calcShape,GRanges,RangedSummarizedExperiment-method}
 \alias{calcShape,GRanges,GPos-method}
 \alias{calcShape,RangedSummarizedExperiment,RangedSummarizedExperiment-method}
@@ -12,11 +12,11 @@
 \usage{
 calcShape(object, pooled, ...)
 
-\S4method{calcShape}{GRanges,GenomicRanges}(object, pooled,
+\S4method{calcShape}{GRanges,GRanges}(object, pooled,
   outputColumn = "IQR", shapeFunction = shapeIQR, ...)
 
-\S4method{calcShape}{RangedSummarizedExperiment,GenomicRanges}(object,
-  pooled, ...)
+\S4method{calcShape}{RangedSummarizedExperiment,GRanges}(object, pooled,
+  ...)
 
 \S4method{calcShape}{GRanges,RangedSummarizedExperiment}(object, pooled,
   ...)

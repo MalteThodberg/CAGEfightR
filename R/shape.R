@@ -36,16 +36,19 @@ setGeneric("calcShape", function(object, pooled, ...) {
 })
 
 #' @rdname calcShape
-setMethod("calcShape", signature(object = "GRanges", pooled = "GenomicRanges"), function(object,
-    pooled, outputColumn = "IQR", shapeFunction = shapeIQR, ...) {
+setMethod("calcShape", signature(object = "GRanges", pooled = "GRanges"),
+          function(object, pooled, outputColumn = "IQR",
+                   shapeFunction = shapeIQR, ...) {
     # Pre-checks
-    assert_that(!is.null(score(pooled)), is.numeric(score(pooled)), isDisjoint(pooled),
-        is.character(outputColumn), is.function(shapeFunction), identical(seqlengths(object),
-            seqlengths(pooled)))
+    assert_that(checkPooled(pooled),
+                is.character(outputColumn),
+                is.function(shapeFunction),
+                identical(seqlengths(object), seqlengths(pooled)))
 
     # Warnings
     if (outputColumn %in% colnames(mcols(object))) {
-        warning("object already has a column named ", outputColumn, " in mcols: It will be overwritten!")
+        warning("object already has a column named ",
+                outputColumn, " in mcols: It will be overwritten!")
     }
 
     # Names need to be set for sorting later
@@ -55,31 +58,34 @@ setMethod("calcShape", signature(object = "GRanges", pooled = "GenomicRanges"), 
     }
 
     # Split by strand
-    message("Splitting coverage by strand...")
-    covByStrand <- splitByStrand(pooled)
+    message("Splitting by strand...")
+    covByStrand <- splitPooled(pooled)
     TCsByStrand <- splitByStrand(object)
 
+    #covByStrand <- splitByStrand(pooled)
+    #TCsByStrand <- splitByStrand(object)
+
     # Coverage by strand
-    coverage_plus <- coverage(covByStrand$`+`, weight = "score")
-    coverage_minus <- coverage(covByStrand$`-`, weight = "score")
-    rm(covByStrand)
+    #coverage_plus <- coverage(covByStrand$`+`, weight = "score")
+    #coverage_minus <- coverage(covByStrand$`-`, weight = "score")
+    #rm(covByStrand)
 
     # Views
-    message("Applying function to each TC...")
-    # views_plus <- Views(coverage_plus, methods::as(TCsByStrand$`+`, 'RangesList'))
-    # views_minus <- Views(coverage_minus, methods::as(TCsByStrand$`-`,
-    # 'RangesList')) rm(coverage_plus, coverage_minus)
+    message("Applying function to each cluster...")
+    views_plus <- Views(covByStrand$`+`, methods::as(TCsByStrand$`+`, 'IRangesList'))
+    views_minus <- Views(covByStrand$`-`, methods::as(TCsByStrand$`-`, 'IRangesList'))
+    rm(covByStrand)
 
     # Tmp solution circumventing direct use of RangesList
-    views_plus <- Views(coverage_plus, split(ranges(TCsByStrand$`+`), seqnames(TCsByStrand$`+`)))
-    views_minus <- Views(coverage_minus, split(ranges(TCsByStrand$`-`), seqnames(TCsByStrand$`-`)))
+    #views_plus <- Views(coverage_plus, split(ranges(TCsByStrand$`+`), seqnames(TCsByStrand$`+`)))
+    #views_minus <- Views(coverage_minus, split(ranges(TCsByStrand$`-`), seqnames(TCsByStrand$`-`)))
 
     # Applying functions to views
     stat_plus <- viewApply(views_plus, shapeFunction, ...)
     stat_minus <- viewApply(views_minus, shapeFunction, ...)
 
     # Reset names
-    message("Assembling output...")
+    message("Preparing output output...")
     stat_plus <- as.numeric(unlist(stat_plus, use.names = FALSE))
     names(stat_plus) <- names(TCsByStrand$`+`)
     stat_minus <- as.numeric(unlist(stat_minus, use.names = FALSE))
@@ -100,7 +106,7 @@ setMethod("calcShape", signature(object = "GRanges", pooled = "GenomicRanges"), 
 })
 
 #' @rdname calcShape
-setMethod("calcShape", signature(object = "RangedSummarizedExperiment", pooled = "GenomicRanges"),
+setMethod("calcShape", signature(object = "RangedSummarizedExperiment", pooled = "GRanges"),
     function(object, pooled, ...) {
         rowRanges(object) <- calcShape(rowRanges(object), pooled, ...)
         object

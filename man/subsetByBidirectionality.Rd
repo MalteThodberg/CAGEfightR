@@ -4,6 +4,7 @@
 \name{subsetByBidirectionality}
 \alias{subsetByBidirectionality}
 \alias{subsetByBidirectionality,GRanges-method}
+\alias{subsetByBidirectionality,GPos-method}
 \alias{subsetByBidirectionality,RangedSummarizedExperiment-method}
 \title{Subset by sample-wise bidirectionality of clusters.}
 \usage{
@@ -12,6 +13,8 @@ subsetByBidirectionality(object, ...)
 \S4method{subsetByBidirectionality}{GRanges}(object, samples,
   inputAssay = "counts", outputColumn = "bidirectionality",
   minSamples = 0)
+
+\S4method{subsetByBidirectionality}{GPos}(object, ...)
 
 \S4method{subsetByBidirectionality}{RangedSummarizedExperiment}(object,
   ...)

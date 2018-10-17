@@ -239,15 +239,16 @@ quantifyClusters <- function(object, clusters, inputAssay = "counts", sparse = F
     						methods::is(clusters, "GRanges"),
     						not_empty(clusters),
     						isDisjoint(clusters),
-    						identical(seqinfo(object),
-    											seqinfo(clusters)),
+    						identical(seqinfo(object), seqinfo(clusters)),
     						is.string(inputAssay),
     						inputAssay %in% assayNames(object),
     						is.flag(sparse))
 
     # Find overlaps
     message("Finding overlaps...")
-    hits <- findOverlaps(query = object, subject = clusters, select = "arbitrary")
+    hits <- findOverlaps(query = object,
+                         subject = clusters,
+                         select = "arbitrary")
     hits <- factor(hits, levels = seq_along(clusters))
     missing_hits <- is.na(hits)
 
@@ -258,14 +259,19 @@ quantifyClusters <- function(object, clusters, inputAssay = "counts", sparse = F
 
     # Summarize
     message("Aggregating within clusters...")
-    mat <- rowsum2(x = assay(object, inputAssay), group = hits, drop = FALSE, sparse = sparse)
+    mat <- rowsum2(x = assay(object, inputAssay),
+                   group = hits,
+                   drop = FALSE,
+                   sparse = sparse)
 
     # Check output is the right format and assign names.
     stopifnot(nrow(mat) == length(clusters))
     rownames(mat) <- names(clusters)
 
     # Coerce to RSE
-    o <- SummarizedExperiment(assays = SimpleList(mat), rowRanges = clusters, colData = colData(object))
+    o <- SummarizedExperiment(assays = SimpleList(mat),
+                              rowRanges = clusters,
+                              colData = colData(object))
     assayNames(o) <- inputAssay
 
     # Return
@@ -311,9 +317,14 @@ quantifyClusters <- function(object, clusters, inputAssay = "counts", sparse = F
 #'               sparse=TRUE)
 quantifyGenes <- function(object, genes, inputAssay = "counts", sparse = FALSE) {
     # Pre-checks
-    assert_that(methods::is(object, "RangedSummarizedExperiment"), isDisjoint(object),
-        is.string(genes), is.element(genes, colnames(rowData(object))), is.character(rowData(object)[,
-            genes]), is.string(inputAssay), inputAssay %in% assayNames(object), is.flag(sparse))
+    assert_that(methods::is(object, "RangedSummarizedExperiment"),
+                isDisjoint(object),
+                is.string(genes),
+                is.element(genes, colnames(rowData(object))),
+                is.character(rowData(object)[,genes]),
+                is.string(inputAssay),
+                inputAssay %in% assayNames(object),
+                is.flag(sparse))
 
     # Factor genes
     genes <- factor(rowData(object)[, genes])
@@ -322,7 +333,10 @@ quantifyGenes <- function(object, genes, inputAssay = "counts", sparse = FALSE) 
     new_gr <- splitAsList(rowRanges(object), f = genes, drop = TRUE)
 
     # Sum matrix
-    new_m <- rowsum2(assay(object, inputAssay), group = genes, drop = TRUE, sparse = sparse)
+    new_m <- rowsum2(assay(object, inputAssay),
+                     group = genes,
+                     drop = TRUE,
+                     sparse = sparse)
 
     # Check that names match
     stopifnot(setequal(rownames(new_m), names(new_gr)))
@@ -331,7 +345,9 @@ quantifyGenes <- function(object, genes, inputAssay = "counts", sparse = FALSE) 
     }
 
     # Reassemble and copy over
-    o <- SummarizedExperiment(assays = list(new_m), rowRanges = new_gr, colData = colData(object),
+    o <- SummarizedExperiment(assays = list(new_m),
+                              rowRanges = new_gr,
+                              colData = colData(object),
         metadata = metadata(object))
     assayNames(o) <- inputAssay
 

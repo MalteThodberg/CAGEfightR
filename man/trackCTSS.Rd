@@ -3,14 +3,14 @@
 \docType{methods}
 \name{trackCTSS}
 \alias{trackCTSS}
-\alias{trackCTSS,GenomicRanges-method}
+\alias{trackCTSS,GRanges-method}
 \alias{trackCTSS,RangedSummarizedExperiment-method}
 \alias{trackCTSS,GPos-method}
 \title{Create Genome Browser track of CTSSs.}
 \usage{
 trackCTSS(object, ...)
 
-\S4method{trackCTSS}{GenomicRanges}(object, plusColor = "cornflowerblue",
+\S4method{trackCTSS}{GRanges}(object, plusColor = "cornflowerblue",
   minusColor = "tomato", ...)
 
 \S4method{trackCTSS}{RangedSummarizedExperiment}(object, ...)

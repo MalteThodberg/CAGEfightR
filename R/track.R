@@ -194,6 +194,7 @@ setMethod("trackClusters", signature(object = "RangedSummarizedExperiment"), fun
 #' @family Genome Browser functions
 #' @export
 #' @examples
+#' \dontrun{
 #' library(Gviz)
 #' data(exampleCTSSs)
 #' data(exampleBidirectional)
@@ -214,6 +215,7 @@ setMethod("trackClusters", signature(object = "RangedSummarizedExperiment"), fun
 #' # Plot
 #' plotTracks(balance_track, from=start(BC), to=end(BC),
 #'            chromosome=seqnames(BC))
+#' }
 setGeneric("trackBalance", function(object, ...) {
     standardGeneric("trackBalance")
 })
@@ -224,24 +226,42 @@ setMethod("trackBalance", signature(object = "GRanges"), function(object, window
     plusColor = "cornflowerblue", minusColor = "tomato", balanceColor = "forestgreen",
     ...) {
     # Pre-checks
-    assert_that(isDisjoint(object), !is.null(score(object)), is.numeric(score(object)),
-        not_empty(seqlengths(object)), noNA(seqlengths(object)), is.string(plusColor),
-        is.string(minusColor), is.string(balanceColor))
+    assert_that(isDisjoint(object),
+                !is.null(score(object)),
+                is.numeric(score(object)),
+                not_empty(seqlengths(object)),
+                noNA(seqlengths(object)),
+                is.string(plusColor),
+                is.string(minusColor),
+                is.string(balanceColor))
 
     # Get windows
-    cw <- CAGEfightR:::coverageWindows(pooled = object, window = window, balanceFun = BC)
+    cw <- coverageWindows(pooled = object,
+                          window = window,
+                          balanceFun = balanceBC)
 
     # Assemble tracks
     message("Building tracks...")
-    o <- list(downstream = Gviz::DataTrack(bindAsGRanges(plus = cw$PD, minus = cw$MD),
-        name = "Downstream", type = "l", groups = c("plus", "minus"), col = c(minusColor,
-            plusColor)), upstream = Gviz::DataTrack(bindAsGRanges(plus = cw$PU, minus = cw$MU),
-        name = "Upstream", type = "l", groups = c("plus", "minus"), col = c(minusColor,
-            plusColor)))
+    o <- list(downstream = Gviz::DataTrack(bindAsGRanges(plus = cw$PD,
+                                                         minus = cw$MD),
+                                           name = "Downstream",
+                                           type = "l",
+                                           groups = c("plus", "minus"),
+                                           col = c(minusColor,
+                                                   plusColor)),
+              upstream = Gviz::DataTrack(bindAsGRanges(plus = cw$PU,
+                                                       minus = cw$MU),
+                                         name = "Upstream",
+                                         type = "l",
+                                         groups = c("plus", "minus"),
+                                         col = c(minusColor,
+                                                 plusColor)))
 
     if (!is.null(cw$B)) {
-        o$balance <- Gviz::DataTrack(GRanges(cw$B), name = "Balance", type = "l",
-            col = balanceColor)
+        o$balance <- Gviz::DataTrack(GRanges(cw$B),
+                                     name = "Balance",
+                                     type = "l",
+                                     col = balanceColor)
     }
 
     # Return
@@ -260,3 +280,57 @@ setMethod("trackBalance", signature(object = "RangedSummarizedExperiment"), func
     ...) {
     trackBalance(rowRanges(object), ...)
 })
+
+#' Create a genome browser track of links.
+#'
+#' Create a Gviz-track of links (e.g. between TSSs and enhancers), where arches connect the different pairs of clusters. The height of arches can be set to scale the strength of the interaction (for example indicating higher correlation). This function is a thin wrapper around the InteractionTrack-class from the GenomicInteractions package. Currently, only scaling arch height by p-value is supported.
+#'
+#' @param object GInteractions: Links or pairs between clusters.
+#' @param ... additional arguments passed to InteractionTrack via displayPars.
+#'
+#' @return InteractionTrack-object from the GenomicInteractions package.
+#' @export
+#' @family Genome Browser functions
+#' @family Spatial functions
+#'
+#' @examples
+#' library(InteractionSet)
+#' library(Gviz)
+#' library(GenomicInteractions)
+#'
+#' # Links between highly expressed unidirectional clusters
+#' TCs <- subset(exampleUnidirectional, score > 10)
+#' TC_links <- findLinks(TCs, inputAssay="counts", maxDist=10000L)
+#' link_track <- trackLinks(TC_links, name="TSS links", interaction.measure="p.value")
+#'
+#' # Plot region
+#' plot_region <- GRanges(seqnames="chr18",
+#'                        ranges = IRanges(start=start(anchors(TC_links[1],
+#'                                                             "first")),
+#'                                         end=end(anchors(TC_links[1],
+#'                                                         "second"))))
+#' # Plot using Gviz
+#' plotTracks(link_track,
+#'            from=start(plot_region),
+#'            to=end(plot_region),
+#'            chromosome = as.character(seqnames(plot_region)))
+#' # See vignette for examples on how to combine multiple Gviz tracks
+trackLinks <- function(object, ...){
+    # Pre-checks
+    assert_that(methods::is(object, "GInteractions"))
+
+    # Convert to GenomicInteractions
+    object <- GenomicInteractions::GenomicInteractions(object)
+
+    # Gather ...
+    d <- list(...)
+
+    # Build trakc
+    o <- GenomicInteractions::InteractionTrack(object, name=d$name)
+
+    # Pass all dots as display pars
+    Gviz::displayPars(o) <- d
+
+    # Return
+    o
+}

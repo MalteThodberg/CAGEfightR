@@ -270,7 +270,6 @@ BC <- function(plusUpstream, plusDownstream, minusUpstream, minusDownstream) {
 #'   the thick column and maximum balance in the balance column.
 #' @family Clustering functions
 #'
-#' @import assertthat S4Vectors IRanges GenomicRanges
 #' @export
 #' @examples
 #' \dontrun{

@@ -44,6 +44,7 @@ intended as diagnostic tools for expert user.
 Potentially consumes a large amount of memory!
 }
 \examples{
+\dontrun{
 library(Gviz)
 data(exampleCTSSs)
 data(exampleBidirectional)
@@ -65,8 +66,9 @@ balance_track <- trackBalance(subsetOfCTSSs)
 plotTracks(balance_track, from=start(BC), to=end(BC),
            chromosome=seqnames(BC))
 }
+}
 \seealso{
 Other Genome Browser functions: \code{\link{trackCTSS}},
-  \code{\link{trackClusters}}
+  \code{\link{trackClusters}}, \code{\link{trackLinks}}
 }
 \concept{Genome Browser functions}

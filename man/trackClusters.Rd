@@ -49,6 +49,6 @@ plotTracks(clusters_track)
 }
 \seealso{
 Other Genome Browser functions: \code{\link{trackBalance}},
-  \code{\link{trackCTSS}}
+  \code{\link{trackCTSS}}, \code{\link{trackLinks}}
 }
 \concept{Genome Browser functions}

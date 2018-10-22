@@ -3,7 +3,7 @@ title: "Introduction to CAGEfightR"
 author: Malte Thodberg
 package: CAGEfightR
 abstract: >
-  CAGEfightR is an R/Bioconductor for analyzing Cap Analysis of Gene Expression Data, including identification and quantification of both TSSs and enhancers, detailed annotation using transcript models, quantification of gene expression and visualizing it all in a genome browser.
+  CAGEfightR is an R/Bioconductor for analyzing 5'-end data such as CAGE, PRO-Cap, START-Seq, TSS-Seq, etc. Functionality includes identification and quantification of both TSSs and enhancers, detailed annotation using transcript models, TSS-enhancer correlations, super enhancer identification, quantification of gene expression and visualizing it all in a genome browser.
 output: 
   BiocStyle::html_document
 vignette: >
@@ -144,7 +144,7 @@ RSE <- subsetBySupport(RSE,
                        minSamples = 1)
 ```
 
-Finally, we might one to calculate the correlation of expression of nearby TSSs and enhancers:
+Finally, we want to calculate the correlation of expression of nearby TSSs and enhancers:
 
 ```{r quickLinks, tidy=FALSE}
 # Set TSSs as reference points
@@ -165,11 +165,13 @@ Other common analysis tasks is to identify groups of closely space enhancers (su
 
 ## Introduction to CAGE data
 
-Cap Analysis of Gene Expression (CAGE) is one of the most popular high-throughput assay for profiling Transcription Start Site (TSS) activity. CAGE is based on sequencing the first 20-30 basepairs of capped full-length RNAs, called CAGE-tags. When mapped to a reference genome, CAGE-tags can be used to identify both TSSs and enhancers. See the `CAGEfightR` paper for additional introduction.
+Cap Analysis of Gene Expression (CAGE) is one of the most popular 5'-end high-throughput assays for profiling Transcription Start Site (TSS) activity. CAGE is based on sequencing the first 20-30 basepairs of capped full-length RNAs, called CAGE-tags. When mapped to a reference genome, CAGE-tags can be used to identify both TSSs and enhancers. See the `CAGEfightR` paper for additional introduction.
 
 CAGE-data is often represented as CAGE TSSs (CTSSs), which is the the number of CAGE-tag 5'-ends mapping to each genomic position. CTSSs thereby represent a genome-wide, basepair resolution, quantitative atlas of transcription. CTSSs are inherently sparse, as only very few genomic positions are CTSSs, and only very few CTSSs have a high number of CAGE-tags.
 
 Analysis of CAGE data is often focused on identifying clusters of CTSSs that corresponds to activity of individual TSSs and enhancers. Having access to both TSSs and enhancers in a single experiment makes CAGE well suited for studying many aspects of transcriptional regulation, for example differential expression, motif analysis and alternative TSS usage.
+
+While the examples in this vignette is based on CAGE, other 5'-end methods (PRO-Cap, START-Seq, TSS-Seq, etc.) can be analyzed in the same way.
 
 ## Central S4-classes
 
@@ -221,9 +223,9 @@ The `assign*`-functions can annotate CTSSs and clusters with transcript and gene
 - `assignTxType`: Annotate clusters based on their overlap with known transcripts, for example to determine whether a TSS is known or novel.
 - `assignGeneID`: Annotate with gene IDs, for example prior to running quantifyGenes.
 
-The `link*`-functions perform spatial analysis of clusters:
+The `find*`-functions perform spatial analysis of clusters:
 
-- `findLinks`: Find nearby pairs of clusters and calculates correlation of expression between them. This can be used to find nearby TSSs-enhancer that show similar expression.
+- `findLinks`: Finds nearby pairs of clusters and calculates correlation of expression between them. This can be used to find nearby TSSs-enhancer pairs that show similar expression.
 - `findStretches`: Find groups of clusters along the genome. This can be used to find tightly spaced groups of enhancers, often refered to as "super enhancers""
 
 Other groups of functions are `check*`-functions for making sure object are correctly formatted, `bw*`-functions for checking BigWig-files, `swap*`-functions for manipulating `GRanges`-objects, `track*`-functions for visualization and `combine*`-functions for safe merging of different types of clusters. The `quick*`-functions are high-level wrappers for many other functions, intended to be used as single-line execution of the standard pipeline.
@@ -326,37 +328,37 @@ Once we have obtained pooled CTSSs, we can identify various types of clusters: T
 The simplest way of doing this is to group nearby CTSSs on the same strand into Tag Clusters (TCs), which are likely candidates for real TSSs (although some post-filtering is almost always a good idea, see next section). `CAGEfightR` does this by a slice-reduce approach: It finds sites above some value (slice) and then merges nearby sites (reduce). In the simplest form this can be run as:
 
 ```{r naiveTC, tidy=FALSE}
-naive_TCs <- clusterUnidirectionally(exampleCTSSs, 
+simple_TCs <- clusterUnidirectionally(exampleCTSSs, 
                                      pooledCutoff=0, 
                                      mergeDist=20)
 ```
 
-`clusterUnidirectionally` find TCs and outputs some summary statistics. We see that we have some very wide TCs (> 1000 bp wide). This is often the result of a just few spread-out tags that link several major TCs, which does not represent the TSS structure very well. This can be avoided by _tuning_ the cutoff used for slicing: The smallest value for cutoff value producing the largest number of TCs is chosen:
+`clusterUnidirectionally` find TCs and outputs some summary statistics. We see that we have some very wide TCs (> 100 bp wide, in real datasets it's not uncommon to see > 1000 bp wide). This is often the result of a just few spread-out tags that link several major TCs, which does not represent the TSS structure very well. One way of dealing with this is to increase the the pooled cutoff for calling clusters. Another way is to first filter the CTSSs based on support:
 
 ```{r tuning, tidy=FALSE}
-tuned <- tuneTagClustering(exampleCTSSs, mergeDist=20)
-tuned
+# Use a higher cutoff for clustering
+higher_TCs <- clusterUnidirectionally(exampleCTSSs, 
+                                     pooledCutoff=0.1, 
+                                     mergeDist=20)
+
+# Use CTSSs pre-filtered on support. 
+prefiltered_TCs <- clusterUnidirectionally(supportedCTSSs, 
+                                     pooledCutoff=0, 
+                                     mergeDist=20)
 ```
 
-Increasing the slice-cutoff by a very small amount greatly increases the number of TCs, by preventing merging of major TCs by weakly expressed CTSSs. We can then use this tuned cutoff value to identify TCs:
+Both approaches reduces the overall width of the TCs identified, in particular the most wide TCs. In practice, whether or not a higher pooled cutoff and/or prefiltering is used depends on how noisy a given dataset is. A large number of very wide clusters (> 1000 bp wide) and unusual location of TCs relative to known genes (See [Annotation with transcript models] below) could indicate an unstable tag clustering.
 
-```{r tagClustering, tidy=FALSE}
-optimalCutoff <- tuned[which.max(tuned$nTCs),1]
-TCs <- clusterUnidirectionally(exampleCTSSs, 
-                               pooledCutoff=optimalCutoff, 
-                               mergeDist=20)
-```
-
-Note, we no longer have any very long TCs (For a real dataset it's not uncommon to have a few very long TCs left). Let's take a closer look at what's returned:
+Now let's take a closer look at what's returned:
 
 ```{r TCanatomy, tidy=FALSE}
-TCs
+simple_TCs
 ```
 The `GRanges` includes the chromosome, start and end positions of each TCs, as well as two other key values: The TC peak in the thick column: This the single position within the TC with the highest pooled TPM, and the sum of pooled TPM within the TC in the score column. In case you want to save TCs to a bed file, you can use the `export` function from the `r BiocStyle::Biocpkg("rtracklayer")` package.
 
 ### Bidirectional clustering: Finding Enhancers
 
-CAGE is a unique technology in that it allows for the robust identification of enhancers by transcription of enhancer RNAs (eRNAs). Active enhancers produce weak but consistent bidirectional transcription of capped eRNAs, resulting in a characteristic CTSS pattern of two diverging peaks approximally 400 basepairs apart.
+CAGE is a unique technology in that it allows for the robust identification of enhancers by transcription of enhancer RNAs (eRNAs). Active enhancers produce weak but consistent bidirectional transcription of capped eRNAs, resulting in a characteristic CTSS pattern of two diverging peaks approximally 400 basepairs apart. A similar approach can be used for other 5'-end methods such as PRO-Cap.
 
 CAGEfightR can identify this pattern by calculating a balance score ranging from 0 to 1, where 1 corresponds to perfectly divergent site (Technically, the balance score is the _Bhattacharyya coefficient_ measuring agreement with the "ideal" divergent site, see the `CAGEfightR` paper). Again, a slice-reduce approach can be use to identify invidividual enhancers based on the balance scores. We refer to this approach as _bidirectional clustering_ as opposed to the conventional _unidirectional clustering_ used to identify TSSs: and hence the name of the cluster functions: `clusterBidirectionally` and `clusterUnidirectionally`:
 
@@ -830,6 +832,7 @@ axis_track <- GenomeAxisTrack()
 library(TxDb.Mmusculus.UCSC.mm9.knownGene)
 txdb <- TxDb.Mmusculus.UCSC.mm9.knownGene
 tx_track <- GeneRegionTrack(txdb,
+                            chromosome = "chr18",
                             name="Gene Models", 
                             col=NA, 
                             fill="bisque4", 
@@ -842,7 +845,7 @@ all_tracks <- list(axis_track, tx_track, cluster_track, pooled_track)
 plotTracks(all_tracks, from=77182700, to=77184000, chromosome="chr18")
 
 # Plot an intergenic enhancer
-plotTracks(all_tracks, from=53499000, to=53499600, chromosome="chr19")
+plotTracks(all_tracks, from=75582473, to=75582897, chromosome="chr18")
 ```
 
 Finally we might one to zoom out even further and look at TSS-enhancer correlations across large distances in the genome. First we find links between TSSs and enhancers:
@@ -887,7 +890,7 @@ In this case, the upstream enhancer has similar expression to two intronic TSSs,
 
 ## Parallel execution
 
-Currently, two functions can utilize multiple cores for computation, `quantifyCTSSs` and `tuneTagClustering`. The central one is `quantifyCTSSs`, which is usually the slowest and most memory consuming step of a `CAGEfightR` analysis. `quantifyCTSSs` automatically uses the default backend registered with the `r BiocStyle::Biocpkg("BiocParallel")` package. This can be changed in the following way:
+Currently, two functions can utilize multiple cores for computation, `quantifyCTSSs` and `findLinks`. The central one is `quantifyCTSSs`, which is usually the slowest and most memory consuming step of a `CAGEfightR` analysis. `quantifyCTSSs` automatically uses the default backend registered with the `r BiocStyle::Biocpkg("BiocParallel")` package. This can be changed in the following way:
 
 ```{r parallel, tidy=FALSE, eval=FALSE}
 library(BiocParallel)

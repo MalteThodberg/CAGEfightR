@@ -1,2 +1,9 @@
+CHANGES IN VERSION 1.5:
+	- Added new functions for spatial analysis of clusters: findLinks finds nearby pairs of clusters (for example TSSs and enhancers) and calculates the correlation of expression between them. findStretches find stretches along the genome where clusters are within a certain distance of eachother (for example groups of enhancer forming a super enhancer) and calculates the average pairwise correlation between members.
+	- Changed the way clustering works: CAGEfightR uses coverage() to calculate genome-wide signals and now rounds the resulting signal to a certain number of digits (this can be modified via the CAGEfightR.round option), to prevent small positive or negative values due to floating point errors. This makes clustering more stable meaning the tuneTagClustering function is now deprecated. This should also increase the speed of most functions.
+	- CAGEfightR now uses GPos instead of GRanges for storing CTSSs, this should result in improved memory performance.
+	- Several changes to clusterBidirectionality: Balance is now calculated using the midpoint as well (preventing some rare cases where the midpoint could mask a single highly expressed CTSS), the pooled CTSS signal is now prefiltered for bidirectionality to increase speed and custom balance function can be provided (Bhattacharyya coefficient and Andersson's D are included).
+	- Added new check-functions to make it easier to check if objects are formatted correctly
+
 CHANGES IN VERSION 0.99:
 	- Submitted CAGEfightR to Bioconductor

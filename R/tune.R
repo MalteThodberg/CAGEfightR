@@ -19,6 +19,7 @@
 #' @family Clustering functions
 #' @export
 #' @examples
+#' \dontrun{
 #' data(exampleCTSSs)
 #'
 #' # Calculate pooledTPM, using supplied number of total tags
@@ -34,7 +35,10 @@
 #'
 #' # Find optimal slice-threshold for reduce distance of 20:
 #' tuneTagClustering(object=exampleCTSSs)
+#' }
 setGeneric("tuneTagClustering", function(object, ...) {
+    # Deprecation
+    .Deprecated(c("clusterUnidirectionality", "subsetBySupport"))
     standardGeneric("tuneTagClustering")
 })
 
@@ -42,6 +46,7 @@ setGeneric("tuneTagClustering", function(object, ...) {
 setMethod("tuneTagClustering", signature(object = "GRanges"),
           function(object, steps = 10L, mergeDist = 20L,
                    searchMethod = "minUnique", maxExponent = 1) {
+
     # Pre-checks
     assert_that(checkPooled(object),
                 is.count(steps),

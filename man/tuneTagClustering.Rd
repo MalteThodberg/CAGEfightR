@@ -41,6 +41,7 @@ This function counts the number of Tag Clusters (TCs) for an series of small
 incremental pooled cutoffs
 }
 \examples{
+\dontrun{
 data(exampleCTSSs)
 
 # Calculate pooledTPM, using supplied number of total tags
@@ -56,6 +57,7 @@ register(SerialParam())
 
 # Find optimal slice-threshold for reduce distance of 20:
 tuneTagClustering(object=exampleCTSSs)
+}
 }
 \seealso{
 Other Clustering functions: \code{\link{clusterBidirectionally}},

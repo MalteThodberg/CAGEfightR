@@ -4,18 +4,22 @@ CAGEfightR is an R-package for analyzing Cap Analysis of Gene Expression (CAGE) 
 
 ## Installation
 
-You can install CAGEfightR from github with `devtools`:
+Install the most recent stable version from Bioconductor:
+
+```{r bioconductor, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("CAGEfightR")
+```
+
+Or install the development version directly from GitHub using `devtools`:
 
 ``` r
-# Install Bioconductor packages:
-BiocManager::install(c("GenomicRanges", "rtracklayer", "SummarizedExperiment", 
-"BiocGenerics", "S4Vectors", "IRanges", "GenomeInfoDb", "GenomicFeatures", 
-"TxDb.Mmusculus.UCSC.mm9.knownGene", "org.Mm.eg.db,", "BiocParallel", 
-"GenomicFiles", "Gviz"))
-
 # Install CRAN packages and CAGEfightR
-devtools::install_github("MalteThodberg/CAGEfightR")
+devtools::install_github("MalteThodberg/CAGEfightR", build_vignettes = TRUE)
 ```
+
+When using `devtools` you might need to manually install dependencies from Bioconductor (See `DESRIPTION` for a list of these).
 
 ## Examples
 

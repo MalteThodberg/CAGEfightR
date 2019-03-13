@@ -205,7 +205,9 @@ balanceD <- function(PD, MD, PU, MU){
     }
 
     # Andersson only uses PD/MD.
-    B <- -((PD - MD) / S) + 1
+    #B <- -((PD - MD) / S) + 1
+    B <- abs(abs((PD - MD) / S) - 1)
+
 
     # Remove NAs resulting from division by zero.
     B[is.na(B)] <- 0

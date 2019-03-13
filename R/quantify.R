@@ -40,17 +40,26 @@ gf_reducer <- function(mapped) {
 
     mapped$i <- match(mapped, dj)
 
-    # To matrix
+    # To sparse matrix
     if (length(mapped) > 0) {
-        mapped <- Matrix::sparseMatrix(i = mapped$i, j = mapped$j, x = score(mapped),
-            dimnames = list(NULL, j_names))
+        # Ensure that matrix has the right output format
+        mapped <- Matrix::sparseMatrix(i = mapped$i,
+                                       j = mapped$j,
+                                       x = score(mapped),
+                                       dims = c(max(mapped$i),
+                                                length(j_names)),
+                                       dimnames = list(NULL, j_names))
     } else {
-        mapped <- methods::as(matrix(nrow = 0, ncol = length(j_names), dimnames = list(NULL,
-            j_names)), "dgCMatrix")
+        # Simply create an empty matrix
+        mapped <- methods::as(matrix(nrow = 0,
+                                     ncol = length(j_names),
+                                     dimnames = list(NULL, j_names)),
+                              "dgCMatrix")
     }
 
     # Assemble into summarized experiment
-    mapped <- SummarizedExperiment(assays = SimpleList(counts = mapped), rowRanges = dj)
+    mapped <- SummarizedExperiment(assays = SimpleList(counts = mapped),
+                                   rowRanges = dj)
 
     # Return
     mapped

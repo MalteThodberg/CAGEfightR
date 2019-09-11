@@ -605,7 +605,7 @@ rowRanges(exampleUnidirectional)$clusterType <- "TSS"
 rowRanges(exampleBidirectional)$clusterType <- "enhancer"
 
 # Merge the dataset
-exampleBidirectional$totalTags <- exampleUnidirectional$totalTags
+colData(exampleBidirectional) <- colData(exampleUnidirectional)
 SE <- combineClusters(object1=exampleUnidirectional, 
                       object2=exampleBidirectional,
                       removeIfOverlapping="object1")

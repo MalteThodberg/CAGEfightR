@@ -185,7 +185,7 @@ corHelper <- function(ii, m, corFun, ...){
 #' findLinks(TCs, inputAssay="counts", maxDist=10000L)
 #'
 #' # To find TSS-to-enhancer type links, first merge the clusters:
-#' exampleBidirectional$totalTags <- TCs$totalTags
+#' colData(exampleBidirectional) <- colData(TCs)
 #' rowRanges(TCs)$clusterType <- "TSS"
 #' rowRanges(exampleBidirectional)$clusterType <- "Enhancer"
 #' SE <- combineClusters(TCs, exampleBidirectional, removeIfOverlapping="object1")

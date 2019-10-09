@@ -45,7 +45,7 @@ devtools::install_github("MalteThodberg/CAGEfightR")
 
 If you use CAGEfightR, please cite the following article:
 
-```{r citation, eval=FALSE}
+```{r citation, eval=TRUE}
 citation("CAGEfightR")
 ```
 

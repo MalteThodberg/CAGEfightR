@@ -60,8 +60,14 @@ setMethod("trackCTSS", signature(object = "GRanges"), function(object, plusColor
     o <- bindAsGRanges(plus = plus_coverage, minus = minus_coverage)
 
     # Build track
-    o <- Gviz::DataTrack(o, type = "histogram", groups = c("plus", "minus"), col = c(minusColor,
-        plusColor), ...)
+    # o <- Gviz::DataTrack(o, type = "histogram", groups = c("plus", "minus"), col = c(minusColor,
+    #     plusColor), ...)
+    o <- Gviz::DataTrack(o,
+                         type = "histogram",
+                         groups = factor(c("plus", "minus"),
+                                         levels=c("plus", "minus")),
+                         col = c(plusColor, minusColor),
+                         ...)
 
     # Return
     o
@@ -159,10 +165,19 @@ setMethod("trackClusters", signature(object = "GRanges"), function(object,
 
     # Build track
     message("Preparing track...")
-    o <- Gviz::GeneRegionTrack(o, thinBoxFeature = c("thinPlus", "thinMinus", "thinUnstranded"),
-        min.distance = 0, collapse = FALSE, thinPlus = plusColor, thickPlus = plusColor,
-        thinMinus = minusColor, thickMinus = minusColor, thinUnstranded = unstrandedColor,
-        thickUnstranded = unstrandedColor, ...)
+    o <- Gviz::GeneRegionTrack(o,
+                               thinBoxFeature = c("thinPlus",
+                                                  "thinMinus",
+                                                  "thinUnstranded"),
+                               min.distance = 0,
+                               collapse = FALSE,
+                               thinPlus = plusColor,
+                               thickPlus = plusColor,
+                               thinMinus = minusColor,
+                               thickMinus = minusColor,
+                               thinUnstranded = unstrandedColor,
+                               thickUnstranded = unstrandedColor,
+                               ...)
 
     # Return
     o
@@ -246,16 +261,18 @@ setMethod("trackBalance", signature(object = "GRanges"), function(object, window
                                                          minus = cw$MD),
                                            name = "Downstream",
                                            type = "l",
-                                           groups = c("plus", "minus"),
-                                           col = c(minusColor,
-                                                   plusColor)),
+                                           groups = factor(c("plus","minus"),
+                                                           levels=c("plus",
+                                                                    "minus")),
+                                           col = c(plusColor, minusColor)),
               upstream = Gviz::DataTrack(bindAsGRanges(plus = cw$PU,
                                                        minus = cw$MU),
                                          name = "Upstream",
                                          type = "l",
-                                         groups = c("plus", "minus"),
-                                         col = c(minusColor,
-                                                 plusColor)))
+                                         groups = factor(c("plus","minus"),
+                                                         levels=c("plus",
+                                                                  "minus")),
+                                         col = c(plusColor, minusColor)))
 
     if (!is.null(cw$B)) {
         o$balance <- Gviz::DataTrack(GRanges(cw$B),

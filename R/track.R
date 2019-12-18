@@ -23,7 +23,7 @@
 #' TC <- rowRanges(subset(exampleUnidirectional, width>=100)[3,])
 #' BC <- rowRanges(exampleBidirectional[3,])
 #'
-#' # Create pooled trakc
+#' # Create pooled track
 #' subsetOfCTSSs <- subsetByOverlaps(exampleCTSSs, c(BC, TC, ignore.mcols=TRUE))
 #' pooledTrack <- trackCTSS(subsetOfCTSSs)
 #'
@@ -66,7 +66,7 @@ setMethod("trackCTSS", signature(object = "GRanges"), function(object, plusColor
                          type = "histogram",
                          groups = factor(c("plus", "minus"),
                                          levels=c("plus", "minus")),
-                         col = c(plusColor, minusColor),
+                         col = c(minusColor, plusColor),
                          ...)
 
     # Return
@@ -342,7 +342,7 @@ trackLinks <- function(object, ...){
     # Gather ...
     d <- list(...)
 
-    # Build trakc
+    # Build track
     o <- GenomicInteractions::InteractionTrack(object, name=d$name)
 
     # Pass all dots as display pars

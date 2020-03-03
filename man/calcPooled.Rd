@@ -32,12 +32,15 @@ exampleCTSSs <- calcTPM(exampleCTSSs, totalTags='totalTags')
 calcPooled(exampleCTSSs)
 }
 \seealso{
-Other Calculation functions: \code{\link{calcBidirectionality}},
-  \code{\link{calcComposition}}, \code{\link{calcShape}},
-  \code{\link{calcSupport}}, \code{\link{calcTPM}},
-  \code{\link{calcTotalTags}},
-  \code{\link{subsetByBidirectionality}},
-  \code{\link{subsetByComposition}},
-  \code{\link{subsetBySupport}}
+Other Calculation functions: 
+\code{\link{calcBidirectionality}()},
+\code{\link{calcComposition}()},
+\code{\link{calcShape}()},
+\code{\link{calcSupport}()},
+\code{\link{calcTPM}()},
+\code{\link{calcTotalTags}()},
+\code{\link{subsetByBidirectionality}()},
+\code{\link{subsetByComposition}()},
+\code{\link{subsetBySupport}()}
 }
 \concept{Calculation functions}

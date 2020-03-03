@@ -28,7 +28,9 @@ shapeEntropy(x_broad)
 # See calcShape for more usage examples
 }
 \seealso{
-Other Shape functions: \code{\link{calcShape}},
-  \code{\link{shapeIQR}}, \code{\link{shapeMultimodality}}
+Other Shape functions: 
+\code{\link{calcShape}()},
+\code{\link{shapeIQR}()},
+\code{\link{shapeMultimodality}()}
 }
 \concept{Shape functions}

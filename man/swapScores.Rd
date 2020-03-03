@@ -32,6 +32,7 @@ x <- swapScores(exampleCTSSs, inputAssay='counts', sample=sample_names[1])
 rowRanges(x)
 }
 \seealso{
-Other Swapping functions: \code{\link{swapRanges}}
+Other Swapping functions: 
+\code{\link{swapRanges}()}
 }
 \concept{Swapping functions}

@@ -22,6 +22,7 @@ and quantifyClusters.
 # See the CAGEfightR vignette for an overview!
 }
 \seealso{
-Other Wrapper functions: \code{\link{quickTSSs}}
+Other Wrapper functions: 
+\code{\link{quickTSSs}()}
 }
 \concept{Wrapper functions}

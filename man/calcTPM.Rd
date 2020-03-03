@@ -4,8 +4,13 @@
 \alias{calcTPM}
 \title{Calculate CAGE Tags-Per-Million (TPM)}
 \usage{
-calcTPM(object, inputAssay = "counts", outputAssay = "TPM",
-  totalTags = NULL, outputColumn = "totalTags")
+calcTPM(
+  object,
+  inputAssay = "counts",
+  outputAssay = "TPM",
+  totalTags = NULL,
+  outputColumn = "totalTags"
+)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
@@ -41,12 +46,15 @@ calcTPM(exampleUnidirectional,
         totalTags='totalTags')
 }
 \seealso{
-Other Calculation functions: \code{\link{calcBidirectionality}},
-  \code{\link{calcComposition}}, \code{\link{calcPooled}},
-  \code{\link{calcShape}}, \code{\link{calcSupport}},
-  \code{\link{calcTotalTags}},
-  \code{\link{subsetByBidirectionality}},
-  \code{\link{subsetByComposition}},
-  \code{\link{subsetBySupport}}
+Other Calculation functions: 
+\code{\link{calcBidirectionality}()},
+\code{\link{calcComposition}()},
+\code{\link{calcPooled}()},
+\code{\link{calcShape}()},
+\code{\link{calcSupport}()},
+\code{\link{calcTotalTags}()},
+\code{\link{subsetByBidirectionality}()},
+\code{\link{subsetByComposition}()},
+\code{\link{subsetBySupport}()}
 }
 \concept{Calculation functions}

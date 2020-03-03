@@ -4,8 +4,13 @@
 \alias{subsetBySupport}
 \title{Subset by support across samples}
 \usage{
-subsetBySupport(object, inputAssay = "counts",
-  outputColumn = "support", unexpressed = 0, minSamples = 1)
+subsetBySupport(
+  object,
+  inputAssay = "counts",
+  outputColumn = "support",
+  unexpressed = 0,
+  minSamples = 1
+)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
@@ -39,15 +44,20 @@ subsetBySupport(exampleBidirectional)
 subsetBySupport(exampleBidirectional, unexpressed=1, minSamples=2)
 }
 \seealso{
-Other Subsetting functions: \code{\link{subsetByBidirectionality}},
-  \code{\link{subsetByComposition}}
+Other Subsetting functions: 
+\code{\link{subsetByBidirectionality}()},
+\code{\link{subsetByComposition}()}
 
-Other Calculation functions: \code{\link{calcBidirectionality}},
-  \code{\link{calcComposition}}, \code{\link{calcPooled}},
-  \code{\link{calcShape}}, \code{\link{calcSupport}},
-  \code{\link{calcTPM}}, \code{\link{calcTotalTags}},
-  \code{\link{subsetByBidirectionality}},
-  \code{\link{subsetByComposition}}
+Other Calculation functions: 
+\code{\link{calcBidirectionality}()},
+\code{\link{calcComposition}()},
+\code{\link{calcPooled}()},
+\code{\link{calcShape}()},
+\code{\link{calcSupport}()},
+\code{\link{calcTPM}()},
+\code{\link{calcTotalTags}()},
+\code{\link{subsetByBidirectionality}()},
+\code{\link{subsetByComposition}()}
 }
 \concept{Calculation functions}
 \concept{Subsetting functions}

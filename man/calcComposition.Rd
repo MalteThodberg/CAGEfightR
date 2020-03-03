@@ -4,8 +4,13 @@
 \alias{calcComposition}
 \title{Calculate composition of CAGE data.}
 \usage{
-calcComposition(object, inputAssay = "counts",
-  outputColumn = "composition", unexpressed = 0.1, genes = "geneID")
+calcComposition(
+  object,
+  inputAssay = "counts",
+  outputColumn = "composition",
+  unexpressed = 0.1,
+  genes = "geneID"
+)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
@@ -51,12 +56,15 @@ calcComposition(exampleUnidirectional,
                 outputColumn='lenientComposition')
 }
 \seealso{
-Other Calculation functions: \code{\link{calcBidirectionality}},
-  \code{\link{calcPooled}}, \code{\link{calcShape}},
-  \code{\link{calcSupport}}, \code{\link{calcTPM}},
-  \code{\link{calcTotalTags}},
-  \code{\link{subsetByBidirectionality}},
-  \code{\link{subsetByComposition}},
-  \code{\link{subsetBySupport}}
+Other Calculation functions: 
+\code{\link{calcBidirectionality}()},
+\code{\link{calcPooled}()},
+\code{\link{calcShape}()},
+\code{\link{calcSupport}()},
+\code{\link{calcTPM}()},
+\code{\link{calcTotalTags}()},
+\code{\link{subsetByBidirectionality}()},
+\code{\link{subsetByComposition}()},
+\code{\link{subsetBySupport}()}
 }
 \concept{Calculation functions}

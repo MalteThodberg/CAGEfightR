@@ -21,6 +21,7 @@ data(exampleUnidirectional)
 checkPeaked(rowRanges(exampleUnidirectional))
 }
 \seealso{
-Other Checking functions: \code{\link{checkPooled}}
+Other Checking functions: 
+\code{\link{checkPooled}()}
 }
 \concept{Checking functions}

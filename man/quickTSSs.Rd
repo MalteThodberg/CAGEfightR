@@ -21,6 +21,7 @@ clusterUnidirectionally and quantifyClusters.
 # See the CAGEfightR vignette for an overview!
 }
 \seealso{
-Other Wrapper functions: \code{\link{quickEnhancers}}
+Other Wrapper functions: 
+\code{\link{quickEnhancers}()}
 }
 \concept{Wrapper functions}

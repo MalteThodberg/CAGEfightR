@@ -41,7 +41,8 @@ bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='intersect')
 bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='union')
 }
 \seealso{
-Other BigWig functions: \code{\link{bwGenomeCompatibility}},
-  \code{\link{bwValid}}
+Other BigWig functions: 
+\code{\link{bwGenomeCompatibility}()},
+\code{\link{bwValid}()}
 }
 \concept{BigWig functions}

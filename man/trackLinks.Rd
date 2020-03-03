@@ -41,11 +41,14 @@ plotTracks(link_track,
 # See vignette for examples on how to combine multiple Gviz tracks
 }
 \seealso{
-Other Genome Browser functions: \code{\link{trackBalance}},
-  \code{\link{trackCTSS}}, \code{\link{trackClusters}}
+Other Genome Browser functions: 
+\code{\link{trackBalance}()},
+\code{\link{trackCTSS}()},
+\code{\link{trackClusters}()}
 
-Other Spatial functions: \code{\link{findLinks}},
-  \code{\link{findStretches}}
+Other Spatial functions: 
+\code{\link{findLinks}()},
+\code{\link{findStretches}()}
 }
 \concept{Genome Browser functions}
 \concept{Spatial functions}

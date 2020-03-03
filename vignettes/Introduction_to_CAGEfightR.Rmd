@@ -86,6 +86,7 @@ The first step is to quantify CTSSs across all samples using `quantifyCTSSs`, wh
 genomeInfo <- SeqinfoForUCSCGenome("mm9")
 
 # Quantify CTSSs
+register(SerialParam())
 CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
                        minusStrand=bw_minus,
                        design=exampleDesign,

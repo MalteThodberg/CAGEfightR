@@ -19,7 +19,9 @@ Shape statistic: Multimodality
 # See calcShape for usage examples
 }
 \seealso{
-Other Shape functions: \code{\link{calcShape}},
-  \code{\link{shapeEntropy}}, \code{\link{shapeIQR}}
+Other Shape functions: 
+\code{\link{calcShape}()},
+\code{\link{shapeEntropy}()},
+\code{\link{shapeIQR}()}
 }
 \concept{Shape functions}

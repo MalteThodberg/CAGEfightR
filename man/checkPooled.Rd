@@ -21,6 +21,7 @@ data(exampleCTSSs)
 checkPooled(rowRanges(exampleCTSSs))
 }
 \seealso{
-Other Checking functions: \code{\link{checkPeaked}}
+Other Checking functions: 
+\code{\link{checkPeaked}()}
 }
 \concept{Checking functions}

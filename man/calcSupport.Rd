@@ -4,8 +4,12 @@
 \alias{calcSupport}
 \title{Calculate support of CAGE data.}
 \usage{
-calcSupport(object, inputAssay = "counts", outputColumn = "support",
-  unexpressed = 0)
+calcSupport(
+  object,
+  inputAssay = "counts",
+  outputColumn = "support",
+  unexpressed = 0
+)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: CAGE data quantified at CTSS,
@@ -43,12 +47,15 @@ exampleUnidirectional <- calcSupport(exampleUnidirectional,
                                      outputColumn='TPMsupport')
 }
 \seealso{
-Other Calculation functions: \code{\link{calcBidirectionality}},
-  \code{\link{calcComposition}}, \code{\link{calcPooled}},
-  \code{\link{calcShape}}, \code{\link{calcTPM}},
-  \code{\link{calcTotalTags}},
-  \code{\link{subsetByBidirectionality}},
-  \code{\link{subsetByComposition}},
-  \code{\link{subsetBySupport}}
+Other Calculation functions: 
+\code{\link{calcBidirectionality}()},
+\code{\link{calcComposition}()},
+\code{\link{calcPooled}()},
+\code{\link{calcShape}()},
+\code{\link{calcTPM}()},
+\code{\link{calcTotalTags}()},
+\code{\link{subsetByBidirectionality}()},
+\code{\link{subsetByComposition}()},
+\code{\link{subsetBySupport}()}
 }
 \concept{Calculation functions}

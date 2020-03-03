@@ -48,7 +48,9 @@ quantifyGenes(exampleUnidirectional,
               sparse=TRUE)
 }
 \seealso{
-Other Quantification functions: \code{\link{quantifyCTSSs}},
-  \code{\link{quantifyClusters}}
+Other Quantification functions: 
+\code{\link{quantifyCTSSs2}()},
+\code{\link{quantifyCTSSs}()},
+\code{\link{quantifyClusters}()}
 }
 \concept{Quantification functions}

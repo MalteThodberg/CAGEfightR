@@ -1,4 +1,4 @@
-#### CTSSs ####
+#### CTSSs (MOVED TO SEPARATE FILE) ####
 
 gf_mapper <- function(range, file, seqinfo, strand = "*") {
     # Load and force seqlevels
@@ -94,7 +94,6 @@ gf_wrapper <- function(files, ranges, seqinfo, strand) {
 #'   (dgCMatrix) of CTSS counts..
 #' @family Quantification functions
 #' @importClassesFrom Matrix dgCMatrix
-#' @export
 #' @examples
 #' \dontrun{
 #' # Load the example data
@@ -132,7 +131,7 @@ gf_wrapper <- function(files, ranges, seqinfo, strand) {
 #'                        design=exampleDesign,
 #'                        genome=si)
 #' }
-quantifyCTSSs <- function(plusStrand, minusStrand, design = NULL, genome = NULL,
+quantifyCTSSs2 <- function(plusStrand, minusStrand, design = NULL, genome = NULL,
     tileWidth = 100000000L) {
     # Pre-checks
     assert_that(methods::is(plusStrand, "BigWigFileList"),
@@ -268,7 +267,11 @@ quantifyClusters <- function(object, clusters, inputAssay = "counts", sparse = F
 
     # Summarize
     message("Aggregating within clusters...")
-    mat <- rowsum2(x = assay(object, inputAssay),
+    # mat <- rowsum2(x = assay(object, inputAssay),
+    #                group = hits,
+    #                drop = FALSE,
+    #                sparse = sparse)
+    mat <- utilsAggregateRows(x = assay(object, inputAssay),
                    group = hits,
                    drop = FALSE,
                    sparse = sparse)
@@ -342,7 +345,12 @@ quantifyGenes <- function(object, genes, inputAssay = "counts", sparse = FALSE) 
     new_gr <- splitAsList(rowRanges(object), f = genes, drop = TRUE)
 
     # Sum matrix
-    new_m <- rowsum2(assay(object, inputAssay),
+    # new_m <- rowsum2(assay(object, inputAssay),
+    #                  group = genes,
+    #                  drop = TRUE,
+    #                  sparse = sparse)
+
+    new_m <- utilsAggregateRows(assay(object, inputAssay),
                      group = genes,
                      drop = TRUE,
                      sparse = sparse)

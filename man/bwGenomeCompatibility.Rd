@@ -42,7 +42,8 @@ si <- si['chr18']
 bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)
 }
 \seealso{
-Other BigWig functions: \code{\link{bwCommonGenome}},
-  \code{\link{bwValid}}
+Other BigWig functions: 
+\code{\link{bwCommonGenome}()},
+\code{\link{bwValid}()}
 }
 \concept{BigWig functions}

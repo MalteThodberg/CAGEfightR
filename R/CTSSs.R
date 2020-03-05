@@ -18,7 +18,10 @@ bg_mapper <- function(file, seqinfo, strand = "*"){
 
 bw_mapper <- function(range, file, seqinfo, strand = "*"){
     # Import
-    o <- import.bw(file, which=range)
+    o <- suppressWarnings(import.bw(con=file,
+                                    format="bigwig",
+                                    which=range,
+                                    as="GRanges"))
 
     # Instead of conversion, stop if not proper CTSSs-like
     stopifnot(all(width(o) == 1))
@@ -54,7 +57,7 @@ gf_reducer2 <- function(mapped){
     mat_names <- list(NULL, names(mapped))
 
     # Build sparse matrix
-    if (length(mapped) > 0) {
+    if (length(o) > 0) {
       o <- Matrix::sparseMatrix(i = o$i,
                                      j = o$j,
                                      x = score(o),
@@ -252,11 +255,13 @@ setGeneric("quantifyCTSSs", function(plusStrand, minusStrand, design=NULL, genom
 setMethod("quantifyCTSSs",
           signature(plusStrand = "BigWigFileList",
                     minusStrand = "BigWigFileList"),
-  function(plusStrand, minusStrand, design=NULL, genome=NULL, nTiles=10L) {
+  function(plusStrand, minusStrand, design=NULL, genome=NULL, nTiles=1L) {
       # Pre-checks
       assert_that(length(plusStrand) == length(minusStrand),
                   bwValid(plusStrand),
                   bwValid(minusStrand),
+                  !is.null(names(plusStrand)),
+                  !is.null(names(minusStrand)),
                   all(names(plusStrand) == names(minusStrand)),
                   is.count(nTiles))
 
@@ -398,6 +403,8 @@ setMethod("quantifyCTSSs",
                           all(checkExtensions(plusStrand, "bedGraph")),
                           all(checkExtensions(minusStrand, "bedGraph")),
                           length(plusStrand) == length(minusStrand),
+                          !is.null(names(plusStrand)),
+                          !is.null(names(minusStrand)),
                           all(names(plusStrand) == names(minusStrand)),
                           methods::is(genome, "Seqinfo"))
 

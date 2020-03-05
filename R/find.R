@@ -135,9 +135,9 @@ determineOrientation <- function(gi){
 
 # Helper for bpvec
 corHelper <- function(ii, m, corFun, ...){
-    lapply(ii, function(i) corFun(x=m[i[1],],
+    suppressWarnings(lapply(ii, function(i) corFun(x=m[i[1],],
                                   y=m[i[2],],
-                                  ...))
+                                  ...)))
 }
 
 

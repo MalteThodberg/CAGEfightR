@@ -23,6 +23,7 @@ and quantifyClusters.
 }
 \seealso{
 Other Wrapper functions: 
+\code{\link{quickGenes}()},
 \code{\link{quickTSSs}()}
 }
 \concept{Wrapper functions}

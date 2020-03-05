@@ -71,7 +71,7 @@ Other Calculation functions:
 Other Shape functions: 
 \code{\link{shapeEntropy}()},
 \code{\link{shapeIQR}()},
-\code{\link{shapeMultimodality}()}
+\code{\link{shapeMean}()}
 }
 \concept{Calculation functions}
 \concept{Shape functions}

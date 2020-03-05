@@ -92,6 +92,7 @@ checkPeaked <- function(object){
 #'   bedGraph files.
 #'
 #' @examples
+#' if (.Platform$OS.type != "windows") {
 #' # Load example data
 #' data('exampleDesign')
 #' bw_plus <- system.file('extdata',
@@ -105,6 +106,7 @@ checkPeaked <- function(object){
 #' # Import first, then check
 #' gr  <- import(bw_plus[[1]])
 #' checkCTSSs(gr)
+#' }
 setGeneric("checkCTSSs", function(object) {
     standardGeneric("checkCTSSs")
 })

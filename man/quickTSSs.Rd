@@ -22,6 +22,7 @@ clusterUnidirectionally and quantifyClusters.
 }
 \seealso{
 Other Wrapper functions: 
-\code{\link{quickEnhancers}()}
+\code{\link{quickEnhancers}()},
+\code{\link{quickGenes}()}
 }
 \concept{Wrapper functions}

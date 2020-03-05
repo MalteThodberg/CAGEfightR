@@ -53,11 +53,11 @@ citation("CAGEfightR")
 
 For general questions about the usage of CAGEfightR, use the [official Bioconductor support forum](https://support.bioconductor.org) and tag your question "CAGEfightR". We strive to answer questions as quickly as possible.
 
-For technical questions, bug reports and suggestions for new features, we refer to the [CAGEfightR github page](https://github.com/MalteThodberg/CAGEfightR/issues)
+For technical questions, bug reports and suggestions for new features, we refer to the [CAGEfightR github page](https://github.com/MalteThodberg/CAGEfightR/issues).
 
 # Quick start for the impatient
 
-A CAGEfightR anaysis usually starts with loading CAGE Transcription Start Sites (CTSSs) from BigWig-files (one for each strand):
+A CAGEfightR anaysis usually starts with loading CAGE Transcription Start Sites (CTSSs) from BigWig-files, one for each strand (If you do not have CTSSs as BigWig-files, look at `convertBED2BigWig` for instructions on how to convert file  formats):
 
 ```{r BigWig_files, results="hide", tidy=FALSE}
 # Load the example data
@@ -85,8 +85,10 @@ The first step is to quantify CTSSs across all samples using `quantifyCTSSs`, wh
 # Get genome information
 genomeInfo <- SeqinfoForUCSCGenome("mm9")
 
-# Quantify CTSSs
+# Specify the number of cores to use (for this small example just 1)
 register(SerialParam())
+
+# Quantify CTSSs
 CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
                        minusStrand=bw_minus,
                        design=exampleDesign,
@@ -145,7 +147,13 @@ RSE <- subsetBySupport(RSE,
                        minSamples = 1)
 ```
 
-Finally, we want to calculate the correlation of expression of nearby TSSs and enhancers:
+For interfacing with other tools for gene-level analysis, we can quantify gene expression:
+
+```{r quickGenes, tidy=FALSE}
+gene_level <- quickGenes(RSE, geneModels = txdb)
+```
+
+But it is much cooler to leverage some of the unique features 5'-end methods, for example, we can calculate the correlation of expression of nearby TSSs and enhancers:
 
 ```{r quickLinks, tidy=FALSE}
 # Set TSSs as reference points
@@ -160,7 +168,7 @@ links <- findLinks(RSE,
                    method="kendall")
 ```
 
-Other common analysis tasks is to identify groups of closely space enhancers (super enhancers) or summarize and analyze CAGE-data relative to known genes. This and more is described in more detail below.
+Other 5'-end analysis tasks include classifying TSSs based on shape, and identifying groups of closely space enhancers (super enhancers). This and more is described in more detail below!
 
 # Introduction and overview
 
@@ -182,7 +190,7 @@ The `GRanges`-class: Genomic locations or ranges are stored as `GRanges`-objects
 
 The `RangedSummarizedExperiment`-class: Complete experiments can be stored as `RangedSummarizedExperiment`-objects from the `r BiocStyle::Biocpkg("SummarizedExperiment")`, which implements the idea of the "three tables of genomics". A `RangedSummarizedExperiment` can store several matrices of the same shape, e.g. counts and normalized expression values (accesible via `assay` and `assays`), along with information about each sample as a `DataFrame`-object (accesible via `colData`) and about each feature as a `GRanges`-object like above (accesible via `rowRanges`). Many `GRanges` methods also work on`RangedSummarizedExperiment`-objects, like `sort`, `findOverlaps`, etc..  Storing all information as a single `RangedSummarizedExperiment` helps keeping data organized, for example when extracting subsets of the data, where `subset` can be used to simultaneously extract requested data from all three tables at once.
 
-Other S4-classes includes `TxDb`-objects from `r BiocStyle::Biocpkg("GenomicFeatures")` and various track-objects from `r BiocStyle::Biocpkg("Gviz")`. See [Annotation with transcript models] and [Plotting CAGE data in a genome browser] for more details.
+Other S4-classes includes `TxDb`-objects from `r BiocStyle::Biocpkg("GenomicFeatures")`, `GInteractions`-object from `r BiocStyle::Biocpkg("InteractionSet")` and various track-objects from `r BiocStyle::Biocpkg("Gviz")`. See [Annotation with transcript models], [Spatial analysis of clusters] and [Plotting CAGE data in a genome browser] for more details.
 
 ## Overview of functions
 
@@ -229,7 +237,16 @@ The `find*`-functions perform spatial analysis of clusters:
 - `findLinks`: Finds nearby pairs of clusters and calculates correlation of expression between them. This can be used to find nearby TSSs-enhancer pairs that show similar expression.
 - `findStretches`: Find groups of clusters along the genome. This can be used to find tightly spaced groups of enhancers, often refered to as "super enhancers""
 
-Other groups of functions are `check*`-functions for making sure object are correctly formatted, `bw*`-functions for checking BigWig-files, `swap*`-functions for manipulating `GRanges`-objects, `track*`-functions for visualization and `combine*`-functions for safe merging of different types of clusters. The `quick*`-functions are high-level wrappers for many other functions, intended to be used as single-line execution of the standard pipeline.
+Other groups of functions are 
+
+- `check*`-functions for making sure object are correctly formatted.
+- `convert*`-function converts CTSSs between different file formats.
+- `bw*`-functions for checking BigWig-files.
+- `swap*`-functions for manipulating `GRanges`-objects.
+- `track*`-functions for genome browser visualization.
+- `combine*`-functions for safe merging of different types of clusters. 
+- `quick*`-functions are high-level wrappers for many other functions, intended to be used as single-line execution of the standard pipeline. 
+- `utils*` functions exposes some of the inner workings of `CAGEfightR` and are mainly intended for expert users and developers.
 
 ## Pipeability
 
@@ -241,7 +258,7 @@ The main exceptions to pipeable functions this are the `quantify*`-functions, th
 
 # Detailed Introduction
 
-The following section contains a detailed walkthrough of most of the functions in `CAGEfightR`, using the built-in dataset. To keep this vignette compact, the example dataset is extremely small - for a more realistic analysis of a full CAGE dataset using both `CAGEfightR` and additional packages, additional workflows will be added in the future.
+The following section contains a detailed walkthrough of most of the functions in `CAGEfightR`, using the built-in dataset. To keep this vignette compact, the example dataset is extremely small - for a more realistic analysis of a full CAGE dataset using both `CAGEfightR` and additional packages, see `r BiocStyle::Biocpkg("CAGEWorkflow")`.
 
 ## CAGE Transcription Start Site (CTSS) level analysis
 

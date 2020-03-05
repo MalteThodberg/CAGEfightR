@@ -25,6 +25,8 @@ utilsDeStrand(gr)
 }
 \seealso{
 Other Utility functions: 
-\code{\link{utilsAggregateRows}()}
+\code{\link{utilsAggregateRows}()},
+\code{\link{utilsScoreOverlaps}()},
+\code{\link{utilsSimplifyTxDb}()}
 }
 \concept{Utility functions}

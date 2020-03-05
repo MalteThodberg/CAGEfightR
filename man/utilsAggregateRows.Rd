@@ -78,6 +78,8 @@ utilsAggregateRows(dense_mat, fct_unused, sparse=TRUE)
 }
 \seealso{
 Other Utility functions: 
-\code{\link{utilsDeStrand}()}
+\code{\link{utilsDeStrand}()},
+\code{\link{utilsScoreOverlaps}()},
+\code{\link{utilsSimplifyTxDb}()}
 }
 \concept{Utility functions}

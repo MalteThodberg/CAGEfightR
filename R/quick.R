@@ -94,3 +94,45 @@ quickEnhancers <- function(object) {
     # Return
     enhancers
 }
+
+#' Identify and quantify genes.
+#'
+#' A convienient wrapper around assignGeneID, and quantifyGenes. Also removes
+#' unstranded features
+#'
+#' @param object RangedSummarizedExperiment: Location and counts of clusters,
+#'   usually found by calling quantifyClusters.
+#' @param geneModels TxDb or GRanges: Gene models via a TxDb, or manually
+#'   specified as a GRangesList.
+#'
+#' @return RangedSummarizedExperiment containing gene expression and clusters
+#'   assigned within each gene.
+#' @family Wrapper functions
+#' @export
+#' @examples
+#' # See the CAGEfightR vignette for an overview!
+quickGenes <- function(object, geneModels=NULL) {
+    # Pre-checks
+    assert_that(methods::is(object, "RangedSummarizedExperiment"),
+                isDisjoint(object),
+                is.element("counts", assayNames(object)))
+
+    if (is.null(rowRanges(object)$geneID)) {
+        message(" - Running assignGeneID:")
+        object <- assignGeneID(object, geneModels=geneModels)
+    }else{
+        message("Using existing geneID column!")
+    }
+
+    message("\n - Removing unstranded clusters...")
+    object <- subset(object, strand != "*")
+
+    message("\n - Running quantifyGenes:")
+    object <- quantifyGenes(object,
+                            genes="geneID",
+                            inputAssay="counts")
+    invisible(gc())
+
+    # Return
+    object
+}

@@ -206,6 +206,30 @@ shapeEntropy <- function(x) {
     o
 }
 
+#' Shape statistic: Mean
+#'
+#' Calculates the mean of a vector.
+#'
+#' @param x numeric Rle vector: Coverage series.
+#'
+#' @return Numeric
+#' @family Shape functions
+#' @export
+#' @examples
+#' # Hypothetical shard/broad clusters:
+#' x_sharp <- Rle(c(1,1,1,4,5,2,1,1))
+#' x_broad <- Rle(c(1,2,3,5,4,3,2,1))
+#'
+#' # Calculate mean
+#' shapeMean(x_sharp)
+#' shapeMean(x_broad)
+#'
+#' # See calcShape for more usage examples
+shapeMean <- function(x){
+    x <- as.vector(x)
+    stats::weighted.mean(x=seq_along(x), weights=x)
+}
+
 isobreak <- function(i, x) {
     # Split into segments x1 <- x[1:i]
     x1 <- x[seq_len(i)]
@@ -231,7 +255,6 @@ isobreak <- function(i, x) {
 #' @param x numeric Rle vector: Coverage series.
 #'
 #' @return Numeric.
-#' @family Shape functions
 #' @examples
 #' # See calcShape for usage examples
 shapeMultimodality <- function(x) {

@@ -34,6 +34,6 @@ shapeIQR(x_broad)
 Other Shape functions: 
 \code{\link{calcShape}()},
 \code{\link{shapeEntropy}()},
-\code{\link{shapeMultimodality}()}
+\code{\link{shapeMean}()}
 }
 \concept{Shape functions}

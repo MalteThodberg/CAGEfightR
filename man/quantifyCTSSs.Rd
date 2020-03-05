@@ -13,7 +13,7 @@ quantifyCTSSs(plusStrand, minusStrand, design = NULL, genome = NULL, ...)
   minusStrand,
   design = NULL,
   genome = NULL,
-  nTiles = 10L
+  nTiles = 1L
 )
 
 \S4method{quantifyCTSSs}{character,character}(plusStrand, minusStrand, design = NULL, genome = NULL)

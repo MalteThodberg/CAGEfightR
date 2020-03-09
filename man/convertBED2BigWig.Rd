@@ -55,6 +55,7 @@ These functions will warn if input files do not have the correct
   of a UCSC genome.
 }
 \examples{
+\dontrun{
 # Find paths to BigWig files
 data('exampleDesign')
 bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
@@ -95,4 +96,5 @@ all(x == y)
 all(x == z)
 sum(score(x)) ==  sum(score(y))
 sum(score(x)) ==  sum(score(z))
+}
 }

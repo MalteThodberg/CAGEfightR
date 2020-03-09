@@ -179,6 +179,7 @@ convertGRanges2GPos <- function(object){
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # Find paths to BigWig files
 #' data('exampleDesign')
 #' bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
@@ -219,6 +220,7 @@ convertGRanges2GPos <- function(object){
 #' all(x == z)
 #' sum(score(x)) ==  sum(score(y))
 #' sum(score(x)) ==  sum(score(z))
+#' }
 convertBED2BigWig <- function(input, outputPlus, outputMinus, genome){
     assert_that(all(checkFileSeries(input)),
                 is.character(outputPlus),

@@ -343,6 +343,7 @@ quantifyGenes <- function(object, genes, inputAssay = "counts", sparse = FALSE) 
 
     # Split ranges
     new_gr <- splitAsList(rowRanges(object), f = genes, drop = TRUE)
+    message("Quantifying genes: ", length(new_gr))
 
     # Sum matrix
     # new_m <- rowsum2(assay(object, inputAssay),

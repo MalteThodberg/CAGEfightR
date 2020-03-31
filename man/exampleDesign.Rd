@@ -8,14 +8,24 @@
 \alias{exampleBidirectional}
 \alias{exampleGenes}
 \title{Example CAGE Data}
-\format{Example data from various stages of CAGEfightR: \describe{
+\format{
+Example data from various stages of CAGEfightR: \describe{
   \item{exampleDesign}{DataFrame: Description of samples, including .bw
   filenames} \item{exampleCTSS}{RangedSummarizedExperiment: CTSSs}
   \item{exampleUnidirectional}{RangedSummarizedExperiment: Unidirectional or
   Tag Clusters}
   \item{exampleBidirectionalCluster}{RangedSummarizedExperiment:
   Bidirectional clusters} \item{exampleGenes}{RangedSummarizedExperiment:
-  Genes} }}
+  Genes} }
+
+An object of class \code{RangedSummarizedExperiment} with 41256 rows and 3 columns.
+
+An object of class \code{RangedSummarizedExperiment} with 21008 rows and 3 columns.
+
+An object of class \code{RangedSummarizedExperiment} with 377 rows and 3 columns.
+
+An object of class \code{RangedSummarizedExperiment} with 127 rows and 3 columns.
+}
 \source{
 \url{http://pubs.acs.org/doi/abs/10.1021/acsnano.6b07533}
 }

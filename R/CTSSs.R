@@ -17,6 +17,35 @@ bg_mapper <- function(file, seqinfo, strand = "*"){
 }
 
 bw_mapper <- function(range, file, seqinfo, strand = "*"){
+  # Prune levels
+  pruned <- range
+  seqlevels(pruned, pruning.mode = "coarse") <- seqlevels(file)
+
+  # Check if there is nothing to import
+  if(length(pruned) == 0){
+    o <- GRanges(seqinfo=seqinfo)
+    score(o) <- numeric()
+  }else{
+    # Import
+    o <- import.bw(con=file,
+                   format="bigwig",
+                   which=pruned,
+                   as="GRanges")
+
+    # Instead of conversion, stop if not proper CTSSs-like
+    stopifnot(all(width(o) == 1))
+
+    # Force seqlevels and strand
+    seqlevels(o) <- seqlevels(seqinfo)
+    seqinfo(o) <- seqinfo
+    strand(o) <- strand
+  }
+
+  # Return
+  o
+}
+
+bw_mapper2 <- function(range, file, seqinfo, strand = "*"){
     # Import
     o <- suppressWarnings(import.bw(con=file,
                                     format="bigwig",

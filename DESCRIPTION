@@ -2,7 +2,7 @@ Package: CAGEfightR
 Type: Package
 Title: Analysis of Cap Analysis of Gene Expression (CAGE) data using
     Bioconductor
-Version: 1.7.3
+Version: 1.7.4
 Author: Malte Thodberg
 Maintainer: Malte Thodberg <maltethodberg@gmail.com>
 Description: CAGE is a widely used high throughput assay for measuring 
@@ -23,7 +23,7 @@ Depends:
 Imports:
 	pryr(>= 0.1.3),
 	assertthat(>= 0.2.0),
-	methods,
+	methods(>= 3.6.3),
 	Matrix(>= 1.2-12),
     BiocGenerics(>= 0.24.0),
     S4Vectors(>= 0.16.0),
@@ -39,7 +39,7 @@ Imports:
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Suggests: knitr,
     rmarkdown,
     BiocStyle,

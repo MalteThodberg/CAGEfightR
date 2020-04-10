@@ -4,7 +4,7 @@
 \alias{quickGenes}
 \title{Identify and quantify genes.}
 \usage{
-quickGenes(object, geneModels = NULL)
+quickGenes(object, geneModels = NULL, ...)
 }
 \arguments{
 \item{object}{RangedSummarizedExperiment: Location and counts of clusters,
@@ -12,6 +12,8 @@ usually found by calling quantifyClusters.}
 
 \item{geneModels}{TxDb or GRanges: Gene models via a TxDb, or manually
 specified as a GRangesList.}
+
+\item{...}{additional arguments passed to assignGeneID.}
 }
 \value{
 RangedSummarizedExperiment containing gene expression and clusters

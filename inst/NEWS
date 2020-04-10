@@ -1,3 +1,14 @@
+CHANGES IN VERSION 1.7.5:
+	- MAJOR/BREAKING UPDATE: quantifyCTSSs is now a generic with new defaults. When importing BigWig  files, tiles are no specifed as a single number of tiles across the genome, rather than size in basepairs. The new default is to import the entire genome as a single tile. This should be the fastest option for small datasets, for larger datasets is usually faster to use multiple tiles.
+	- quantifyCTSSs now accepts bedGraph files. Unlike BigWig import, this works on Windows.
+	- New convert*-family of functions which can convert CTSSs between BigWig/BED/bedGraph formats.
+	- New checkCTSSs for checking whether CTSSs-files are correctly formatted, and if not, will hopefully output some useful diagnostics.
+	- New quickGenes wrapper function for collapsing cluster-level data to gene-level data. Check the vignette for example of usage.
+	- New shapeMean function.
+	- Many internal functions are now exposed as utils*-function. This should make it easier for power users and/or developers to modify and extend CAGEfightR.
+	- Some internal changes to quantifyCTSSs and quantifyClusters for slightly better performance.
+	- Fixed a small bug where assignGeneID counted NA as a gene when outputting a message. Note,  this never affected the actual output of the function, just the message produced.
+
 CHANGES IN VERSION 1.5.3:
 	- Added citation to BMC Bioinformatics paper.
 

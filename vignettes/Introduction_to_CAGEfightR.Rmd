@@ -85,9 +85,6 @@ The first step is to quantify CTSSs across all samples using `quantifyCTSSs`, wh
 # Get genome information
 genomeInfo <- SeqinfoForUCSCGenome("mm9")
 
-# Specify the number of cores to use (for this small example just 1)
-#register(SerialParam())
-
 # Quantify CTSSs
 CTSSs <- quantifyCTSSs(plusStrand=bw_plus,
                        minusStrand=bw_minus,
@@ -153,7 +150,7 @@ For interfacing with other tools for gene-level analysis, we can quantify gene e
 gene_level <- quickGenes(RSE, geneModels = txdb)
 ```
 
-But it is much cooler to leverage some of the unique features 5'-end methods, for example, we can calculate the correlation of expression of nearby TSSs and enhancers:
+But it is much cooler to leverage some of the unique features of 5'-end methods, for example, we can calculate the correlation of expression of nearby TSSs and enhancers:
 
 ```{r quickLinks, tidy=FALSE}
 # Set TSSs as reference points
@@ -210,9 +207,9 @@ The `quantify*`-functions summarizes CAGE data to a higher level. In all cases, 
 
 The `calc*`-functions modify data stored in a `RangedSummarizedExperiment`. The following `calc*` functions perform basic calculations applicable to all three levels:
 
-- `calcTotalTags`: Calculate the total number of CAGE tags in a library
-- `calcTPM`: Calcuate Tags-Per-Million (TPM)
-- `calcPooled`: Calculate a pooled signal across all samples
+- `calcTotalTags`: Calculate the total number of CAGE tags in a library.
+- `calcTPM`: Calcuate Tags-Per-Million (TPM).
+- `calcPooled`: Calculate a pooled signal across all samples.
 - `calcSupport`: Count the number of samples expression a feature above some level. Useful for removing lowly expressed features via the `subsetBySupport` wrapper.
 
 Some `calc*` functions only work for a specfic level:
@@ -228,25 +225,25 @@ The `cluster*`-functions can cluster CTSSs to find TSSs or enhancers:
 
 The `assign*`-functions can annotate CTSSs and clusters with transcript and genes models:
 
-- `assignTxID`: Annotate clusters with transcript IDs
+- `assignTxID`: Annotate clusters with transcript IDs.
 - `assignTxType`: Annotate clusters based on their overlap with known transcripts, for example to determine whether a TSS is known or novel.
 - `assignGeneID`: Annotate with gene IDs, for example prior to running quantifyGenes.
 
 The `find*`-functions perform spatial analysis of clusters:
 
 - `findLinks`: Finds nearby pairs of clusters and calculates correlation of expression between them. This can be used to find nearby TSSs-enhancer pairs that show similar expression.
-- `findStretches`: Find groups of clusters along the genome. This can be used to find tightly spaced groups of enhancers, often refered to as "super enhancers""
+- `findStretches`: Find groups of clusters along the genome. This can be used to find tightly spaced groups of enhancers, often refered to as "super enhancers".
 
 Other groups of functions are 
 
-- `check*`-functions for making sure object are correctly formatted.
-- `convert*`-function converts CTSSs between different file formats.
+- `check*`-functions for making sure objects are correctly formatted.
+- `convert*`-functions convert CTSSs between different file formats.
 - `bw*`-functions for checking BigWig-files.
 - `swap*`-functions for manipulating `GRanges`-objects.
 - `track*`-functions for genome browser visualization.
 - `combine*`-functions for safe merging of different types of clusters. 
 - `quick*`-functions are high-level wrappers for many other functions, intended to be used as single-line execution of the standard pipeline. 
-- `utils*` functions exposes some of the inner workings of `CAGEfightR` and are mainly intended for expert users and developers.
+- `utils*`-functions expose some of the inner workings of `CAGEfightR` and are mainly intended for expert users and developers.
 
 ## Pipeability
 
@@ -497,7 +494,7 @@ In many cases, we are not so much interested in what specific transcripts a clus
 ```{r assignTxType, tidy=FALSE}
 exampleUnidirectional <- assignTxType(exampleUnidirectional,
                                       txModels=txdb,
-                                      outputColumn="txTyp")
+                                      outputColumn="txType")
 ```
 
 The function returns a small summary of the annotation: At the top of the hierachy we have overlap with annotated promoter (+/- 100 basepairs from the annotated TSSs, with this distance being changeable when running the function), followed by proximal (-1000 upstream of the annotated TSS). Coding transcripts can be annotated as 5'-UTR, 3-'UTR, CDS and intron, while non-coding transcripts are simply annotated as exon or intron. At the bottom of the hierachy, clusters overlapping genes on the opposite strand are annotated as antisense. Finally, in case a cluster does not overlap any transcript, it is annotated as intergenic.

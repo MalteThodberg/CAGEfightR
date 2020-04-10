@@ -326,7 +326,7 @@ setMethod("assignGeneID", signature(object = "GenomicRanges", geneModels = "Geno
         message("Features overlapping genes: ",
                 round(mean(!is.na(hits)) * 100, digits = 2),
                 " %")
-        message("Number of unique genes: ", length(unique(hits)))
+        message("Number of unique genes: ", length(unique(na.omit(hits))))
 
         # Return
         object

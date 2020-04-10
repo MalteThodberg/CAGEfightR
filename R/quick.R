@@ -104,6 +104,7 @@ quickEnhancers <- function(object) {
 #'   usually found by calling quantifyClusters.
 #' @param geneModels TxDb or GRanges: Gene models via a TxDb, or manually
 #'   specified as a GRangesList.
+#' @param ... additional arguments passed to assignGeneID.
 #'
 #' @return RangedSummarizedExperiment containing gene expression and clusters
 #'   assigned within each gene.
@@ -111,7 +112,7 @@ quickEnhancers <- function(object) {
 #' @export
 #' @examples
 #' # See the CAGEfightR vignette for an overview!
-quickGenes <- function(object, geneModels=NULL) {
+quickGenes <- function(object, geneModels=NULL, ...) {
     # Pre-checks
     assert_that(methods::is(object, "RangedSummarizedExperiment"),
                 isDisjoint(object),
@@ -119,7 +120,7 @@ quickGenes <- function(object, geneModels=NULL) {
 
     if (is.null(rowRanges(object)$geneID)) {
         message(" - Running assignGeneID:")
-        object <- assignGeneID(object, geneModels=geneModels)
+        object <- assignGeneID(object, geneModels=geneModels, ...)
     }else{
         message("Using existing geneID column!")
     }

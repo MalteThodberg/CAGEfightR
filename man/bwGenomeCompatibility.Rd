@@ -21,6 +21,7 @@ Given a genome, checks whether a series of BigWig-files are compatible by
 checking if all common seqlevels have equal seqlengths.
 }
 \examples{
+if (.Platform$OS.type != "windows") {
 # Use the BigWig-files included with the package:
 data('exampleDesign')
 bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
@@ -40,6 +41,7 @@ si <- si['chr18']
 
 # Check if it is still compatible:
 bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)
+}
 }
 \seealso{
 Other BigWig functions: 

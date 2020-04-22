@@ -21,6 +21,7 @@ Finds a common genome for a series of BigWig-files, either using only levels
 present in all files (intersect) or in any file (union).
 }
 \examples{
+if (.Platform$OS.type != "windows") {
 # Use the BigWig-files included with the package:
 data('exampleDesign')
 bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
@@ -39,6 +40,7 @@ bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='intersect')
 
 # Find the most inclusive genome (union) across the BigWigList-objects:
 bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='union')
+}
 }
 \seealso{
 Other BigWig functions: 

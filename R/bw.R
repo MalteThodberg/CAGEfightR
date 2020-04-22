@@ -61,6 +61,7 @@ setMethod("bwValid", signature(object = "BigWigFileList"), function(object) {
 #' @family BigWig functions
 #' @export
 #' @examples
+#' if (.Platform$OS.type != "windows") {
 #' # Use the BigWig-files included with the package:
 #' data('exampleDesign')
 #' bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
@@ -79,6 +80,7 @@ setMethod("bwValid", signature(object = "BigWigFileList"), function(object) {
 #'
 #' # Find the most inclusive genome (union) across the BigWigList-objects:
 #' bwCommonGenome(plusStrand=bw_plus, minusStrand=bw_minus, method='union')
+#' }
 bwCommonGenome <- function(plusStrand, minusStrand, method = "intersect") {
     assert_that(methods::is(plusStrand, "BigWigFileList"),
                 methods::is(minusStrand, "BigWigFileList"),
@@ -122,6 +124,7 @@ bwCommonGenome <- function(plusStrand, minusStrand, method = "intersect") {
 #' @family BigWig functions
 #' @export
 #' @examples
+#' if (.Platform$OS.type != "windows") {
 #' # Use the BigWig-files included with the package:
 #' data('exampleDesign')
 #' bw_plus <- system.file('extdata', exampleDesign$BigWigPlus,
@@ -141,6 +144,7 @@ bwCommonGenome <- function(plusStrand, minusStrand, method = "intersect") {
 #'
 #' # Check if it is still compatible:
 #' bwGenomeCompatibility(plusStrand=bw_plus, minusStrand=bw_minus, genome=si)
+#' }
 bwGenomeCompatibility <- function(plusStrand, minusStrand, genome) {
     assert_that(methods::is(plusStrand, "BigWigFileList"),
                 methods::is(minusStrand, "BigWigFileList"),

@@ -43,8 +43,8 @@ data(exampleBidirectional)
 TC <- rowRanges(subset(exampleUnidirectional, width>=100)[3,])
 BC <- rowRanges(exampleBidirectional[3,])
 
-# Create pooled trakc
-subsetOfCTSSs <- subsetByOverlaps(exampleCTSSs, c(BC, TC, ignore.mcols=TRUE))
+# Create pooled track
+subsetOfCTSSs <- subsetByOverlaps(rowRanges(exampleCTSSs), c(BC, TC, ignore.mcols=TRUE))
 pooledTrack <- trackCTSS(subsetOfCTSSs)
 
 # Plot
